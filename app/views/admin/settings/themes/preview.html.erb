@@ -43,3 +43,22 @@
     <label class="chip"><input type="radio" name="sample"><span>Not selected</span></label>
   </div>
 </div>
+
+<section class="contrast-guide" aria-labelledby="contrast-guide-title">
+  <h2 id="contrast-guide-title">Contrast</h2>
+  <p>Every place the site puts text on a color. Normal text needs 4.5:1; large text 3:1. Disabled and decorative text has no minimum.</p>
+  <table>
+    <thead><tr><th>Where</th><th>Sample</th><th>Contrast</th><th>Needs</th><th></th></tr></thead>
+    <tbody>
+      <% @theme.pairings.each do |pairing| %>
+        <tr class="<%= "is-failing" unless pairing.passes? %>">
+          <td><%= pairing.label %></td>
+          <td><span class="contrast-guide__sample" style="color: <%= pairing.foreground %>; background: <%= pairing.background %>">Aa</span></td>
+          <td><%= number_with_precision(pairing.ratio, precision: 1) %>:1</td>
+          <td><%= pairing.minimum.zero? ? "—" : "#{pairing.minimum}:1" %></td>
+          <td><%= pairing.passes? ? "✓" : "✗" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

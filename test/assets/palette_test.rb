@@ -47,6 +47,21 @@ class PaletteTest < ActiveSupport::TestCase
     assert_empty text_colors - listed, "text in these colors isn't checked for contrast anywhere"
   end
 
+  test "primary button text is at least 19px bold" do
+    # The logo green can't carry small text (4.0:1 at best), so the button
+    # text is sized to count as large text, where WCAG asks for 3:1.
+    rule = @css[/^\.btn \{[^}]*\}/] or flunk ".btn rule not found"
+    assert_operator rule[/font-size:\s*([\d.]+)px/, 1].to_f, :>=, 19
+    assert_operator rule[/font-weight:\s*(\d+)/, 1].to_i, :>=, 700
+  end
+
+  test "the announcement bar sits on the card shade, not the logo green" do
+    rule = @css[/^\.announce \{[^}]*\}/] or flunk ".announce rule not found"
+    assert_includes rule, "background: var(--surface)"
+    assert_includes rule, "color: var(--ink)"
+    assert_includes rule, "border-top: 3px solid var(--accent)"
+  end
+
   test "no two theme colors are within ΔE 3 of each other" do
     close = Theme.default.palette.to_a.combination(2).filter_map do |(a, x), (b, y)|
       distance = Theme.delta_e(x, y)

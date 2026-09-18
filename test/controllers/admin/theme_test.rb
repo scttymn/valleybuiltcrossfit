@@ -118,6 +118,25 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_operator Theme.contrast(suggestion, "#000000"), :>=, 4.5, "the suggestion doesn't fix the problem"
   end
 
+  test "the preview lists every pairing with its ratio and minimum" do
+    sign_in_as users(:one)
+
+    get preview_admin_settings_theme_path
+    assert_select ".contrast-guide tbody tr", Theme::PAIRINGS.size
+    Theme.default.pairings.each do |pairing|
+      assert_select ".contrast-guide tr", text: /#{Regexp.escape(pairing.label)}.*#{format("%.1f", pairing.ratio)}:1/m
+    end
+    assert_select ".contrast-guide tr.is-failing", 0
+  end
+
+  test "a pick that fails shows as failing in the guide, with a suggestion" do
+    sign_in_as users(:one)
+
+    get preview_admin_settings_theme_path, params: { text: "#333333" }
+    assert_select ".contrast-guide tr.is-failing", text: /Body text/
+    assert_select ".theme-warning button[data-part='text']"
+  end
+
   private
     def theme_style = css_select("head style").map(&:text).join
 end

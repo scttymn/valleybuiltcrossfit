@@ -477,6 +477,17 @@ ink), `--danger` (derived) and the three fixed error-box colors.
 | Guide flags a failing pick | `test/controllers/admin/theme_test.rb` | `a pick that fails shows as failing in the guide, with a suggestion` | Contract |
 | Visible change is the planned one | — evidence | before/after screenshots; list what changed | Parity |
 
+**4b result — done.** All rows green; full suite 125/125.
+- Primary buttons: 19px bold (padding 15px 28px to keep the height); logo
+  green fill, black text 4.0:1 against a 3:1 large-text minimum. Phone check at
+  390px: no sideways scroll; "Book an intro session" fits (276px).
+- Announcement bar: card shade, 3px green top edge, cream text (11.6:1).
+- The contrast guide sits under the sample, one row per `Theme::PAIRINGS`
+  entry: a live "Aa" sample, the ratio, the minimum, pass/fail. Checked live:
+  with the logo colors every row passes; typing `#333333` for text fails the
+  nine text rows built from it, leaves the green rows passing, and raises one
+  warning — on the pick — with its suggestion. Sample iframe raised to 760px.
+
 ## Agent loop checkpoints
 
 - Before touching CSS: screenshot the current site (the "before" set) so the

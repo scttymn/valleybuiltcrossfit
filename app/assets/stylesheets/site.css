@@ -38,7 +38,7 @@
 .owners .photo img { object-position: center top; }
 .cert { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bg); background: var(--accent-text); padding: 3px 7px; }
 
-.btn { display: inline-block; font-family: var(--font-condensed); font-size: 17px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 16px 30px; text-align: center; cursor: pointer; border: 0; }
+.btn { display: inline-block; font-family: var(--font-condensed); font-size: 19px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 28px; text-align: center; cursor: pointer; border: 0; }
 .site a.btn--primary, .btn--primary { background: var(--accent); color: var(--on-accent); }
 .site a.btn--primary:hover, .btn--primary:hover { background: var(--accent-text); color: var(--bg); }
 .site a.btn--ghost, .btn--ghost { color: var(--ink); border: 1px solid var(--line-strong); background: transparent; }
@@ -47,11 +47,11 @@
 .btn--block { display: block; width: 100%; padding: 16px; }
 
 /* ---------- announcement + nav ---------- */
-.announce { background: var(--accent); padding: 11px 24px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--on-accent); }
+.announce { background: var(--surface); border-top: 3px solid var(--accent); color: var(--ink); padding: 11px 24px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
 .announce--link { display: block; text-align: center; }
-.site a.announce--link { color: var(--on-accent); }
-.site a.announce--link:hover { background: var(--accent-text); color: var(--bg); }
-.site .announce a { color: var(--on-accent); }
+.site a.announce--link { color: var(--ink); }
+.site a.announce--link:hover { background: var(--accent-wash); color: var(--ink); }
+.site .announce a { color: var(--ink); }
 
 .nav { position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: blur(8px); }
 .nav__bar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 32px; }
