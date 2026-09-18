@@ -267,6 +267,16 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "dialog.dialog:not([tabindex='-1'])", 0, "schedule_controller focuses the dialog itself, which needs tabindex=-1"
   end
 
+  test "form fields are at least 16px, so iPhones don't zoom in when one is tapped" do
+    css = Rails.root.join("app/assets/stylesheets/site.css").read.gsub(%r{/\*.*?\*/}m, "")
+    input = css.scan(/([^{}]+)\{([^}]*)\}/).find { |selector, _| selector.strip == ".input" }&.last
+    assert_operator input[/font-size:\s*(\d+)px/, 1].to_i, :>=, 16, ".input"
+
+    chat = Rails.root.join("app/javascript/controllers/chat_controller.js").read
+    chat_fields = chat[/^\s*input, textarea \{([^}]*)\}/, 1]
+    assert_operator chat_fields[/font-size:\s*(\d+)px/, 1].to_i, :>=, 16, "the chat's fields"
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

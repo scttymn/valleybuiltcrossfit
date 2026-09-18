@@ -17,7 +17,7 @@ const INSIDE = `
   .lc_text-widget--form::after { inset: 0 !important; background: var(--surface) !important; border: var(--border-width) solid var(--accent) !important; border-radius: 0 !important; }
   .lc_text-widget--form form { display: flex !important; flex-direction: column; gap: 12px; }
   .lc_text-widget--text-input { margin: 0 !important; border: 0 !important; background: transparent !important; }
-  input, textarea { background: var(--bg) !important; color: var(--ink) !important; border: var(--border-width) solid var(--line) !important; border-radius: 0 !important; box-shadow: none !important; font-family: var(--font-body) !important; font-size: 15px !important; }
+  input, textarea { background: var(--bg) !important; color: var(--ink) !important; border: var(--border-width) solid var(--line) !important; border-radius: 0 !important; box-shadow: none !important; font-family: var(--font-body) !important; font-size: 16px !important; }
   input:focus, textarea:focus { border-color: var(--accent) !important; outline: none !important; }
   input::placeholder, textarea::placeholder { color: var(--muted) !important; opacity: 1; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
   .iti__selected-flag { background: transparent !important; }

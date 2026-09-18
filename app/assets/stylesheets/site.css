@@ -317,7 +317,7 @@ html:has(dialog[open]) { overflow: hidden; }
 /* One rhythm down the form: the same gap between fields, groups and the button. */
 .lead-form form { display: flex; flex-direction: column; gap: 18px; }
 .field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 18px; }
-.input { width: 100%; border: var(--border-width) solid var(--line); background: var(--bg); padding: 14px 15px; font-family: var(--font-body); font-size: 15px; color: var(--ink); border-radius: 0; }
+.input { width: 100%; border: var(--border-width) solid var(--line); background: var(--bg); padding: 14px 15px; font-family: var(--font-body); font-size: 16px; color: var(--ink); border-radius: 0; }
 .input::placeholder { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 .input:focus { outline: none; border-color: var(--accent); }
 textarea.input { min-height: 96px; resize: vertical; }
