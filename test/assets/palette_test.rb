@@ -90,6 +90,13 @@ class PaletteTest < ActiveSupport::TestCase
       "line #{i + 1}: #{line.strip[0, 100]}" if line.match?(/border(?:-(?:top|bottom|left|right))?(?:-width)?:\s*[\d.]+px/)
     end
     assert_empty fixed
+
+    # Grids that draw their dividers as a gap over a line-colored background
+    # are borders too, just drawn another way.
+    gap_lines = @css.scan(/^([^{}\n]+)\{([^}]*)\}/).filter_map do |selector, body|
+      selector.strip if body.match?(/gap:\s*[\d.]+px/) && body.match?(/background:\s*var\(--line/)
+    end
+    assert_empty gap_lines, "these divide with a fixed-width gap instead of --border-width"
   end
 
   test "scrollbars are themed: an accent thumb on the card shade, cream on hover" do
