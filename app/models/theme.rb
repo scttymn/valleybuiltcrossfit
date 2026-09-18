@@ -2,38 +2,70 @@
 # admin picks: background, text and accent. The stylesheets paint only with the
 # variables this emits. The defaults are the logo's three colors.
 #
-# Every other shade is the background moved some way toward the text and some
-# way toward the accent, in CIE Lab:
+# Ten colors in all. Besides the three picks:
 #
-#   shade = background + s·(text − background) + u·(accent − background)
+# * Four layers — surface, line, line-strong, accent-wash — sit a fixed step
+#   from the background, moved some way toward the text (s) and toward the
+#   accent (u) in CIE Lab: background + s·(text − background) + u·(accent −
+#   background). The steps were fitted to the hand-built design, and because
+#   they move toward whatever the picks are, a light theme layers correctly too.
 #
-# The (s, u) pairs were fitted to the hand-built palette, which the same three
-# base colors reproduce within ΔE 2 — invisible. (accent-wash was nudged off its
-# best fit so it stays distinct from --line with the logo's cream as the text.) Because each shade moves toward whatever
-# the text and accent are, a light theme comes out right too: its surfaces go a
-# touch darker than white and its slot tints go pale green.
+# * Three text shades — muted, ink-soft, accent-text — are set by the contrast
+#   they must reach on the hardest background they sit on, so they are readable
+#   for any three picks, not just the defaults. Only the picks themselves can
+#   fail, and the editor warns about those.
 class Theme
   HEX = /\A#\h{6}\z/
   DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248" }.freeze
 
-  SHADES = {
+  LAYERS = {
     "surface" => [ -0.049, 0.173 ],
-    "surface-2" => [ -0.074, 0.308 ],
     "line" => [ -0.011, 0.309 ],
-    "line-strong" => [ 0.031, 0.432 ],
-    "muted-soft" => [ 0.333, 0.365 ],
-    "muted" => [ 0.543, 0.209 ],
-    "ink-soft" => [ 0.786, 0.129 ],
-    "accent-wash" => [ -0.14, 0.49 ],
-    "accent-wash-2" => [ -0.079, 0.493 ],
-    "accent-edge" => [ -0.072, 0.605 ],
-    "accent-border" => [ 0.003, 0.639 ],
-    "accent-dim" => [ 0.163, 0.991 ],
-    "accent-pale" => [ 0.589, 0.641 ]
+    "line-strong" => [ -0.010, 0.552 ],
+    "accent-wash" => [ -0.14, 0.49 ]
   }.freeze
 
-  # Errors stay red whatever the accent is: they mean something went wrong.
-  FIXED = { "danger" => "#e0785a", "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
+  # WCAG AA for normal-size text.
+  TEXT_CONTRAST = 4.5
+
+  # Delete links start from this red and move only as far as they must to read.
+  DANGER = "#e0785a"
+  # The error box keeps its own colors whatever the theme: they mean something
+  # went wrong, and they read against each other, not the page.
+  FIXED = { "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
+  # Names for another palette color, not colors of their own.
+  ALIASES = %w[--on-accent].freeze
+
+  # Every place the stylesheets put text on a color, and the contrast it needs:
+  # 4.5 for normal text, 3 for large text, 0 for disabled and decorative text,
+  # which WCAG exempts. The admin guide and the tests both read this list.
+  Pairing = Data.define(:label, :foreground, :background, :minimum)
+  PAIRINGS = [
+    Pairing["Body text", "--ink", "--bg", 4.5],
+    Pairing["Body text on cards", "--ink", "--surface", 4.5],
+    Pairing["Class times on a schedule slot", "--ink", "--accent-wash", 4.5],
+    Pairing["Secondary text", "--ink-soft", "--bg", 4.5],
+    Pairing["Secondary text on cards", "--ink-soft", "--surface", 4.5],
+    Pairing["Class names on a slot", "--ink-soft", "--accent-wash", 4.5],
+    Pairing["Muted text", "--muted", "--bg", 4.5],
+    Pairing["Muted text on cards", "--muted", "--surface", 4.5],
+    Pairing["Coach names on a slot", "--muted", "--accent-wash", 4.5],
+    Pairing["Links and small green labels", "--accent-text", "--bg", 4.5],
+    Pairing["Small green text on cards", "--accent-text", "--surface", 4.5],
+    Pairing["Spots left on a slot", "--accent-text", "--accent-wash", 4.5],
+    Pairing["Headline accent (large text)", "--accent", "--bg", 3.0],
+    Pairing["Primary button text (large text)", "--on-accent", "--accent", 3.0],
+    Pairing["Text on small green buttons", "--bg", "--accent-text", 4.5],
+    Pairing["Delete links", "--danger", "--bg", 4.5],
+    Pairing["Delete links on panels", "--danger", "--surface", 4.5],
+    Pairing["Error messages", "--danger-ink", "--danger-bg", 4.5],
+    Pairing["Buttons in error messages", "--danger-bg", "--danger-ink", 4.5],
+    Pairing["Disabled and decorative text", "--line-strong", "--bg", 0]
+  ].freeze
+
+  Result = Data.define(:label, :foreground, :background, :ratio, :minimum) do
+    def passes? = ratio >= minimum
+  end
 
   # Below these the sample warns; it never blocks a save. Body text follows the
   # WCAG guideline for normal text; the accent, which is mostly headlines,
@@ -65,13 +97,34 @@ class Theme
 
   def variables
     @variables ||= begin
-      base, toward_text, toward_accent = Color.lab(background), Color.lab(text), Color.lab(accent)
-      shades = SHADES.transform_values do |s, u|
-        Color.hex(base.zip(toward_text, toward_accent).map { |b, t, a| b + s * (t - b) + u * (a - b) })
-      end
+      hardest = hardest_background
+      muted = reach(TEXT_CONTRAST, against: hardest)
+      # Halfway, in contrast, between muted and full text: always a clear step.
+      ink_soft = reach(Math.sqrt(TEXT_CONTRAST * Theme.contrast(text, hardest)), against: hardest)
 
-      { "bg" => background, "ink" => text, "accent" => accent }.merge(shades, FIXED).transform_keys { "--#{_1}" }
+      {
+        "--bg" => background, "--ink" => text, "--accent" => accent,
+        "--ink-soft" => ink_soft, "--muted" => muted,
+        "--accent-text" => Theme.suggest(accent, against: hardest, ratio: TEXT_CONTRAST) || accent,
+        "--on-accent" => [ background, text ].max_by { Theme.contrast(_1, accent) },
+        "--danger" => Theme.suggest(DANGER, against: hardest, ratio: TEXT_CONTRAST) || DANGER
+      }.merge(layers.transform_keys { "--#{_1}" }, FIXED.transform_keys { "--#{_1}" })
     end
+  end
+
+  # The colors themselves, without the names that point at one of them.
+  def palette = variables.except(*ALIASES)
+
+  def pairings
+    PAIRINGS.map do |pairing|
+      foreground, background = variables.values_at(pairing.foreground, pairing.background)
+      Result.new(label: pairing.label, foreground:, background:, ratio: Theme.contrast(foreground, background), minimum: pairing.minimum)
+    end
+  end
+
+  # Of the backgrounds text sits on, the one it reads worst against.
+  def hardest_background
+    [ background, layers["surface"], layers["accent-wash"] ].min_by { Theme.contrast(text, _1) }
   end
 
   # For a <style> tag. Every value is a validated or computed #rrggbb, so there
@@ -124,6 +177,30 @@ class Theme
 
   # CIE76 ΔE: under ~2 is invisible, under ~5 barely noticeable side by side.
   def self.delta_e(a, b) = Color.lab(a).zip(Color.lab(b)).sum { |x, y| (x - y)**2 }**0.5
+
+  private
+    def layers
+      @layers ||= begin
+        base, toward_text, toward_accent = Color.lab(background), Color.lab(text), Color.lab(accent)
+        LAYERS.transform_values do |s, u|
+          Color.hex(base.zip(toward_text, toward_accent).map { |b, t, a| b + s * (t - b) + u * (a - b) })
+        end
+      end
+    end
+
+    # The first color on the way from the background to the text that reaches
+    # `ratio` against `against`; the text itself when nothing short of it does.
+    def reach(ratio, against:)
+      from, to = Color.lab(background), Color.lab(text)
+      (0..200).each do |i|
+        t = i / 200.0
+        candidate = Color.hex(from.zip(to).map { |a, b| a + t * (b - a) })
+        return candidate if Theme.contrast(candidate, against) >= ratio
+      end
+      text
+    end
+
+  public
 
   # sRGB ↔ CIE Lab (D65).
   module Color

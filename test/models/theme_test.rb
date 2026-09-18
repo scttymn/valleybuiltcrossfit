@@ -1,32 +1,56 @@
 require "test_helper"
 
 class ThemeTest < ActiveSupport::TestCase
-  # The palette as it stood in site.css before the theme took it over, and the
-  # three colors it was built around. The formula has to reproduce it.
-  CURRENT_PALETTE = {
-    "bg" => "#000000", "surface" => "#0a0d03", "surface-2" => "#13170a",
-    "line" => "#202318", "line-strong" => "#343827",
-    "muted-soft" => "#6f7563", "muted" => "#939587", "ink-soft" => "#c8c9bc", "ink" => "#f2f1e8",
-    "accent-wash" => "#181d0e", "accent-wash-2" => "#212817", "accent-edge" => "#2c351f",
-    "accent-border" => "#3f4930", "accent-dim" => "#86996c", "accent" => "#607248", "accent-pale" => "#ccdab7",
-    "danger" => "#e0785a", "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0"
-  }.freeze
+  # The layer shades the design built by hand, and the three colors it was built
+  # around. The layers still sit where the design put them.
+  HAND_BUILT_BASE = { background: "#000000", text: "#f2f1e8", accent: "#607248" }.freeze
+  HAND_BUILT_LAYERS = { "surface" => "#0a0d03", "line" => "#202318", "accent-wash" => "#181d0e" }.freeze
 
   LIGHT = { background: "#ffffff", text: "#1b1b1b", accent: "#607248" }.freeze
-  SURFACES = %w[--bg --surface --surface-2].freeze
+  # Saturated and far from the logo: navy, white, orange.
+  VIVID = { background: "#1a1446", text: "#ffffff", accent: "#ff8a3d" }.freeze
 
-  HAND_BUILT_BASE = { background: "#000000", text: "#f2f1e8", accent: "#607248" }.freeze
-
-  test "the formula reproduces the hand-built palette from its three base colors within ΔE 2" do
+  test "the layer shades stay where the design put them" do
     variables = Theme.new(**HAND_BUILT_BASE).variables
 
-    assert_equal CURRENT_PALETTE.keys.map { "--#{_1}" }.sort, variables.keys.sort
-    off = CURRENT_PALETTE.filter_map do |token, was|
+    off = HAND_BUILT_LAYERS.filter_map do |token, was|
       now = variables["--#{token}"]
-      distance = Theme.delta_e(was, now)
-      "--#{token}: #{was} → #{now} (ΔE #{distance.round(1)})" if distance > 2
+      "--#{token}: #{was} → #{now}" if Theme.delta_e(was, now) > 2
     end
-    assert_empty off, "the derived shades drifted from the design"
+    assert_empty off
+  end
+
+  test "every pairing meets its minimum for the logo, light, and vivid themes" do
+    { logo: Theme::DEFAULTS, light: LIGHT, vivid: VIVID }.each do |name, colors|
+      failing = Theme.new(**colors).pairings.reject(&:passes?).map { "#{_1.label}: #{_1.ratio.round(1)}:1 < #{_1.minimum}" }
+      assert_empty failing, "#{name} theme"
+    end
+  end
+
+  test "muted and accent text land at 4.5:1 on the hardest background, not above it" do
+    [ Theme.default, Theme.new(**LIGHT), Theme.new(**VIVID) ].each do |theme|
+      variables = theme.variables
+      hardest = theme.hardest_background
+      %w[--muted --accent-text].each do |token|
+        ratio = Theme.contrast(variables[token], hardest)
+        assert_operator ratio, :>=, 4.5, "#{token} on #{hardest}"
+        assert_operator ratio, :<, 5.0, "#{token} overshot — it could sit closer to the background" unless variables[token] == theme.accent
+      end
+    end
+  end
+
+  test "when the picks can't reach a target, text shades stop at the text color" do
+    theme = Theme.new(background: "#000000", text: "#333333", accent: "#607248")
+
+    assert_equal "#333333", theme.variables["--muted"]
+    assert_equal "#333333", theme.variables["--ink-soft"]
+    assert theme.warnings.any? { _1.part == :text }, "the unreadable pick itself is flagged"
+  end
+
+  test "text on the accent is whichever of background or text reads better" do
+    assert_equal "#000000", Theme.default.variables["--on-accent"]
+    dark_accent = Theme.new(background: "#000000", text: "#ffffff", accent: "#1f3a8a")
+    assert_equal "#ffffff", dark_accent.variables["--on-accent"]
   end
 
   test "the defaults are the colors of the client's logo" do
@@ -43,22 +67,15 @@ class ThemeTest < ActiveSupport::TestCase
 
   test "the defaults are distinct and warning-free" do
     assert_empty Theme.default.warnings
-    close = Theme.default.variables.to_a.combination(2).select { |(_, x), (_, y)| Theme.delta_e(x, y) < 3 }
+    close = Theme.default.palette.to_a.combination(2).select { |(_, x), (_, y)| Theme.delta_e(x, y) < 3 }
     assert_empty close
   end
 
-  test "a light theme derives distinct colors and keeps text readable on every surface" do
-    variables = Theme.new(**LIGHT).variables
-
-    close = variables.to_a.combination(2).filter_map do |(a, x), (b, y)|
+  test "a light theme derives distinct colors" do
+    close = Theme.new(**LIGHT).palette.to_a.combination(2).filter_map do |(a, x), (b, y)|
       "#{a} #{x} ~ #{b} #{y}" if Theme.delta_e(x, y) < 3
     end
     assert_empty close, "shades collapse into each other on a light background"
-
-    SURFACES.each do |surface|
-      ratio = Theme.contrast(variables["--ink"], variables[surface])
-      assert_operator ratio, :>=, 4.5, "text on #{surface} is #{ratio.round(1)}:1"
-    end
   end
 
   test "saturated or extreme inputs still produce valid hex for every token" do

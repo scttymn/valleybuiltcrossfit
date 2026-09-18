@@ -38,8 +38,17 @@ class PaletteTest < ActiveSupport::TestCase
     assert_empty stray, "these colors would ignore the theme"
   end
 
+  test "every color the stylesheets use for text is in the pairing list" do
+    # Admin roles like --a-muted are names for theme colors; follow them.
+    aliases = @css.scan(/--(a-[\w-]+):\s*var\(--([\w-]+)\)/).to_h
+    text_colors = @css.scan(/(?:^|[;{\s])color:\s*var\(--([\w-]+)\)/).flatten.map { aliases.fetch(_1, _1) }.uniq
+    listed = Theme::PAIRINGS.map { _1.foreground.delete_prefix("--") }.uniq
+
+    assert_empty text_colors - listed, "text in these colors isn't checked for contrast anywhere"
+  end
+
   test "no two theme colors are within ΔE 3 of each other" do
-    close = @theme.to_a.combination(2).filter_map do |(a, x), (b, y)|
+    close = Theme.default.palette.to_a.combination(2).filter_map do |(a, x), (b, y)|
       distance = Theme.delta_e(x, y)
       "#{a} #{x} ~ #{b} #{y} (ΔE #{distance.round(1)})" if distance < 3
     end

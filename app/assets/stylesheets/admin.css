@@ -2,13 +2,13 @@
 .admin {
   /* The admin follows the saved theme too (app/models/theme.rb, emitted by the
      layout). These names just map the admin's roles onto theme shades. */
-  --a-bg: var(--bg); --a-panel: var(--surface); --a-input: var(--surface-2); --a-line: var(--line); --a-line-2: var(--line-strong);
+  --a-bg: var(--bg); --a-panel: var(--surface); --a-input: var(--bg); --a-line: var(--line); --a-line-2: var(--line-strong);
   --a-ink: var(--ink); --a-muted: var(--muted); --a-accent: var(--accent); --a-danger: var(--danger);
   margin: 0; background: var(--a-bg); color: var(--a-ink); font: 15px/1.5 Barlow, system-ui, sans-serif;
   display: flex; min-height: 100vh;
 }
 .admin * { box-sizing: border-box; }
-.admin a { color: var(--a-accent); }
+.admin a { color: var(--accent-text); }
 .admin h1, .admin h2 { font-family: Oswald, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin: 0; }
 .admin h1 { font-size: 30px; }
 .admin h2 { font-size: 18px; }
@@ -19,7 +19,7 @@
 .admin-nav nav { display: flex; flex-direction: column; gap: 2px; }
 .admin-nav nav a { color: var(--ink-soft); text-decoration: none; padding: 8px 10px; font-weight: 500; }
 .admin-nav nav a:hover { background: var(--a-panel); color: var(--a-ink); }
-.admin-nav nav a.is-active { background: var(--accent-wash); color: var(--a-accent); }
+.admin-nav nav a.is-active { background: var(--accent-wash); color: var(--accent-text); }
 /* A collapsible group: the title toggles it; its pages sit indented beneath. */
 .nav-group__items { display: flex; flex-direction: column; gap: 2px; }
 .nav-group > summary { list-style: none; cursor: pointer; color: var(--ink-soft); padding: 8px 10px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
@@ -37,15 +37,15 @@
 .admin-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: 24px; }
 .admin-head__note { flex-basis: 100%; margin: 0; color: var(--a-muted); }
 
-.button { display: inline-block; background: var(--a-accent); color: var(--bg) !important; border: 1px solid var(--a-accent); padding: 10px 18px; font: 600 14px/1 Barlow, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
-.button:hover { background: var(--accent-pale); }
-.button--ghost { background: transparent; color: var(--a-accent) !important; }
+.button { display: inline-block; background: var(--accent-text); color: var(--bg) !important; border: 1px solid var(--accent-text); padding: 10px 18px; font: 600 14px/1 Barlow, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.button:hover { background: var(--ink); }
+.button--ghost { background: transparent; color: var(--accent-text) !important; }
 .button--ghost:hover { background: var(--accent-wash); }
-.link-button { background: none; border: 0; padding: 0; color: var(--a-accent); font: inherit; cursor: pointer; }
+.link-button { background: none; border: 0; padding: 0; color: var(--accent-text); font: inherit; cursor: pointer; }
 .link-button--danger { color: var(--a-danger); }
 
 .flash { padding: 10px 14px; border: 1px solid; margin: 0 0 20px; }
-.flash--notice { border-color: var(--accent-border); background: var(--accent-wash); color: var(--accent-pale); }
+.flash--notice { border-color: var(--line-strong); background: var(--accent-wash); color: var(--accent-text); }
 .flash--alert { border-color: var(--danger-line); background: var(--danger-bg); color: var(--danger-ink); }
 
 .table { width: 100%; border-collapse: collapse; background: var(--a-panel); border: 1px solid var(--a-line); }

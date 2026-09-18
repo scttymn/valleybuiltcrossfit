@@ -450,6 +450,23 @@ because readable text on this background only has room between 4.5:1 and 10.1:1
 | Ten, distinct | `test/assets/palette_test.rb` | existing: used / defined / no literals / ΔE ≥ 3 (now over 10) | Honest surface |
 | Pairing list matches the CSS | `test/assets/palette_test.rb` | `every text color the stylesheets use on a background is in the pairing list` | Honest surface |
 
+**4a result — done.** All rows green; full suite 121/121. Ten colors:
+`bg ink accent` (picks), `ink-soft muted accent-text` (by contrast), `surface
+line line-strong accent-wash` (layers) — plus `--on-accent` (alias for bg or
+ink), `--danger` (derived) and the three fixed error-box colors.
+- Deviations from the plan: the merged green borders became `line-strong`
+  (#343d28 by default, fitted as the mean of the three it replaces, ≤ ΔE 5.5
+  from each) rather than a new `accent-line`; `line-strong` also carries the
+  deliberately faint disabled/decorative text ("No WOD", "Rest day", step
+  numbers), listed in `PAIRINGS` with minimum 0, which WCAG exempts.
+- Large accent text kept the exact logo green: hero accent, kicker script,
+  "Strong for life.", the last step number. Everything small moved to
+  `--accent-text`. Small green fills (today chip, selected day, nav button,
+  cert badge) use `--accent-text` with `--bg` text — guaranteed ≥ 4.5.
+- Rendered and measured in the browser: "11 open" 3.2 → 4.6:1, coach name
+  4.2 → 4.5:1, small labels 4.0 → 5.7:1. Full-page diff vs. the prior commit:
+  0.08% of pixels, all text-color changes.
+
 **4b — design fixes + guide** (CSS + admin)
 
 | AC | Test file | Test name | Lens |
