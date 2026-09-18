@@ -19,20 +19,22 @@ class IconsControllerTest < ActionDispatch::IntegrationTest
   test "pages link a favicon that changes with the accent, so browsers fetch the new color" do
     get root_path
     default = css_select("link[rel=icon][type='image/svg+xml']").first["href"]
-    assert_equal favicon_path(v: Theme::DEFAULTS[:accent].delete("#")), default
+    assert_equal favicon_path(v: IconsController.version(Theme::DEFAULTS[:accent])), default
+    assert_match(/\A607248-\h{8}\z/, IconsController.version("#607248"), "the version covers the color and the drawing")
 
     sites(:main).update!(theme_accent: "#2266aa")
     get login_path
-    assert_select "link[rel=icon][type='image/svg+xml'][href=?]", favicon_path(v: "2266aa")
+    assert_select "link[rel=icon][type='image/svg+xml'][href=?]", favicon_path(v: IconsController.version("#2266aa"))
     assert_select "link[rel=icon][type='image/png'] + link[rel=icon][type='image/svg+xml']", 1, "the SVG comes last, so browsers that can show it do"
   end
 
   test "the current color is cached for good; a stale or missing version only briefly" do
-    get favicon_path(v: Theme::DEFAULTS[:accent].delete("#"))
+    get favicon_path(v: IconsController.version(Theme::DEFAULTS[:accent]))
     assert_match(/max-age=#{1.year.to_i}/, response.headers["Cache-Control"])
     assert_includes response.headers["Cache-Control"], "public"
 
-    [ favicon_path(v: "000000"), favicon_path ].each do |path|
+    stale_drawing = "#{Theme::DEFAULTS[:accent].delete("#")}-00000000"
+    [ favicon_path(v: "000000"), favicon_path(v: stale_drawing), favicon_path ].each do |path|
       get path
       assert_equal Theme::DEFAULTS[:accent], favicon_fill, path
       assert_match(/max-age=300\b/, response.headers["Cache-Control"], path)

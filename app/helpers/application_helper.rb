@@ -17,8 +17,9 @@ module ApplicationHelper
     svg.to_xml.html_safe
   end
 
-  # The favicon in the saved accent; the color in the URL makes a new color a new file.
-  def themed_favicon_path = favicon_path(v: Site.instance.theme.accent.delete("#"))
+  # The favicon in the saved accent. Its version covers the color and the
+  # drawing, so a change to either is a new URL.
+  def themed_favicon_path = favicon_path(v: IconsController.version(Site.instance.theme.accent))
 
   # public/ files are cached for a year, so the app icon's URL carries a
   # fingerprint of the file: a new image is a new URL.
