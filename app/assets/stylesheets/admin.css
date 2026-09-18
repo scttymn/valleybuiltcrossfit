@@ -64,6 +64,14 @@
   width: 100%; background: var(--a-input); color: var(--a-ink); border: var(--border-width) solid var(--a-line-2); padding: 10px 12px; font: 15px/1.5 Barlow, sans-serif; border-radius: 0;
 }
 .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--a-accent); }
+/* The browser's own arrow sits against the right edge. This one is two
+   half-squares drawn in the text color, inset from the edge, with room kept
+   so a long option never runs under it. */
+.field select {
+  appearance: none; padding-right: 44px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 22px center, right 16px center; background-size: 6px 6px; background-repeat: no-repeat;
+}
 .field textarea { resize: vertical; min-height: 110px; }
 .field input[type=file] { color: var(--a-muted); }
 .field__hint { margin: 0; color: var(--a-muted); font-size: 13.5px; }
