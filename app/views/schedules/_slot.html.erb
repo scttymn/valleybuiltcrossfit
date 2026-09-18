@@ -1,0 +1,16 @@
+<% if slot.bookable? %>
+  <button type="button" class="slot<%= " slot--full" if slot.open_spots&.zero? %>" data-action="schedule#openClass"
+    data-schedule-class-param="<%= { name: slot.name, when: "#{day.date.strftime("%A, %b %-d")} • #{clock(slot.starts_at)} – #{clock(slot.ends_at)}", coach: slot.coach.presence || "TBA", spots: spots_label(slot, long: true), url: slot.register_url }.to_json %>">
+    <span class="slot__time"><%= clock(slot.starts_at) %></span>
+    <span class="slot__name"><%= slot.name %></span>
+    <% if slot.coach.present? %><span class="slot__coach"><%= slot.coach %></span><% end %>
+    <span class="slot__spots"><%= spots_label(slot) %></span>
+  </button>
+<% else %>
+  <div class="slot slot--over">
+    <span class="slot__time"><%= clock(slot.starts_at) %></span>
+    <span class="slot__name"><%= slot.name %></span>
+    <% if slot.coach.present? %><span class="slot__coach"><%= slot.coach %></span><% end %>
+    <span class="slot__spots">Class over</span>
+  </div>
+<% end %>

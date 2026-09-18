@@ -1,0 +1,31 @@
+<% content_for :title, "Announcement bar" %>
+<header class="admin-head">
+  <h1>Announcement bar</h1>
+  <p class="admin-head__note">The green strip across the very top of the site. Use it for opening dates, closures, holiday hours &mdash; or leave it as a standing line of contact details.</p>
+</header>
+
+<%= form_with model: @site, url: admin_announcement_path, method: :patch, class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @site %>
+
+  <div class="field">
+    <label class="check">
+      <%= form.hidden_field :announcement_visible, value: "0", id: nil %>
+      <%= form.check_box :announcement_visible %> Show the bar
+    </label>
+    <p class="field__hint">Untick to hide it without losing the text.</p>
+  </div>
+
+  <div class="field">
+    <%= form.label :announcement, "Text" %>
+    <%= form.text_field :announcement, placeholder: "Closed Thursday for the holiday — back Friday at 5am" %>
+    <p class="field__hint">One line. Keep it short so it doesn't wrap on a phone.</p>
+  </div>
+
+  <div class="field">
+    <%= form.label :announcement_url, "Link (optional)" %>
+    <%= form.text_field :announcement_url, placeholder: "https://…" %>
+    <p class="field__hint">Makes the whole bar clickable. Leave blank for a plain notice.</p>
+  </div>
+
+  <div class="form__actions"><%= form.submit "Save", class: "button" %><%= link_to "View site ↗", root_path, target: "_blank" %></div>
+<% end %>

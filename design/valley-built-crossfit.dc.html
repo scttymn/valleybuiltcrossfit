@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="assets/eb3d7f09-07c5-4077-a3c5-2238b36f717e.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+<style>
+  body { margin: 0; background: #14150f; font-family: Barlow, system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  a { color: #a8bb5c; text-decoration: none; }
+  a:hover { color: #cfdc94; }
+  h1, h2, h3, h4 { margin: 0; }
+  p { margin: 0; }
+</style>
+</helmet>
+
+<div style="background:#14150f; min-height:100vh;">
+
+  <!-- announcement bar -->
+  <div id="top" style="background:#a8bb5c; padding:11px 24px; display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11.5px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:#14150f;">
+    <span>Opening October 5, 2026</span>
+    <span style="opacity:0.45;">•</span>
+    <span>1450 NW Olympic Dr, Unit D, Grain Valley MO</span>
+    <span style="opacity:0.45;">•</span>
+    <span><a href="tel:8163556595" style="color:#14150f;">(816) 355-6595</a></span>
+  </div>
+
+  <!-- nav -->
+  <div style="position:sticky; top:0; z-index:20; border-bottom:1px solid #2c2f24; background:rgba(20,21,15,0.94); backdrop-filter:blur(8px);">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:24px; padding:14px 32px;">
+      <a href="#top" aria-label="Valley Built CrossFit — back to top" style="flex:0 0 auto; display:flex; align-items:center;">
+        <img src="assets/adcce1b6-8e72-4338-bc62-6e6684eb25d2.png" alt="Valley Built CrossFit — Grain Valley, Missouri" style="height:46px; width:auto; display:block; mix-blend-mode:screen;">
+      </a>
+
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; align-items:center; gap:28px; justify-content:flex-end;">
+          <div style="display:flex; gap:24px; white-space:nowrap; font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2;">
+        <a href="#programs" style="color:#cdcec2;">Programs</a>
+        <a href="#expect" style="color:#cdcec2;">What to expect</a>
+        <a href="#schedule" style="color:#cdcec2;">Schedule</a>
+        <a href="#dropin" style="color:#cdcec2;">Drop-in</a>
+        <a href="#membership" style="color:#cdcec2;">Membership</a>
+        <a href="#coaches" style="color:#cdcec2;">Coaches</a>
+        <a href="#visit" style="color:#cdcec2;">Visit</a>
+          </div>
+          <a href="#membership" sc-camel-on-click="{{ bookIntro }}" style="font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#8a9a3b; color:#14150f; padding:11px 20px; white-space:nowrap;">Book an intro</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ mobile }}">
+        <div role="button" aria-label="Menu" sc-camel-on-click="{{ toggle }}" style="display:flex; flex-direction:column; justify-content:center; gap:5px; width:46px; height:44px; padding:11px 9px; border:1px solid #33372a; cursor:pointer;">
+          <div style="height:2px; background:#f2f1e8;"></div>
+          <div style="height:2px; background:#f2f1e8;"></div>
+          <div style="height:2px; background:#f2f1e8;"></div>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ open }}">
+      <div style="border-top:1px solid #2c2f24; padding:8px 32px 24px; display:flex; flex-direction:column;">
+          <a href="#programs" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Programs</a>
+          <a href="#expect" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">What to expect</a>
+          <a href="#schedule" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Schedule</a>
+          <a href="#dropin" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Drop-in</a>
+          <a href="#membership" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Membership</a>
+          <a href="#coaches" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Coaches</a>
+          <a href="#visit" sc-camel-on-click="{{ close }}" style="font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:#cdcec2; padding:14px 0; border-bottom:1px solid #2c2f24;">Visit</a>
+        <a href="#membership" sc-camel-on-click="{{ bookIntroMobile }}" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:16px; text-align:center; margin-top:20px;">Book an intro</a>
+        <div style="display:flex; flex-wrap:wrap; gap:8px 20px; padding-top:18px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#6f7563;">
+          <a href="tel:8163556595">(816) 355-6595</a>
+          <a href="https://www.instagram.com/valleybuiltcrossfit">Instagram</a>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- hero -->
+  <div style="position:relative; overflow:hidden; background:linear-gradient(105deg,#1a1c16 0%,#20241a 45%,#171913 100%);">
+    <div style="position:absolute; inset:0; background-image:repeating-linear-gradient(118deg,rgba(168,187,92,0.05) 0 2px,transparent 2px 11px);"></div>
+    <div style="position:absolute; right:0; top:0; bottom:0; width:50%; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; justify-content:flex-end; padding:20px;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em; color:#6f7563;">[ full-bleed photo — rig + rings, gym floor ]</span>
+    </div>
+    <div style="position:absolute; inset:0; background:linear-gradient(90deg,#14150f 32%,rgba(20,21,15,0.88) 58%,rgba(20,21,15,0.25) 100%);"></div>
+    <div style="position:relative; max-width:1280px; margin:0 auto; padding:96px 32px 88px;">
+      <div style="display:flex; flex-direction:column; gap:24px; max-width:680px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.34em; text-transform:uppercase; color:#a8bb5c;">Grain Valley, Missouri</span>
+        <h1 style="font-family:Oswald,sans-serif; font-size:clamp(46px,6.6vw,88px); font-weight:600; line-height:0.94; letter-spacing:0.01em; text-transform:uppercase; color:#f2f1e8; text-wrap:balance;">Come as you are.<br><span style="color:#a8bb5c;">Build from here.</span></h1>
+        <p style="font-size:19px; line-height:1.6; color:#c3c4b6; max-width:520px; text-wrap:pretty;">Coached CrossFit classes for every body in the valley. Functional fitness, real strength, and a room full of people who know your name.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding-top:6px;">
+          <a href="#visit" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:16px 30px;">Book an intro session</a>
+          <a href="#schedule" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#f2f1e8; border:1px solid #4a4f3c; padding:16px 30px;">See the schedule</a>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding-top:20px; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184;">
+          <span style="color:#f2f1e8;">All fitness levels</span><span style="color:#4a4f3c;">/</span>
+          <span>60-minute classes</span><span style="color:#4a4f3c;">/</span>
+          <span>Coach-led, always</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pillars -->
+  <div style="border-top:1px solid #2c2f24; background:#14150f;">
+    <div style="max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));">
+      <div style="padding:38px 32px; border-right:1px solid #2c2f24; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a9a3b;">01</span>
+        <h3 style="font-family:Oswald,sans-serif; font-size:22px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:#f2f1e8;">Fitness</h3>
+        <p style="font-size:15px; line-height:1.55; color:#96988a;">Every workout scaled to you, coached start to finish.</p>
+      </div>
+      <div style="padding:38px 32px; border-right:1px solid #2c2f24; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a9a3b;">02</span>
+        <h3 style="font-family:Oswald,sans-serif; font-size:22px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:#f2f1e8;">Community</h3>
+        <p style="font-size:15px; line-height:1.55; color:#96988a;">People doing life together, five days a week.</p>
+      </div>
+      <div style="padding:38px 32px; border-right:1px solid #2c2f24; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a9a3b;">03</span>
+        <h3 style="font-family:Oswald,sans-serif; font-size:22px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:#f2f1e8;">Recovery</h3>
+        <p style="font-size:15px; line-height:1.55; color:#96988a;">Mobility, rest days and coaching that keeps you training.</p>
+      </div>
+      <div style="padding:38px 32px; display:flex; flex-direction:column; gap:10px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8a9a3b;">04</span>
+        <h3 style="font-family:Oswald,sans-serif; font-size:22px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:#f2f1e8;">Belonging</h3>
+        <p style="font-size:15px; line-height:1.55; color:#96988a;">No experience needed. No one gets left on the whiteboard.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- programs -->
+  <div id="programs" style="background:#14150f; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:flex; flex-direction:column; gap:28px;">
+
+      <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end; justify-content:space-between;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Programs</span>
+          <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8;">Ways to train with us</h2>
+          <p style="font-size:16px; line-height:1.6; color:#96988a; max-width:420px; text-wrap:pretty;">Pick a program to read more about it.</p>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;">
+        <sc-for list="{{ programs }}" as="prog" hint-placeholder-count="3">
+          <sc-if value="{{ prog.active }}">
+            <div role="button" sc-camel-on-click="{{ prog.select }}" style="border:1px solid #a8bb5c; background:#22291a; display:flex; flex-direction:column; cursor:pointer;">
+            <div style="height:170px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6f7563;">{{ prog.photo }}</span></div>
+            <div style="padding:24px 26px; display:flex; flex-direction:column; gap:9px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:23px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">{{ prog.name }}</h3>
+              <p style="font-size:15.5px; line-height:1.6; color:#96988a;">{{ prog.blurb }}</p>
+            </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ prog.inactive }}" hint-placeholder-val="{{ true }}">
+            <div role="button" sc-camel-on-click="{{ prog.select }}" style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-direction:column; cursor:pointer;" style-hover="border:1px solid #4a5a28; background:#1d2016;">
+            <div style="height:170px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:14px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6f7563;">{{ prog.photo }}</span></div>
+            <div style="padding:24px 26px; display:flex; flex-direction:column; gap:9px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:23px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">{{ prog.name }}</h3>
+              <p style="font-size:15.5px; line-height:1.6; color:#96988a;">{{ prog.blurb }}</p>
+            </div>
+            </div>
+          </sc-if>
+        </sc-for>
+      </div>
+
+      <div style="border:1px solid #33372a; background:#1b1d17; padding:clamp(28px,3.4vw,44px); display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:48px; align-items:start;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:#a8bb5c;">{{ activeProgram.name }}</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:clamp(26px,2.8vw,34px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8; line-height:1.08;">{{ activeProgram.whatTitle }}</h3>
+          <p style="font-size:17.5px; line-height:1.65; color:#c3c4b6; text-wrap:pretty;">{{ activeProgram.what }}</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:clamp(20px,2.2vw,24px); font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:#f2f1e8;">{{ activeProgram.whyTitle }}</h3>
+          <p style="font-size:16.5px; line-height:1.65; color:#96988a; text-wrap:pretty;">{{ activeProgram.why }}</p>
+          <sc-if value="{{ activeProgram.kicker }}">
+            <p style="font-family:Yellowtail,cursive; font-size:clamp(24px,2.6vw,30px); color:#a8bb5c; line-height:1.3; padding-top:6px;">{{ activeProgram.kicker }}</p>
+          </sc-if>
+          <sc-if value="{{ activeProgram.askPT }}">
+            <a href="#membership" sc-camel-on-click="{{ askAboutPT }}" style="align-self:flex-start; margin-top:10px; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:14px 26px;">Ask about personal training</a>
+          </sc-if>
+          <sc-if value="{{ activeProgram.showClasses }}">
+          <a href="#schedule" style="align-self:flex-start; margin-top:10px; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:14px 26px;">See this week's classes</a>
+          </sc-if>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- what to expect -->
+  <div id="expect" style="background:#1b1d17; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:flex; flex-direction:column; gap:36px;">
+      <div style="display:flex; flex-direction:column; gap:12px; max-width:620px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Ready to join?</span>
+        <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8;">Here's what happens</h2>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px; background:#2c2f24;">
+        <div style="background:#191b15; padding:32px 28px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:Oswald,sans-serif; font-size:40px; font-weight:600; line-height:1; color:#3f4634;">01</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:20px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Reach out</h3>
+          <p style="font-size:15.5px; line-height:1.6; color:#96988a;">Send us a note or call. We'll ask about your goals and answer whatever you're worried about.</p>
+        </div>
+        <div style="background:#191b15; padding:32px 28px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:Oswald,sans-serif; font-size:40px; font-weight:600; line-height:1; color:#3f4634;">02</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:20px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Intro session</h3>
+          <p style="font-size:15.5px; line-height:1.6; color:#96988a;">Come see the gym, meet a coach, and talk through where you're starting from. No pressure, no sales pitch.</p>
+        </div>
+        <div style="background:#191b15; padding:32px 28px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:Oswald,sans-serif; font-size:40px; font-weight:600; line-height:1; color:#3f4634;">03</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:20px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Learn the basics</h3>
+          <p style="font-size:15.5px; line-height:1.6; color:#96988a;">In The Build, coaches teach you the foundational movements and adjust every workout to your level.</p>
+        </div>
+        <div style="background:#191b15; padding:32px 28px; display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:Oswald,sans-serif; font-size:40px; font-weight:600; line-height:1; color:#a8bb5c;">04</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:20px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Keep showing up</h3>
+          <p style="font-size:15.5px; line-height:1.6; color:#96988a;">This is where it gets good: the fitness compounds, and the people stop being strangers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- schedule -->
+  <div id="schedule" style="background:#14150f; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:flex; flex-direction:column; gap:28px;">
+
+      <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end; justify-content:space-between;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Book a class</span>
+          <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8;">Class schedule</h2>
+          <p style="font-size:16px; line-height:1.6; color:#96988a; max-width:420px; text-wrap:pretty;">Tap any class to see the coach, spots left, and reserve your place.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px; align-items:flex-end;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+            <sc-if value="{{ canGoBack }}">
+            <span role="button" sc-camel-on-click="{{ prevWeek }}" style="font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.1em; border:1px solid #33372a; color:#cdcec2; padding:11px 15px; cursor:pointer; background:#191b15;">←</span>
+            </sc-if>
+            <sc-if value="{{ atFirstWeek }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.1em; border:1px solid #23261c; color:#3f4634; padding:11px 15px; background:#171913;">←</span>
+            </sc-if>
+            <span style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; color:#f2f1e8; padding:0 6px; min-width:150px; text-align:center;">{{ weekLabel }}</span>
+            <span role="button" sc-camel-on-click="{{ nextWeek }}" style="font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.1em; border:1px solid #33372a; color:#cdcec2; padding:11px 15px; cursor:pointer; background:#191b15;">→</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <sc-if value="{{ isThisWeek }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#a8bb5c;">Current week</span>
+            </sc-if>
+            <sc-if value="{{ notThisWeek }}">
+              <span role="button" sc-camel-on-click="{{ thisWeek }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#a8bb5c; border-bottom:1px solid #4a4f3c; padding-bottom:3px; cursor:pointer;">Back to current week</span>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+
+
+      <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:#2c2f24; border:1px solid #2c2f24;">
+          <sc-for list="{{ days }}" as="day" hint-placeholder-count="7">
+            <div style="background:#14150f; display:flex; flex-direction:column;">
+              <div style="padding:16px 14px 12px; border-bottom:1px solid #2c2f24; display:flex; flex-direction:column; gap:9px;">
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:500; letter-spacing:0.22em; text-transform:uppercase; color:#8a9a3b;">{{ day.dow }}</span>
+                <span style="font-family:Oswald,sans-serif; font-size:20px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">{{ day.date }}</span>
+              </div>
+              <span role="button" sc-camel-on-click="{{ day.openWod }}" style="font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; border:1px solid #4a5a28; color:#a8bb5c; padding:7px 9px; text-align:center; cursor:pointer;" style-hover="background:#a8bb5c; color:#14150f; border:1px solid #a8bb5c;">View WOD</span>
+            </div>
+              <div style="padding:10px; display:flex; flex-direction:column; gap:8px;">
+                <sc-if value="{{ day.rest }}">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#4a4f3c; padding:16px 6px;">Rest day</span>
+                </sc-if>
+                <sc-for list="{{ day.classes }}" as="cls" hint-placeholder-count="8">
+                  <div role="button" sc-camel-on-click="{{ cls.select }}" style="background:#232c16; border:1px solid #37451f; padding:12px 13px; cursor:pointer; display:flex; flex-direction:column; gap:3px;" style-hover="background:#2c3a19; border:1px solid #a8bb5c;">
+                    <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.02em; color:#f2f1e8;">{{ cls.time }}</span>
+                    <span style="font-size:13.5px; color:#cdcec2;">{{ cls.name }}</span>
+                    <span style="font-size:13px; color:#a8a99b;">{{ cls.coach }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.06em; color:#a8bb5c; padding-top:3px;">{{ cls.spots }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ mobile }}">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px;">
+            <sc-for list="{{ picker }}" as="day" hint-placeholder-count="7">
+              <sc-if value="{{ day.active }}">
+          <div role="button" sc-camel-on-click="{{ day.pick }}" style="background:#a8bb5c; border:1px solid #a8bb5c; padding:12px 6px; min-height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#2b3315;">{{ day.dow }}</span>
+            <span style="font-family:Oswald,sans-serif; font-size:19px; font-weight:600; color:#14150f;">{{ day.num }}</span>
+          </div>
+              </sc-if>
+              <sc-if value="{{ day.inactive }}" hint-placeholder-val="{{ true }}">
+          <div role="button" sc-camel-on-click="{{ day.pick }}" style="background:#191b15; border:1px solid #2c2f24; padding:12px 6px; min-height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#8a9a3b;">{{ day.dow }}</span>
+            <span style="font-family:Oswald,sans-serif; font-size:19px; font-weight:600; color:#f2f1e8;">{{ day.num }}</span>
+          </div>
+              </sc-if>
+            </sc-for>
+          </div>
+
+          <span role="button" sc-camel-on-click="{{ openActiveWod }}" style="font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #4a5a28; color:#a8bb5c; padding:14px; text-align:center; cursor:pointer;">View the WOD</span>
+          <div style="border:1px solid #2c2f24; background:#191b15; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <sc-if value="{{ activeDay.rest }}">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#6f7563; padding:28px 8px; text-align:center;">Rest day — no classes</span>
+            </sc-if>
+            <sc-for list="{{ activeDay.classes }}" as="cls" hint-placeholder-count="8">
+              <div role="button" sc-camel-on-click="{{ cls.select }}" style="background:#232c16; border:1px solid #37451f; padding:18px 18px; cursor:pointer; display:flex; flex-direction:column; gap:4px;" style-hover="background:#2c3a19; border:1px solid #a8bb5c;">
+                <span style="font-family:Oswald,sans-serif; font-size:24px; font-weight:600; letter-spacing:0.02em; color:#f2f1e8;">{{ cls.time }}</span>
+                <span style="font-size:15.5px; color:#cdcec2;">{{ cls.name }}</span>
+                <span style="font-size:14.5px; color:#a8a99b;">{{ cls.coach }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.06em; color:#a8bb5c; padding-top:4px;">{{ cls.spots }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+
+    </div>
+
+    <sc-if value="{{ wodOpen }}">
+      <div style="position:fixed; inset:0; z-index:50; background:rgba(12,13,9,0.86); display:flex; align-items:flex-start; justify-content:center; padding:24px; overflow-y:auto;">
+        <div style="width:100%; max-width:860px; margin:auto; background:#1b1d17; border:1px solid #3b4030; padding:20px 22px 24px; display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; gap:16px; align-items:center; justify-content:space-between; border-bottom:1px solid #2c2f24; padding-bottom:12px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:#a8bb5c;">Workout of the day • {{ wodDayLabel }}</span>
+            <span role="button" aria-label="Close" sc-camel-on-click="{{ closeWod }}" style="flex:0 0 auto; width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:17px; line-height:1; color:#8f9184; border:1px solid #33372a; cursor:pointer;" style-hover="color:#f2f1e8; border:1px solid #4a5a28;">✕</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:28px; align-items:start;">
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <sc-if value="{{ wodName }}">
+                <h3 style="font-family:Oswald,sans-serif; font-size:clamp(26px,2.8vw,34px); font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:#f2f1e8; line-height:1.05;">{{ wodName }}</h3>
+              </sc-if>
+              <sc-if value="{{ wodType }}">
+                <span style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; color:#a8bb5c;">{{ wodType }}</span>
+              </sc-if>
+              <p style="font-family:Oswald,sans-serif; font-size:clamp(19px,2.1vw,24px); font-weight:400; line-height:1.45; color:#f2f1e8; white-space:pre-line;">{{ wod.rx }}</p>
+              <sc-if value="{{ wod.loads }}">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:13.5px; line-height:1.9; color:#a8bb5c; white-space:pre-line; border-top:1px solid #2c2f24; padding-top:14px;">{{ wod.loads }}</p>
+              </sc-if>
+              <sc-if value="{{ wod.source }}">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8f9184;">{{ wod.source }}</p>
+              </sc-if>
+              <sc-if value="{{ wod.score }}">
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8f9184;">{{ wod.score }}</p>
+              </sc-if>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8a9a3b;">Stimulus &amp; strategy</span>
+              <p style="font-size:15.5px; line-height:1.6; color:#c3c4b6; white-space:pre-line;">{{ wod.stimulus }}</p>
+            </div>
+              <sc-if value="{{ wodHasScaling }}">
+                <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8a9a3b;">Intermediate option</span>
+              <p style="font-size:15.5px; line-height:1.6; color:#c3c4b6; white-space:pre-line;">{{ wod.intermediate }}</p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8a9a3b;">Beginner option</span>
+              <p style="font-size:15.5px; line-height:1.6; color:#c3c4b6; white-space:pre-line;">{{ wod.beginner }}</p>
+            </div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ sel }}">
+      <div style="position:fixed; inset:0; z-index:50; background:rgba(12,13,9,0.82); display:flex; align-items:center; justify-content:center; padding:24px;">
+        <div style="width:100%; max-width:520px; background:#1b1d17; border:1px solid #3b4030; padding:clamp(26px,3vw,38px); display:flex; flex-direction:column; gap:22px;">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:#a8bb5c;">Reserve a spot</span>
+            <h3 style="font-family:Oswald,sans-serif; font-size:clamp(28px,3vw,36px); font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:#f2f1e8;">{{ sel.name }}</h3>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; gap:16px; align-items:baseline; border-bottom:1px solid #2c2f24; padding-bottom:12px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8f9184; flex:0 0 74px;">When</span>
+              <span style="font-size:16.5px; color:#f2f1e8;">{{ sel.when }}</span>
+            </div>
+            <div style="display:flex; gap:16px; align-items:baseline; border-bottom:1px solid #2c2f24; padding-bottom:12px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8f9184; flex:0 0 74px;">Coach</span>
+              <span style="font-size:16.5px; color:#f2f1e8;">{{ sel.coach }}</span>
+            </div>
+            <div style="display:flex; gap:16px; align-items:baseline;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase; color:#8f9184; flex:0 0 74px;">Spots</span>
+              <span style="font-size:16.5px; color:#f2f1e8;">{{ sel.spotsLong }}</span>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <span role="button" style="font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:16px; text-align:center;">Reserve spot</span>
+            <span role="button" sc-camel-on-click="{{ dismiss }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184; padding:12px; text-align:center; cursor:pointer;">Close</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div id="dropin" style="background:#14150f; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:56px; align-items:start;">
+
+      <div style="display:flex; flex-direction:column; gap:32px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Drop-in</span>
+          <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8; line-height:1.05;">What is drop-in?</h2>
+          <p style="font-size:18px; line-height:1.65; color:#c3c4b6; text-wrap:pretty;">Drop-in passes allow out-of-town CrossFitters to train at Valley Built CrossFit for a single session. Show up ready to move, meet the community, and get a professionally guided, challenging workout. It's perfect for staying on track while visiting or testing out a new fitness atmosphere.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:clamp(22px,2.4vw,28px); font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:#f2f1e8;">Why members love this program</h3>
+          <p style="font-size:17px; line-height:1.65; color:#96988a; text-wrap:pretty;">Visiting athletes love our easy sign-up process and smooth integration into classes—no hassle or awkward introductions. Coaches ensure you feel respected, welcomed, and briefed on gym standards. Classes are both challenging and community-focused, so you stay motivated even as a guest. We're known for our professionalism and friendly environment—a drop-in at Valley Built is always a highlight of your trip.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px; border:1px solid #33372a; background:#1b1d17; padding:clamp(28px,3vw,40px);">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:#a8bb5c;">Drop-in pass</span>
+        <div style="font-family:Oswald,sans-serif; font-size:clamp(40px,4.6vw,58px); font-weight:600; letter-spacing:0.01em; color:#f2f1e8; line-height:1;">$25.00<span style="font-size:20px; font-weight:400; color:#96988a;"> / class</span></div>
+        <p style="font-size:16px; line-height:1.6; color:#96988a; text-wrap:pretty;">Single session for visiting athletes.</p>
+        <a href="https://valleybuiltcrossfit.pushpress.com/landing/plans/plan_3e63808b840344/login" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:17px; text-align:center; margin-top:6px;">Reserve a class</a>
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#8f9184; text-align:center; line-height:1.9;">Or call <a href="tel:8163556595">(816) 355-6595</a></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- memberships -->
+  <div id="membership" style="background:#1b1d17; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:56px; align-items:start;">
+
+      <div style="display:flex; flex-direction:column; gap:22px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Membership</span>
+        <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8; line-height:1.05;">Let's find the right<br>fit for you.</h2>
+        <p style="font-size:18px; line-height:1.65; color:#c3c4b6; text-wrap:pretty;">There's no single right membership — it depends on how often you want to train, whether you're brand new, and who else in your house is coming with you. Tell us a bit about yourself and we'll send the options that actually apply to you.</p>
+        <div style="display:flex; flex-direction:column; padding-top:8px;">
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Unlimited</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">Every class, every week, month to month.</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Annual</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">Paid in full up front at our best rate.</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">The Build</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">Your first two months if you’re brand new to CrossFit.</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Personal training</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">One-on-one sessions, on their own or alongside a membership. <a href="#programs">See the program</a></span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Drop-in pass</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">$25 per class for out-of-town CrossFitters. <a href="#dropin">See drop-in details</a></span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Student</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">Middle and high school athletes.</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:baseline; padding:16px 0; border-bottom:1px solid #2c2f24;">
+            <span style="font-family:Oswald,sans-serif; font-size:17px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8; flex:0 0 150px;">Family</span>
+            <span style="font-size:15.5px; line-height:1.55; color:#96988a;">Discounted rates when more than one of you joins.</span>
+          </div>
+        </div>
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; color:#8f9184; line-height:1.9;">Memberships start at $75/mo for new athletes <span style="color:#6f7563;">[ confirm rates ]</span></p>
+      </div>
+
+      <div style="border:1px solid #a8bb5c; background:#191b15; padding:clamp(28px,3vw,40px); display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:clamp(24px,2.6vw,30px); font-weight:600; text-transform:uppercase; color:#f2f1e8; line-height:1.1;">Get your options &amp; pricing</h3>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; padding-top:6px;">
+          <div style="border:1px solid #33372a; background:#14150f; padding:14px 15px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6f7563;">First name</div>
+          <div style="border:1px solid #33372a; background:#14150f; padding:14px 15px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6f7563;">Last name</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px;">
+          <div style="border:1px solid #33372a; background:#14150f; padding:14px 15px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6f7563;">Email</div>
+          <div style="border:1px solid #33372a; background:#14150f; padding:14px 15px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6f7563;">Phone</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:9px; padding-top:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184;">Where are you starting from?</span>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ startChips }}" as="chip" hint-placeholder-count="4">
+              <sc-if value="{{ chip.active }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #a8bb5c; background:#26301a; color:#cfdc94; padding:8px 12px; cursor:pointer;">{{ chip.label }}</span>
+              </sc-if>
+              <sc-if value="{{ chip.inactive }}" hint-placeholder-val="{{ true }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #33372a; color:#96988a; padding:8px 12px; cursor:pointer;" style-hover="border:1px solid #4a5a28; color:#cdcec2;">{{ chip.label }}</span>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:9px; padding-top:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184;">What are you interested in?</span>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ interestChips }}" as="chip" hint-placeholder-count="4">
+              <sc-if value="{{ chip.active }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #a8bb5c; background:#26301a; color:#cfdc94; padding:8px 12px; cursor:pointer;">{{ chip.label }}</span>
+              </sc-if>
+              <sc-if value="{{ chip.inactive }}" hint-placeholder-val="{{ true }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #33372a; color:#96988a; padding:8px 12px; cursor:pointer;" style-hover="border:1px solid #4a5a28; color:#cdcec2;">{{ chip.label }}</span>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:9px; padding-top:8px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184;">Who's joining?</span>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ whoChips }}" as="chip" hint-placeholder-count="4">
+              <sc-if value="{{ chip.active }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #a8bb5c; background:#26301a; color:#cfdc94; padding:8px 12px; cursor:pointer;">{{ chip.label }}</span>
+              </sc-if>
+              <sc-if value="{{ chip.inactive }}" hint-placeholder-val="{{ true }}">
+                <span role="button" sc-camel-on-click="{{ chip.select }}" style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid #33372a; color:#96988a; padding:8px 12px; cursor:pointer;" style-hover="border:1px solid #4a5a28; color:#cdcec2;">{{ chip.label }}</span>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+        <div style="border:1px solid #33372a; background:#14150f; padding:14px 15px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6f7563;">Anything we should know? (optional)</div>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:16px; text-align:center; margin-top:6px;">Send my details</span>
+        <p style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:#8f9184; text-align:center; line-height:1.8;">Or call <a href="tel:8163556595">(816) 355-6595</a></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- coaches -->
+  <div id="coaches" style="background:#14150f; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:flex; flex-direction:column; gap:36px;">
+      <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end; justify-content:space-between;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Who you'll train with</span>
+          <h2 style="font-family:Oswald,sans-serif; font-size:clamp(32px,3.6vw,46px); font-weight:600; letter-spacing:0.02em; text-transform:uppercase; color:#f2f1e8;">Coaches &amp; staff</h2>
+        </div>
+        <a href="https://www.instagram.com/valleybuiltcrossfit" style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#a8bb5c; border-bottom:1px solid #4a4f3c; padding-bottom:4px;">@valleybuiltcrossfit</a>
+      </div>
+
+      <div style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-wrap:wrap;">
+        <div style="flex:1 1 280px; min-height:300px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:16px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6f7563;">[ photo — Jessica &amp; Greg together ]</span></div>
+        <div style="flex:2 1 420px; padding:34px; display:flex; flex-direction:column; gap:14px; justify-content:center;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#a8bb5c;">Owners</span>
+          <h3 style="font-family:Oswald,sans-serif; font-size:clamp(26px,2.8vw,34px); font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8; line-height:1.1;">Jessica &amp; Greg Isaacson</h3>
+          <p style="font-size:16.5px; line-height:1.65; color:#c3c4b6; text-wrap:pretty;">[ short shared bio — the couple behind Valley Built: why they opened a gym in Grain Valley, what they want it to be for the town, and Greg's role alongside Jessica's coaching ]</p>
+          <div style="display:flex; flex-wrap:wrap; gap:9px; align-items:center; padding-top:12px; border-top:1px solid #2c2f24; margin-top:4px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#8f9184;">Jessica coaches</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#14150f; background:#8a9a3b; padding:3px 7px;">CF-L2</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#8a9a3b;">Coaching staff</span>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;">
+          <div style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-direction:column;">
+            <div style="height:260px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:16px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6f7563;">[ photo — Chad ]</span></div>
+            <div style="padding:26px 28px; display:flex; flex-direction:column; gap:10px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:24px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Chad Worman</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#a8bb5c;">Head coach</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#14150f; background:#8a9a3b; padding:3px 7px;">CF-L3</span>
+              </div>
+              <p style="font-size:15px; line-height:1.6; color:#96988a;">[ short bio — experience, what members can expect in his classes ]</p>
+            </div>
+          </div>
+          <div style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-direction:column;">
+            <div style="height:260px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:16px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6f7563;">[ photo — Chris ]</span></div>
+            <div style="padding:26px 28px; display:flex; flex-direction:column; gap:10px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:24px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Chris Neske</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#a8bb5c;">Coach</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#14150f; background:#8a9a3b; padding:3px 7px;">CF-L1</span>
+              </div>
+              <p style="font-size:15px; line-height:1.6; color:#96988a;">[ short bio — experience, what members can expect in his classes ]</p>
+            </div>
+          </div>
+          <div style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-direction:column;">
+            <div style="height:260px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:16px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6f7563;">[ photo — Abby ]</span></div>
+            <div style="padding:26px 28px; display:flex; flex-direction:column; gap:10px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:24px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Abby Harker</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#a8bb5c;">Coach</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#14150f; background:#8a9a3b; padding:3px 7px;">CF-L1</span>
+              </div>
+              <p style="font-size:15px; line-height:1.6; color:#96988a;">[ short bio — experience, what members can expect in her classes ]</p>
+            </div>
+          </div>
+          <div style="border:1px solid #2c2f24; background:#191b15; display:flex; flex-direction:column;">
+            <div style="height:260px; background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); display:flex; align-items:flex-end; padding:16px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#6f7563;">[ photo — Chance ]</span></div>
+            <div style="padding:26px 28px; display:flex; flex-direction:column; gap:10px;">
+              <h3 style="font-family:Oswald,sans-serif; font-size:24px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; color:#f2f1e8;">Chance Byrd</h3>
+              <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:#a8bb5c;">Coach</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:#14150f; background:#8a9a3b; padding:3px 7px;">CF-L1</span>
+              </div>
+              <p style="font-size:15px; line-height:1.6; color:#96988a;">[ short bio — experience, what members can expect in his classes ]</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="background:#1b1d17; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:84px 32px; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:48px; align-items:start;">
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Still curious?</span>
+        <h2 style="font-family:Oswald,sans-serif; font-size:clamp(30px,3.2vw,40px); font-weight:600; text-transform:uppercase; color:#f2f1e8; line-height:1.08;">Questions we get<br>all the time</h2>
+        <p style="font-size:16.5px; line-height:1.6; color:#96988a;">Anything we missed? Call <a href="tel:8163556595">(816) 355-6595</a> and ask.</p>
+      </div>
+      <div style="display:flex; flex-direction:column;">
+        <div style="border-top:1px solid #33372a; padding:24px 0; display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">Do I need to be fit to start?</h3>
+          <p style="font-size:16px; line-height:1.6; color:#96988a;">No. That's what The Build is for. Every workout is scaled, and most people start with zero barbell experience.</p>
+        </div>
+        <div style="border-top:1px solid #33372a; padding:24px 0; display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">How often should I come?</h3>
+          <p style="font-size:16px; line-height:1.6; color:#96988a;">Start with three days a week. Consistency beats intensity — in 30 days you'll already feel a difference.</p>
+        </div>
+        <div style="border-top:1px solid #33372a; padding:24px 0; display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">Am I locked into a contract?</h3>
+          <p style="font-size:16px; line-height:1.6; color:#96988a;">Monthly memberships are month to month. The annual option is paid in full up front for a better rate.</p>
+        </div>
+        <div style="border-top:1px solid #33372a; padding:24px 0; display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">Can my kid train here?</h3>
+          <p style="font-size:16px; line-height:1.6; color:#96988a;">Yes — we offer student rates for middle and high school athletes, and family memberships at a discount.</p>
+        </div>
+        <div style="border-top:1px solid #33372a; border-bottom:1px solid #33372a; padding:24px 0; display:flex; flex-direction:column; gap:8px;">
+          <h3 style="font-family:Oswald,sans-serif; font-size:19px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:#f2f1e8;">Can I drop in while I'm in town?</h3>
+          <p style="font-size:16px; line-height:1.6; color:#96988a;">Absolutely — travelling athletes are welcome. A <a href="#dropin">drop-in pass</a> is $25 per class — reserve a class and show up ready to move. Questions? Email <a href="mailto:jessica@valleybuiltcrossfit.com">jessica@valleybuiltcrossfit.com</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- visit / contact -->
+  <div id="visit" style="background:#14150f; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr));">
+      <div style="padding:80px 32px; display:flex; flex-direction:column; gap:22px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.3em; text-transform:uppercase; color:#a8bb5c;">Find us</span>
+        <h2 style="font-family:Oswald,sans-serif; font-size:clamp(30px,3.4vw,40px); font-weight:600; text-transform:uppercase; color:#f2f1e8; line-height:1.05;">Built in the valley.<br><span style="font-family:Yellowtail,cursive; font-size:clamp(34px,3.8vw,46px); text-transform:none; letter-spacing:0; color:#a8bb5c;">Strong for life.</span></h2>
+        <div style="display:flex; flex-wrap:wrap; gap:16px 48px; font-size:16px; line-height:1.7; color:#96988a;">
+          <div>
+            <div style="color:#f2f1e8; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:8px;">Address</div>
+            1450 NW Olympic Drive, Unit D<br>Grain Valley, MO 64029
+          </div>
+          <div>
+            <div style="color:#f2f1e8; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:8px;">Get in touch</div>
+            <a href="tel:8163556595">(816) 355-6595</a><br><a href="mailto:jessica@valleybuiltcrossfit.com">jessica@valleybuiltcrossfit.com</a>
+          </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:10px;">
+          <a href="#membership" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; background:#a8bb5c; color:#14150f; padding:16px 30px;">Book an intro session</a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=1450+NW+Olympic+Drive+Unit+D+Grain+Valley+MO+64029" style="font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#f2f1e8; border:1px solid #4a4f3c; padding:16px 30px;">Get directions</a>
+        </div>
+      </div>
+      <div style="background-image:repeating-linear-gradient(135deg,#23261c 0 8px,#1e211a 8px 16px); min-height:380px; display:flex; align-items:flex-end; padding:20px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em; color:#6f7563;">[ map — 1450 NW Olympic Dr, Unit D ]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div style="background:#0f1009; border-top:1px solid #2c2f24;">
+    <div style="max-width:1280px; margin:0 auto; padding:48px 32px; display:flex; flex-wrap:wrap; gap:28px; align-items:center; justify-content:space-between;">
+      <img src="assets/adcce1b6-8e72-4338-bc62-6e6684eb25d2.png" alt="Valley Built CrossFit" style="height:42px; width:auto; display:block; mix-blend-mode:screen;">
+      <div style="display:flex; flex-wrap:wrap; gap:14px 28px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:0.16em; text-transform:uppercase; color:#6f7563;">
+        <a href="https://www.instagram.com/valleybuiltcrossfit">Instagram</a>
+        <a href="mailto:jessica@valleybuiltcrossfit.com">Email</a>
+        <a href="tel:8163556595">(816) 355-6595</a>
+        <span>© 2026 Valley Built CrossFit</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script="">
+class Component extends DCLogic {
+  state = { mobile: false, open: false };
+
+  componentDidMount() {
+    this.mq = window.matchMedia("(max-width: 1180px)");
+    this.sync = () => this.setState({ mobile: this.mq.matches, open: this.mq.matches && this.state.open });
+    this.sync();
+    this.mq.addEventListener("change", this.sync);
+  }
+
+  componentWillUnmount() {
+    if (this.mq) this.mq.removeEventListener("change", this.sync);
+  }
+
+  wodData() {
+    return [
+      {
+        name: "",
+        type: "For time",
+        rx: "21-15-9 reps of:\nDeadlifts\nBox jumps\nPush presses",
+        loads: "♀ 95-lb barbell • 20-in box\n♂ 135-lb barbell • 24-in box",
+        score: "Post time to the whiteboard.",
+        stimulus: "A short, fast triplet. Pick loads you could cycle for at least 10 reps unbroken when fresh. Most people should be done inside 10 minutes — if the deadlift is slowing you to singles, take weight off the bar.",
+        intermediate: "15-12-9 reps.\n♀ 75-lb barbell • ♂ 115-lb barbell",
+        beginner: "15-12-9 reps, box step-ups.\n♀ 45-lb barbell • ♂ 65-lb barbell"
+      },
+      {
+        name: "",
+        type: "AMRAP 20",
+        rx: "400-meter run\n15 wall-ball shots\n10 burpees",
+        loads: "♀ 14-lb ball to 9 ft\n♂ 20-lb ball to 10 ft",
+        score: "Post rounds and reps to the whiteboard.",
+        stimulus: "A long, steady effort — pick a pace you can hold for all 20 minutes rather than sprinting the first round. Aim for 4–6 rounds. Break the wall balls early if you need to; the burpees are where the clock gets away from people.",
+        intermediate: "300-meter run, 12 wall-ball shots.",
+        beginner: "200-meter run, 9 wall-ball shots to a lower target, up-downs."
+      },
+      {
+        name: "Service Cup Workout 3",
+        type: "Part A — on a 15-minute clock, for time",
+        rx: "10 shuttle runs\n15 clean and jerks\n10 shuttle runs\n12 clean and jerks\n10 shuttle runs\n9 clean and jerks\n10 shuttle runs\n9 clean and jerks\n\nOne shuttle run is 25 feet down and 25 feet back.\n\nPart B — at 15 minutes, on a 3-minute clock:\nBuild to a 1-rep-max clean and jerk",
+        loads: "♀ 95-lb barbell\n♂ 135-lb barbell",
+        score: "Post your Part A time and heaviest lift to the whiteboard.",
+        source: "Programmed from CrossFit.com — WOD 260916",
+        stimulus: "Two parts, one barbell. Move through Part A at a pace that keeps you honest on the runs — the faster you finish, the more rest you get before the heavy single. Pick a moderate load you can cycle in quick sets rather than grind out one rep at a time. In Part B, build to a heavy clean and jerk while fatigued: two to four good lifts is plenty, and mechanics beat numbers every time.",
+        intermediate: "Same structure.\n♀ 65-lb barbell • ♂ 95-lb barbell",
+        beginner: "7 shuttle runs per round, same rep scheme.\n♀ 35-lb barbell • ♂ 45-lb barbell"
+      },
+      {
+        name: "",
+        type: "3 rounds for time",
+        rx: "500-meter row\n20 dumbbell snatches\n20 sit-ups",
+        loads: "♀ 35-lb dumbbell\n♂ 50-lb dumbbell",
+        score: "Post time to the whiteboard.",
+        stimulus: "Middle-distance intervals with a pull-heavy bias. Hold a row pace you can repeat — negative splits are the goal. The dumbbell should be light enough for sets of 10.",
+        intermediate: "400-meter row.\n♀ 20-lb dumbbell • ♂ 35-lb dumbbell",
+        beginner: "300-meter row, 15 reps each.\n♀ 10-lb dumbbell • ♂ 20-lb dumbbell"
+      },
+      {
+        name: "Benchmark Friday",
+        type: "For time",
+        rx: "30 clean and jerks",
+        loads: "♀ 95-lb barbell\n♂ 135-lb barbell",
+        score: "Post time to the whiteboard. Compare to last time.",
+        stimulus: "One movement, one barbell, nowhere to hide. Quick singles are usually faster than fighting for touch-and-go sets. Pick a load you can move every 5–8 seconds for the whole thing.",
+        intermediate: "♀ 75-lb barbell • ♂ 105-lb barbell",
+        beginner: "30 dumbbell clean and jerks.\n♀ 20-lb dumbbells • ♂ 35-lb dumbbells"
+      },
+      {
+        name: "Partner WOD",
+        type: "With a partner, AMRAP 25",
+        rx: "800-meter run together\nThen, splitting reps as needed:\n60 kettlebell swings\n40 push-ups\n20 pull-ups",
+        loads: "♀ 35-lb kettlebell\n♂ 53-lb kettlebell",
+        score: "Post rounds and reps to the whiteboard.",
+        stimulus: "Saturday is the social one. Run together, then split the reps however works — one partner works while the other rests. Bring a friend; this one is built for it.",
+        intermediate: "600-meter run, ring rows in place of pull-ups.",
+        beginner: "400-meter run, 40 swings, 20 push-ups from the knees, 20 ring rows."
+      },
+      {
+        name: "Rest Day",
+        type: "",
+        rx: "",
+        loads: "",
+        score: "",
+        stimulus: "Recovery is part of the programming. Sleep, eat well, get outside — or come use the Recovery Studio.",
+        intermediate: "",
+        beginner: ""
+      }
+    ];
+  }
+
+  buildWeek(offset) {
+    const CAP = 18;
+    const COACHES = ["Jessica Isaacson", "Chad Worman", "Chris Neske", "Abby Harker", "Chance Byrd"];
+    const SLOTS = ["5:00 am", "6:00 am", "7:00 am", "9:00 am", "12:00 pm", "4:00 pm", "5:15 pm", "6:30 pm"];
+    const DOW = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+    const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    const now = new Date();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7) + offset * 7);
+
+    const endTime = t => {
+      const [hm, ap] = t.split(" ");
+      let [h, m] = hm.split(":").map(Number);
+      h = (h % 12) + 1;
+      const rolls = h === 12;
+      const nextAp = rolls ? (ap === "am" ? "pm" : "am") : ap;
+      return h + ":" + String(m).padStart(2, "0") + " " + nextAp;
+    };
+
+    return DOW.map((dow, d) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + d);
+      const stamp = MON[date.getMonth()] + " " + date.getDate();
+      const day = { wod: this.wods[d], dow: dow, date: stamp, num: String(date.getDate()), today: date.toDateString() === now.toDateString(), rest: d === 6, classes: [] };
+
+      if (d === 6) return day;
+
+      const slots = d === 5 ? ["7:30 am"] : SLOTS;
+      day.classes = slots.map((time, i) => {
+        const name = d === 5 ? "Open Build" : "CrossFit";
+        const coach = COACHES[(d * 3 + i) % COACHES.length];
+        const open = d === 5 ? null : CAP - ((d * 5 + i * 3 + ((i * i) % 5)) % 9);
+        const taken = open === null ? 0 : CAP - open;
+        const id = d + "-" + i;
+        const when = FULL[d] + ", " + stamp.charAt(0) + stamp.slice(1).toLowerCase() + " • " + time + " – " + endTime(time);
+        const cls = {
+          id: id,
+          time: time,
+          name: name,
+          coach: coach,
+          spots: open === null ? "Open session" : open + " open",
+          spotsLong: open === null ? "Open session — no cap" : taken + " of " + CAP + " reserved (" + open + " open)",
+          when: when
+        };
+        cls.select = () => this.setState({ sel: cls, reserved: false });
+        return cls;
+      });
+      return day;
+    });
+  }
+
+  programData() {
+    return [
+      {
+        key: "crossfit",
+        name: "CrossFit",
+        photo: "[ photo — group class ]",
+        blurb: "Constantly varied workouts combining strength, cardio and flexibility — coach-led and scaled for any ability.",
+        showClasses: true,
+        whatTitle: "What is CrossFit?",
+        what: "CrossFit at Valley Built CrossFit is a dynamic group fitness program that combines strength training, cardio, and flexibility work in constantly varied workouts. Each class is led by certified coaches who scale the intensity and movements for any ability, helping total beginners and advanced athletes alike. Designed for anyone wanting to improve functional strength, endurance, and confidence, CrossFit classes here are about growth, not intimidation.",
+        whyTitle: "Why members love this program",
+        why: "Members love our CrossFit program for its expert coaching, clear programming, and inclusive atmosphere\u2014you never feel lost or left behind. Each workout is different and challenging, making fitness rewarding and never monotonous. The accountability from our community ensures you stay consistent, enjoy the process, and make real progress. Coaches focus on safety and form, so you develop movement confidence you'll use for life. Everyone finds encouragement and camaraderie\u2014come for fitness, stay for friendship."
+      },
+      {
+        key: "recovery",
+        name: "Recovery Studio",
+        photo: "[ photo — recovery studio ]",
+        blurb: "LIT Method sauna and cold plunges — contrast therapy to help you recover between sessions.",
+        whatTitle: "What is the Recovery Studio?",
+        what: "Our Recovery Studio is a dedicated space to slow down, recharge, and take care of your body outside of your workout. Featuring LIT Method sauna and cold plunges, the studio gives you access to contrast therapy\u2014the practice of alternating between heat and cold exposure to support your body's natural recovery process. Whether you train hard or simply want to feel and recover better, it's another way to invest in your health beyond the gym floor.",
+        whyTitle: "Why you'll love the Recovery Studio",
+        why: "Because getting stronger isn't only about how hard you train\u2014it's also about how well you recover. Contrast therapy combines the relaxation of sauna heat with the invigorating experience of cold immersion, with potential benefits including support for muscle recovery, reduced post-workout soreness, relaxation, and better sleep. Our Recovery Studio makes it easy to build recovery into your routine, all in the same place you train.",
+        kicker: "Train hard. Recover well. Stay strong for life."
+      },
+      {
+        key: "pt",
+        name: "Personal Training",
+        photo: "[ photo — 1-on-1 coaching ]",
+        blurb: "One-on-one sessions with a coach, built around your history, goals and schedule.",
+        askPT: true,
+        whatTitle: "What is personal training?",
+        what: "Our personal training program pairs you with an expert coach for sessions tailored to your history, goals, and current ability. Whether you're new to CrossFit or a seasoned athlete aiming for a breakthrough, your plan is built around your needs. Flexible scheduling and private instruction deliver unmatched support for strength, health, and confidence.",
+        whyTitle: "Why members love this program",
+        why: "Clients rely on personal training for clear guidance, custom progressions, and the compassion only a dedicated coach provides. These sessions are especially helpful for beginners seeking foundational skills, busy adults needing flexibility, or those progressing through injury. Every win is noticed, every question answered. Personalized feedback, motivation, and results\u2014the Valley Built way."
+      }
+    ];
+  }
+
+  renderVals() {
+    const offset = this.state.weekOffset || 0;
+    if (!this.wods) this.wods = this.wodData();
+    if (!this.weeks) this.weeks = {};
+    if (!this.weeks[offset]) this.weeks[offset] = this.buildWeek(offset);
+    this.week = this.weeks[offset];
+
+    if (this.state.dayIdx == null) {
+      const t = this.week.findIndex(d => d.today);
+      this.state.dayIdx = t < 0 ? 0 : t;
+    }
+    const idx = Math.min(this.state.dayIdx, 6);
+    const picker = this.week.map((d, i) => ({
+      dow: d.dow,
+      num: d.num,
+      active: i === idx,
+      inactive: i !== idx,
+      pick: () => this.setState({ dayIdx: i })
+    }));
+    const pretty = d => d.date.charAt(0) + d.date.slice(1).toLowerCase();
+
+    if (!this.progs) this.progs = this.programData();
+    const progKey = this.state.progKey || this.progs[0].key;
+    const programs = this.progs.map(p => Object.assign({}, p, {
+      active: p.key === progKey,
+      inactive: p.key !== progKey,
+      select: () => this.setState({ progKey: p.key })
+    }));
+
+    const picks = this.state.picks || { start: "Beginner", interest: "CrossFit", who: "Just me" };
+    const chips = (group, labels) => labels.map(label => ({
+      label: label,
+      active: picks[group] === label,
+      inactive: picks[group] !== label,
+      select: () => this.setState({ picks: Object.assign({}, picks, { [group]: label }) })
+    }));
+
+    const wodIdx = this.state.wodIdx;
+    const wodDay = this.week[wodIdx == null ? idx : wodIdx];
+    const wod = wodDay.wod || {};
+    const days = this.week.map((d, i) => Object.assign({}, d, {
+      pick: () => this.setState({ dayIdx: i }),
+      openWod: () => this.setState({ wodIdx: i, sel: null })
+    }));
+
+    return {
+      wodOpen: wodIdx != null,
+      openActiveWod: () => this.setState({ wodIdx: idx, sel: null }),
+      closeWod: () => this.setState({ wodIdx: null }),
+      wodDayLabel: wodDay.dow.charAt(0) + wodDay.dow.slice(1).toLowerCase() + ", " + pretty(wodDay),
+      wod: wod,
+      wodName: wod.name || "",
+      wodType: wod.type || "",
+      wodHasScaling: !!wod.intermediate,
+      startChips: chips("start", ["Beginner", "Returning", "Experienced", "Dropping in"]),
+      interestChips: chips("interest", ["CrossFit", "Personal training", "Recovery Studio"]),
+      whoChips: chips("who", ["Just me", "Me + partner", "Family", "Student athlete"]),
+      askAboutPT: () => this.setState({ picks: Object.assign({}, picks, { interest: "Personal training" }) }),
+      bookIntro: () => this.setState({ picks: { start: "Beginner", interest: "CrossFit", who: "Just me" } }),
+      bookIntroMobile: () => this.setState({ picks: { start: "Beginner", interest: "CrossFit", who: "Just me" }, open: false }),
+      programs: programs,
+      activeProgram: programs.find(p => p.active),
+      days: days,
+      picker: picker,
+      activeDay: this.week[idx],
+      weekLabel: pretty(this.week[0]) + " – " + pretty(this.week[6]),
+      isThisWeek: offset === 0,
+      notThisWeek: offset !== 0,
+      canGoBack: offset > 0,
+      atFirstWeek: offset === 0,
+      prevWeek: () => this.setState({ weekOffset: Math.max(0, offset - 1), sel: null }),
+      nextWeek: () => this.setState({ weekOffset: offset + 1, sel: null }),
+      thisWeek: () => this.setState({ weekOffset: 0, sel: null }),
+      sel: this.state.sel || null,
+      reserved: !!this.state.reserved,
+      reserve: () => this.setState({ reserved: true }),
+      dismiss: () => this.setState({ sel: null, reserved: false }),
+      mobile: this.state.mobile,
+      desktop: !this.state.mobile,
+      open: this.state.mobile && this.state.open,
+      toggle: () => this.setState(s => ({ open: !s.open })),
+      close: () => this.setState({ open: false })
+    };
+  }
+}
+</script>
+
+
+<div id="__claude_design_branding"><style>#__claude_design_branding{position:fixed;right:16px;bottom:16px;z-index:2147483646;display:flex;align-items:center;gap:7px;height:30px;padding:0 5px 0 10px;border-radius:999px;font-family:"Anthropic Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-size:12.5px;font-weight:400;line-height:1;letter-spacing:normal;text-transform:none;color:#141413;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 0 0 .5px rgba(31,30,29,.14),0 2px 10px rgba(0,0,0,.09)}
+#__claude_design_branding *{box-sizing:border-box;margin:0}
+#__claude_design_branding a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+#__claude_design_branding a:hover span{text-decoration:underline}
+#__claude_design_branding svg{flex:none}
+#__claude_design_branding a svg{color:#D97757}
+#__claude_design_branding button{width:20px;height:20px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:currentColor;opacity:.55;border:0;background:none;cursor:pointer;flex:none;font:inherit;transition:opacity .14s}
+#__claude_design_branding button:hover{opacity:1;background:rgba(127,127,127,.22)}
+@media print{#__claude_design_branding{display:none}}</style><a href="https://claude.com/product/design" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 20 21" fill="none" aria-hidden="true"><path fill="currentColor" d="M9.99902 0C15.5258 0.000170936 19.999 4.50643 19.999 10.0547C19.999 11.7656 19.5863 12.9976 18.7861 13.8203C17.9924 14.6362 16.9465 14.9138 15.9854 15.0078C15.05 15.0993 14.0097 15.0262 13.2549 15.0186C12.8524 15.0145 12.5177 15.0267 12.2441 15.0703C11.9682 15.1144 11.8143 15.1813 11.7305 15.2432C11.4745 15.4322 11.3353 15.7121 11.2656 16.1602C11.2303 16.3875 11.2168 16.6362 11.209 16.9131C11.2017 17.1715 11.1986 17.4893 11.1807 17.7705C11.1469 18.2975 11.0495 19.0865 10.4199 19.5908C9.7846 20.0996 8.88652 20.1057 7.85449 19.877C7.36399 19.7682 6.88652 19.6232 6.42578 19.4453C2.66989 17.9949 0.000187748 14.3414 0 10.0547C0 4.50643 4.47223 0.000171048 9.99902 0ZM9.99902 1.60547C5.36781 1.60564 1.60547 5.38391 1.60547 10.0547C1.60566 13.6582 3.84823 16.7296 7.00391 17.9482C7.39027 18.0974 7.79085 18.2184 8.20215 18.3096C9.1375 18.5169 9.384 18.3633 9.41602 18.3379C9.4524 18.3087 9.54558 18.1915 9.5791 17.668C9.5947 17.4239 9.59473 17.1786 9.60352 16.8672C9.61179 16.5742 9.62831 16.2435 9.67969 15.9131C9.78359 15.2455 10.0474 14.4906 10.7764 13.9521C11.1479 13.6778 11.5842 13.5493 11.9912 13.4844C12.4007 13.4191 12.8434 13.4088 13.2705 13.4131C14.1753 13.4222 15.0071 13.4905 15.8291 13.4102C16.6257 13.3322 17.2249 13.1235 17.6357 12.7012C18.0401 12.2855 18.3935 11.5261 18.3936 10.0547C18.3936 5.38391 14.6302 1.60564 9.99902 1.60547ZM5.11621 9.86719C5.86386 9.91468 6.45486 10.5348 6.45508 11.2939C6.45506 12.0838 5.81519 12.7245 5.02539 12.7246C4.28481 12.7246 3.67573 12.1617 3.60254 11.4404L3.59473 11.2939L3.60156 11.1533C3.66942 10.4596 4.23282 9.91186 4.93359 9.86719H5.11621ZM14.9814 7.19141C15.729 7.23889 16.3199 7.85919 16.3203 8.61816C16.3203 9.40801 15.6804 10.0487 14.8906 10.0488C14.1501 10.0487 13.5409 9.48586 13.4678 8.76465L13.46 8.61816L13.4668 8.47754C13.5348 7.78403 14.0983 7.23618 14.7988 7.19141H14.9814ZM6.4541 4.93457C7.20161 4.9822 7.79275 5.60231 7.79297 6.36133C7.79288 7.151 7.15291 7.7917 6.36328 7.79199C5.62274 7.79199 5.01369 7.22903 4.94043 6.50781L4.93262 6.36133L4.93945 6.2207C5.00731 5.52698 5.5707 4.97922 6.27148 4.93457H6.4541ZM11.3867 3.59668C12.1343 3.64419 12.7253 4.26436 12.7256 5.02344C12.7256 5.81326 12.0857 6.45393 11.2959 6.4541C10.5553 6.4541 9.94622 5.89123 9.87305 5.16992L9.86523 5.02344L9.87207 4.88281C9.93996 4.18912 10.5033 3.64133 11.2041 3.59668H11.3867Z"></path></svg><span>Made with Claude Design</span></a><button type="button" aria-label="Dismiss" onclick="this.parentElement.remove()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></button></div></body></html>

@@ -1,0 +1,18 @@
+<div id="top" data-controller="prefill">
+  <%= render "pages/nav", site: @site %>
+  <%= render "pages/hero", site: @site %>
+  <%= render "pages/pillars", pillars: @pillars %>
+  <%= render "pages/programs", site: @site, programs: @programs %>
+  <%= render "pages/steps", site: @site, steps: @steps %>
+
+  <section id="schedule" class="band">
+    <%= render "schedules/schedule", schedule: @schedule, week: @week %>
+  </section>
+
+  <%= render "pages/dropin", site: @site %>
+  <%= render "pages/membership", site: @site, options: @membership_options, lead: @lead %>
+  <%= render "pages/coaches", site: @site, staff: @staff %>
+  <%= render "pages/faqs", site: @site, faqs: @faqs %>
+  <%= render "pages/visit", site: @site %>
+  <%= render "pages/footer", site: @site %>
+</div>

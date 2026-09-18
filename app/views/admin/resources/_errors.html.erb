@@ -1,0 +1,4 @@
+<%# locals: (record:) %>
+<% if record.errors.any? %>
+  <div class="flash flash--alert"><%= record.errors.full_messages.to_sentence %>.</div>
+<% end %>

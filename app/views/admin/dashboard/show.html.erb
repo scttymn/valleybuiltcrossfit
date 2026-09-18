@@ -1,0 +1,46 @@
+<% content_for :title, "Dashboard" %>
+<header class="admin-head">
+  <h1>Dashboard</h1>
+</header>
+
+<div class="cards">
+  <section class="card">
+    <h2>Schedule · <%= @schedule.dates.first.strftime("%b %-d") %> – <%= @schedule.dates.last.strftime("%b %-d") %></h2>
+    <% if @schedule.error %>
+      <p class="flash flash--alert">PushPress error: <%= @schedule.error.message %></p>
+    <% else %>
+      <p><strong><%= @schedule.days.sum { _1.classes.size } %></strong> classes this week, <strong><%= @schedule.days.sum { |d| d.classes.sum(&:reserved) } %></strong> reservations.</p>
+    <% end %>
+    <p class="muted">Classes, coaches and reservations come from PushPress and refresh every 5 minutes.</p>
+    <%= button_to "Refresh now", admin_refresh_schedule_path, class: "button button--ghost" %>
+  </section>
+
+  <section class="card">
+    <h2>Workouts</h2>
+    <% if @missing_workouts.empty? %>
+      <p>Every day this week has a workout posted.</p>
+    <% else %>
+      <p>No workout posted yet for:</p>
+      <ul class="plain">
+        <% @missing_workouts.each do |date| %>
+          <li><%= link_to date.strftime("%A, %b %-d"), new_admin_workout_path(workout: { date: }) %></li>
+        <% end %>
+      </ul>
+    <% end %>
+    <%= link_to "All workouts", admin_workouts_path, class: "button button--ghost" %>
+  </section>
+
+  <section class="card">
+    <h2>Recent inquiries</h2>
+    <% if @recent_leads.any? %>
+      <ul class="plain">
+        <% @recent_leads.each do |lead| %>
+          <li><%= link_to lead.name, admin_lead_path(lead) %> <span class="muted">· <%= lead.interest %> · <%= time_ago_in_words(lead.created_at) %> ago</span></li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="muted">No inquiries yet.</p>
+    <% end %>
+    <%= link_to "All inquiries", admin_leads_path, class: "button button--ghost" %>
+  </section>
+</div>

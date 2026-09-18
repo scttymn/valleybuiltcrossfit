@@ -1,0 +1,44 @@
+import { Controller } from "@hotwired/stimulus"
+
+// Day picker (mobile), class detail dialog and WOD dialogs.
+export default class extends Controller {
+  static targets = ["dayTab", "dayPanel", "classDialog", "wodDialog"]
+
+  connect() {
+    this.onBackdropClick = (event) => {
+      if (event.target.tagName === "DIALOG") event.target.close()
+    }
+    this.element.addEventListener("click", this.onBackdropClick)
+  }
+
+  disconnect() {
+    this.element.removeEventListener("click", this.onBackdropClick)
+  }
+
+  reset() {
+    this.close()
+  }
+
+  pick({ params: { day } }) {
+    this.dayTabTargets.forEach((tab, i) => tab.setAttribute("aria-selected", String(i === day)))
+    this.dayPanelTargets.forEach((panel, i) => (panel.hidden = i !== day))
+  }
+
+  openClass({ params }) {
+    const data = params.class
+    const dialog = this.classDialogTarget
+    for (const key of ["name", "when", "coach", "spots"]) {
+      dialog.querySelector(`[data-field="${key}"]`).textContent = data[key]
+    }
+    dialog.querySelector('[data-field="url"]').href = data.url
+    dialog.showModal()
+  }
+
+  openWod({ params: { day } }) {
+    this.wodDialogTargets.find((dialog) => Number(dialog.dataset.day) === day)?.showModal()
+  }
+
+  close() {
+    this.element.querySelectorAll("dialog[open]").forEach((dialog) => dialog.close())
+  }
+}

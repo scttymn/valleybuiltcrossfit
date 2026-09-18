@@ -1,0 +1,51 @@
+<section id="coaches" class="band">
+  <div class="wrap stack coaches">
+    <div class="schedule-head">
+      <div class="section-head">
+        <span class="eyebrow">Who you'll train with</span>
+        <h2 class="section-title">Coaches &amp; staff</h2>
+      </div>
+      <% if site.instagram_url.present? %>
+        <a href="<%= site.instagram_url %>" class="handle">@<%= site.instagram_url.to_s.chomp("/").split("/").last %></a>
+      <% end %>
+    </div>
+
+    <% staff.select(&:owner?).each do |owner| %>
+      <div class="owners">
+        <%= photo_or_placeholder owner.photo, alt: owner.name, size: :owners %>
+        <div class="owners__body">
+          <span class="label" style="letter-spacing:0.2em"><%= owner.role %></span>
+          <h3><%= owner.name %></h3>
+          <p class="prose"><%= rich owner.bio %></p>
+          <% if owner.certification.present? %>
+            <div class="owners__cert">
+              <% if owner.certification_label.present? %><span><%= owner.certification_label %></span><% end %>
+              <span class="cert"><%= owner.certification %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if (coaches = staff.reject(&:owner?)).any? %>
+      <div class="stack" style="gap:20px">
+        <span class="staff-label">Coaching staff</span>
+        <div class="coach-grid">
+          <% coaches.each do |coach| %>
+            <article class="coach">
+              <%= photo_or_placeholder coach.photo, alt: coach.name, size: :coach %>
+              <div class="coach__body">
+                <h3><%= coach.name %></h3>
+                <div class="coach__role">
+                  <span><%= coach.role %></span>
+                  <% if coach.certification.present? %><span class="cert"><%= coach.certification %></span><% end %>
+                </div>
+                <p class="prose"><%= rich coach.bio %></p>
+              </div>
+            </article>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>

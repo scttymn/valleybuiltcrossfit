@@ -1,0 +1,13 @@
+crossfit:
+  key: crossfit
+  name: CrossFit
+  blurb: Constantly varied workouts.
+  what_title: What is CrossFit?
+  cta: schedule
+  position: 1
+pt:
+  key: personal-training
+  name: Personal Training
+  blurb: One-on-one sessions.
+  cta: personal_training
+  position: 2

@@ -1,0 +1,66 @@
+<% if Turnstile.configured? %><%= javascript_include_tag Turnstile::SCRIPT_URL, async: true, defer: true %><% end %>
+<%= turbo_frame_tag "lead_form" do %>
+  <div class="lead-form" id="get-options">
+    <h3>Get your options &amp; pricing</h3>
+
+    <% if sent %>
+      <p class="form-success">Thanks<%= ", #{lead.first_name}" if lead.first_name.present? %>! We got your details and will be in touch soon with the options that fit you.</p>
+    <% else %>
+      <%= form_with model: lead, url: leads_path, data: { prefill_target: "form", controller: "lead-form", action: "change->lead-form#refresh" } do |f| %>
+        <% if lead.errors.any? %>
+          <div class="form-errors" role="alert"><%= lead.errors.full_messages.to_sentence %>.</div>
+        <% end %>
+
+        <div class="field-row">
+          <%= f.text_field :first_name, class: "input", placeholder: "First name", required: true, autocomplete: "given-name", aria: { label: "First name" } %>
+          <%= f.text_field :last_name, class: "input", placeholder: "Last name", autocomplete: "family-name", aria: { label: "Last name" } %>
+        </div>
+        <div class="field-row">
+          <%= f.email_field :email, class: "input", placeholder: "Email", required: true, autocomplete: "email", aria: { label: "Email" } %>
+          <%= f.telephone_field :phone, class: "input", placeholder: "Phone", autocomplete: "tel", aria: { label: "Phone" } %>
+        </div>
+
+        <fieldset class="chips">
+          <legend>What are you interested in?</legend>
+          <div class="chips__list">
+            <% Lead::INTERESTS.each do |choice| %>
+              <label class="chip"><%= f.radio_button :interest, choice, data: { action: "lead-form#refresh" } %><span><%= choice %></span></label>
+            <% end %>
+          </div>
+        </fieldset>
+
+        <%# Hidden for a plain question — those two answers only make sense for someone joining. %>
+        <div class="chip-groups" data-lead-form-target="qualifying">
+          <% [ [ :starting_from, "Where are you starting from?", Lead::STARTING_FROM ],
+               [ :who, "Who's joining?", Lead::WHO ] ].each do |field, legend, choices| %>
+            <fieldset class="chips">
+              <legend><%= legend %></legend>
+              <div class="chips__list">
+                <% choices.each do |choice| %>
+                  <label class="chip"><%= f.radio_button field, choice %><span><%= choice %></span></label>
+                <% end %>
+              </div>
+            </fieldset>
+          <% end %>
+        </div>
+
+        <%= f.text_area :notes, class: "input", rows: 3, placeholder: "Anything we should know? (optional)", aria: { label: "Anything we should know?" }, data: { lead_form_target: "notes" } %>
+
+        <%= hidden_field_tag :form_token, LeadsController.form_token_verifier.generate(Time.current.to_i), id: nil %>
+        <div style="position:absolute; left:-10000px;" aria-hidden="true">
+          <label>Website <input type="text" name="lead[website]" tabindex="-1" autocomplete="off"></label>
+        </div>
+
+        <% if Turnstile.configured? %>
+          <%# Cloudflare's script finds widgets by the cf-turnstile class. %>
+          <div class="cf-turnstile turnstile" data-sitekey="<%= Turnstile.site_key %>" data-theme="dark" data-appearance="interaction-only"></div>
+        <% end %>
+
+        <%= f.submit "Send my details", class: "btn btn--primary btn--block" %>
+      <% end %>
+    <% end %>
+
+    <% site = Site.instance %>
+    <p class="fineprint">Or call <a href="<%= site.phone_href %>"><%= site.phone %></a></p>
+  </div>
+<% end %>

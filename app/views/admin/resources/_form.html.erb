@@ -1,0 +1,10 @@
+<%= form_with model: @record, url: (@record.persisted? ? record_path(@record) : records_path), method: (@record.persisted? ? :patch : :post), class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @record %>
+  <% fields.each do |field| %>
+    <%= render "admin/resources/field", form:, field:, record: @record %>
+  <% end %>
+  <div class="form__actions">
+    <%= form.submit "Save", class: "button" %>
+    <%= link_to "Cancel", records_path %>
+  </div>
+<% end %>

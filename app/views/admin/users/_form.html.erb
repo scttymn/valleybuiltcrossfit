@@ -1,0 +1,10 @@
+<%= form_with model: [ :admin, @user ], class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @user %>
+  <div class="field"><%= form.label :email_address, "Email" %><%= form.email_field :email_address, required: true %></div>
+  <div class="field">
+    <%= form.label :password %><%= form.password_field :password, autocomplete: "new-password", required: @user.new_record? %>
+    <% if @user.persisted? %><p class="field__hint">Leave blank to keep the current password.</p><% end %>
+  </div>
+  <div class="field"><%= form.label :password_confirmation %><%= form.password_field :password_confirmation, autocomplete: "new-password" %></div>
+  <div class="form__actions"><%= form.submit "Save", class: "button" %><%= link_to "Cancel", admin_users_path %></div>
+<% end %>

@@ -1,0 +1,43 @@
+<% links = { "programs" => "Programs", "expect" => "What to expect", "schedule" => "Schedule", "dropin" => "Drop-in", "membership" => "Membership", "coaches" => "Coaches", "visit" => "Visit" } %>
+<% membership = { action: "click->prefill#apply", prefill_interest_param: "CrossFit", prefill_scroll_param: "#membership" } %>
+<% intro = { action: "click->prefill#apply", prefill_interest_param: Lead::INTRO, prefill_starting_from_param: "Beginner", prefill_who_param: "Just me" } %>
+
+<% if site.announcement_showing? %>
+  <% if site.announcement_url.present? %>
+    <a class="announce announce--link" href="<%= site.announcement_url %>"><%= site.announcement %></a>
+  <% else %>
+    <div class="announce"><%= site.announcement %></div>
+  <% end %>
+<% end %>
+
+<header class="nav" data-controller="nav">
+  <div class="nav__bar">
+    <a href="#top" class="nav__logo" aria-label="Valley Built CrossFit — back to top">
+      <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit — Grain Valley, Missouri" %>
+    </a>
+
+    <nav class="nav__desktop" aria-label="Primary">
+      <div class="nav__links">
+        <% links.each do |anchor, label| %>
+          <a href="#<%= anchor %>" <%= tag.attributes(data: anchor == "membership" ? membership : {}) %>><%= label %></a>
+        <% end %>
+      </div>
+      <%= link_to "Book an intro", "#get-options", class: "nav__cta", data: intro %>
+    </nav>
+
+    <button type="button" class="nav__toggle" aria-label="Menu" aria-expanded="false" data-nav-target="toggle" data-action="nav#toggle">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="nav__menu" hidden data-nav-target="menu" aria-label="Mobile">
+    <% links.each do |anchor, label| %>
+      <a href="#<%= anchor %>" class="nav__item" data-action="<%= anchor == "membership" ? "click->prefill#apply click->nav#close" : "nav#close" %>" <%= tag.attributes(data: anchor == "membership" ? membership.except(:action) : {}) %>><%= label %></a>
+    <% end %>
+    <%= link_to "Book an intro", "#get-options", class: "btn btn--primary", data: intro.merge(action: "click->prefill#apply click->nav#close") %>
+    <div class="nav__meta">
+      <% if site.phone.present? %><a href="<%= site.phone_href %>"><%= site.phone %></a><% end %>
+      <% if site.instagram_url.present? %><a href="<%= site.instagram_url %>">Instagram</a><% end %>
+    </div>
+  </nav>
+</header>

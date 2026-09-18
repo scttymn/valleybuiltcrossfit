@@ -1,0 +1,26 @@
+<% content_for :title, @lead.name %>
+<header class="admin-head">
+  <h1><%= @lead.name %></h1>
+  <p class="admin-head__note">Received <%= @lead.created_at.strftime("%A, %b %-d at %-l:%M %P") %></p>
+</header>
+
+<dl class="details">
+  <dt>Email</dt><dd><%= mail_to @lead.email %></dd>
+  <dt>Phone</dt><dd><%= @lead.phone.present? ? link_to(@lead.phone, "tel:#{@lead.phone.gsub(/\D/, "")}") : "—" %></dd>
+  <dt>Starting from</dt><dd><%= @lead.starting_from %></dd>
+  <dt>Interested in</dt><dd><%= @lead.interest %></dd>
+  <dt>Who's joining</dt><dd><%= @lead.who %></dd>
+  <dt>PushPress</dt>
+  <dd>
+    <% if @lead.synced? %>
+      Sent to the PushPress workflow <%= time_ago_in_words(@lead.synced_at) %> ago
+    <% elsif @lead.pushpress_error.present? %>
+      <span class="muted">Not sent yet — <%= @lead.pushpress_error %></span>
+    <% else %>
+      <span class="muted">Sending…</span>
+    <% end %>
+  </dd>
+  <dt>Notes</dt><dd class="prose"><%= @lead.notes.presence || "—" %></dd>
+</dl>
+
+<p><%= link_to "← All inquiries", admin_leads_path %></p>

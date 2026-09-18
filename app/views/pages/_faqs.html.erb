@@ -1,0 +1,17 @@
+<section class="band band--raised" aria-labelledby="faq-title">
+  <div class="wrap split" style="gap:48px">
+    <div class="stack faq-intro">
+      <span class="eyebrow">Still curious?</span>
+      <h2 class="faq-title" id="faq-title">Questions we get<br>all the time</h2>
+      <p>Anything we missed? Call <a href="<%= site.phone_href %>"><%= site.phone %></a> and ask.</p>
+    </div>
+    <div class="stack">
+      <% faqs.each do |faq| %>
+        <div class="faq">
+          <h3><%= faq.question %></h3>
+          <p class="prose"><%= rich faq.answer %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

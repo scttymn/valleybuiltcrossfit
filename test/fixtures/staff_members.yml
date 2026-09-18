@@ -1,0 +1,15 @@
+owners:
+  kind: owner
+  name: Jessica & Greg Isaacson
+  role: Owners
+  certification: CF-L2
+  certification_label: Jessica coaches
+  bio: The couple behind Valley Built.
+  position: 1
+
+chad:
+  kind: coach
+  name: Chad Worman
+  role: Head coach
+  certification: CF-L3
+  position: 2

@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "rails", "runtimeExecutable": "bin/rails", "runtimeArgs": ["server"], "port": 3100, "autoPort": true }
+  ]
+}

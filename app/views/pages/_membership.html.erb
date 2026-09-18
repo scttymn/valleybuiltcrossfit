@@ -1,0 +1,20 @@
+<section id="membership" class="band band--raised">
+  <div class="wrap split split--wide">
+    <div class="stack membership-copy">
+      <span class="eyebrow">Membership</span>
+      <h2 class="section-title"><%= rich site.membership_title.to_s.gsub("\n", "<br>") %></h2>
+      <p class="prose"><%= rich site.membership_body %></p>
+      <div class="options">
+        <% options.each do |option| %>
+          <div class="option">
+            <strong><%= option.name %></strong>
+            <span><%= rich option.description %></span>
+          </div>
+        <% end %>
+      </div>
+      <% if site.membership_rate_note.present? %><p class="rate-note"><%= site.membership_rate_note %></p><% end %>
+    </div>
+
+    <%= render "leads/form", lead:, sent: false %>
+  </div>
+</section>

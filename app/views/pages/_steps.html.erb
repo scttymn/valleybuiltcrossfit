@@ -1,0 +1,17 @@
+<section id="expect" class="band band--raised">
+  <div class="wrap stack" style="gap:36px">
+    <div class="section-head" style="max-width:620px">
+      <span class="eyebrow"><%= site.steps_eyebrow %></span>
+      <h2 class="section-title"><%= site.steps_title %></h2>
+    </div>
+    <div class="steps">
+      <% steps.each_with_index do |step, i| %>
+        <div class="step">
+          <span class="step__num"><%= format("%02d", i + 1) %></span>
+          <h3><%= step.title %></h3>
+          <p><%= rich step.body %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

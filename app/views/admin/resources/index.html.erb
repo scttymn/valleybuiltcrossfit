@@ -1,0 +1,31 @@
+<% content_for :title, title %>
+<header class="admin-head">
+  <h1><%= title %></h1>
+  <%= link_to "Add #{title.singularize.downcase}", url_for(action: :new), class: "button" %>
+</header>
+
+<% if @records.any? %>
+  <table class="table">
+    <thead>
+      <tr><% columns.each do |column| %><th><%= column.to_s.humanize %></th><% end %><th></th></tr>
+    </thead>
+    <tbody>
+      <% @records.each do |record| %>
+        <tr>
+          <% columns.each_with_index do |column, i| %>
+            <td>
+              <% value = record.public_send(column) %>
+              <% text = value.is_a?(Date) ? value.strftime("%a, %b %-d, %Y") : strip_tags(value.to_s).truncate(90) %>
+              <%= i.zero? ? link_to(text.presence || "(untitled)", url_for(action: :edit, id: record)) : text %>
+            </td>
+          <% end %>
+          <td class="table__actions">
+            <%= button_to "Delete", url_for(action: :destroy, id: record), method: :delete, class: "link-button link-button--danger", form: { data: { turbo_confirm: "Delete this #{title.singularize.downcase}?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty">Nothing here yet.</p>
+<% end %>

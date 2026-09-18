@@ -1,0 +1,25 @@
+<section id="dropin" class="band">
+  <div class="wrap split">
+    <div class="stack dropin-copy">
+      <div class="section-head">
+        <span class="eyebrow">Drop-in</span>
+        <h2 class="section-title"><%= site.dropin_title %></h2>
+        <p class="big prose"><%= rich site.dropin_body %></p>
+      </div>
+      <div class="section-head">
+        <h3 class="subtitle"><%= site.dropin_why_title %></h3>
+        <p class="small prose"><%= rich site.dropin_why_body %></p>
+      </div>
+    </div>
+
+    <div class="price-card">
+      <span class="label">Drop-in pass</span>
+      <div class="price"><%= site.dropin_price %><small> / class</small></div>
+      <p><%= site.dropin_price_note %></p>
+      <% if site.dropin_url.present? %>
+        <a href="<%= site.dropin_url %>" class="btn btn--primary" target="_blank" rel="noopener">Reserve a class</a>
+      <% end %>
+      <p class="fineprint">Or call <a href="<%= site.phone_href %>"><%= site.phone %></a></p>
+    </div>
+  </div>
+</section>

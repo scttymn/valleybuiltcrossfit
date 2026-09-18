@@ -1,0 +1,7 @@
+sam:
+  first_name: Sam
+  last_name: Lee
+  email: sam@example.com
+  starting_from: Beginner
+  interest: CrossFit
+  who: Just me

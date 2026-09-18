@@ -1,0 +1,10 @@
+New inquiry from the website.
+
+Name:        <%= @lead.name %>
+Email:       <%= @lead.email %>
+Phone:       <%= @lead.phone.presence || "—" %>
+Starting:    <%= @lead.starting_from %>
+Interested:  <%= @lead.interest %>
+Who:         <%= @lead.who %>
+
+<%= @lead.notes.presence || "(no notes)" %>

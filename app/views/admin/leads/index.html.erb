@@ -1,0 +1,26 @@
+<% content_for :title, "Inquiries" %>
+<header class="admin-head">
+  <h1>Inquiries</h1>
+  <p class="admin-head__note">Submissions from the “Get your options &amp; pricing” form.</p>
+</header>
+
+<% if @leads.any? %>
+  <table class="table">
+    <thead><tr><th>Received</th><th>Name</th><th>Interest</th><th>Starting from</th><th>Who</th><th>PushPress</th><th></th></tr></thead>
+    <tbody>
+      <% @leads.each do |lead| %>
+        <tr>
+          <td><%= lead.created_at.strftime("%b %-d, %-l:%M %P") %></td>
+          <td><%= link_to lead.name, admin_lead_path(lead) %></td>
+          <td><%= lead.interest %></td>
+          <td><%= lead.starting_from %></td>
+          <td><%= lead.who %></td>
+          <td><%= lead.synced? ? "Sent" : tag.span("Not sent", class: "muted", title: lead.pushpress_error) %></td>
+          <td class="table__actions"><%= button_to "Delete", admin_lead_path(lead), method: :delete, class: "link-button link-button--danger", form: { data: { turbo_confirm: "Delete this inquiry?" } } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="empty">No inquiries yet.</p>
+<% end %>

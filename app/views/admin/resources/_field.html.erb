@@ -1,0 +1,26 @@
+<%# locals: (form:, field:, record:) %>
+<div class="field">
+  <%= form.label field.name, field.label %>
+  <% case field.type %>
+  <% when :text %>
+    <%= form.text_area field.name, rows: 5 %>
+  <% when :number %>
+    <%= form.number_field field.name %>
+  <% when :date %>
+    <%= form.date_field field.name %>
+  <% when :select %>
+    <%= form.select field.name, field.options %>
+  <% when :file %>
+    <% attachment = record.public_send(field.name) %>
+    <% if attachment.attached? && attachment.persisted? %>
+      <div class="field__preview">
+        <%= image_tag attachment %>
+        <label class="check"><%= check_box_tag "#{form.object_name}[remove_#{field.name}]", "1", false %> Remove photo</label>
+      </div>
+    <% end %>
+    <%= form.file_field field.name, accept: "image/*" %>
+  <% else %>
+    <%= form.text_field field.name %>
+  <% end %>
+  <% if field.hint %><p class="field__hint"><%= field.hint %></p><% end %>
+</div>

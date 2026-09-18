@@ -1,0 +1,49 @@
+<section id="programs" class="band">
+  <div class="wrap stack programs" data-controller="programs">
+    <div class="section-head">
+      <span class="eyebrow">Programs</span>
+      <h2 class="section-title">Ways to train with us</h2>
+      <% if site.programs_intro.present? %><p class="lede"><%= site.programs_intro %></p><% end %>
+    </div>
+
+    <%# Cards and their details share one grid. Desktop: cards in a row, the open
+        program's details underneath. Mobile: each program's details sit directly
+        under its card, like an accordion. The CSS order variables do the reordering. %>
+    <div class="program-grid" style="--program-count: <%= programs.size %>; --program-columns: <%= programs.size.clamp(1, 4) %>">
+      <% programs.each_with_index do |program, i| %>
+        <button type="button" class="program-card" id="program-card-<%= program.key %>" style="--i: <%= i %>"
+                aria-expanded="<%= i.zero? %>" aria-controls="program-<%= program.key %>"
+                data-programs-target="card" data-action="programs#toggle">
+          <%= photo_or_placeholder program.photo, size: :program %>
+          <span class="program-card__body">
+            <span class="program-card__head">
+              <span class="program-card__name"><%= program.name %></span>
+              <span class="program-card__toggle" aria-hidden="true"></span>
+            </span>
+            <span class="program-card__blurb"><%= program.blurb %></span>
+          </span>
+        </button>
+
+        <div class="program-detail" id="program-<%= program.key %>" style="--i: <%= i %>" role="region" aria-labelledby="program-card-<%= program.key %>"
+             data-programs-target="panel" <%= "hidden" unless i.zero? %>>
+          <div class="stack" style="gap:12px">
+            <span class="label"><%= program.name %></span>
+            <h3 class="program-detail__what"><%= program.what_title %></h3>
+            <p class="big prose"><%= rich program.what %></p>
+          </div>
+          <div class="stack" style="gap:12px">
+            <h3 class="program-detail__why"><%= program.why_title %></h3>
+            <p class="small prose"><%= rich program.why %></p>
+            <% if program.kicker.present? %><p class="kicker"><%= program.kicker %></p><% end %>
+            <% case program.cta %>
+            <% when "schedule" %>
+              <a href="#schedule" class="btn btn--primary btn--sm">See this week's classes</a>
+            <% when "personal_training" %>
+              <a href="#get-options" class="btn btn--primary btn--sm" data-action="click->prefill#apply" data-prefill-interest-param="Personal training">Ask about personal training</a>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

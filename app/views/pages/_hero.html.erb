@@ -1,0 +1,23 @@
+<section class="hero">
+  <div class="hero__texture"></div>
+  <%= photo_or_placeholder site.hero_photo, css: "hero__photo photo", size: :hero %>
+  <div class="hero__shade"></div>
+  <div class="hero__body">
+    <div class="hero__content">
+      <span class="hero__eyebrow"><%= site.hero_eyebrow %></span>
+      <h1><%= site.hero_title %><% if site.hero_title_accent.present? %><br><span><%= site.hero_title_accent %></span><% end %></h1>
+      <p class="hero__text"><%= site.hero_body %></p>
+      <div class="hero__actions">
+        <a href="#get-options" class="btn btn--primary" data-action="click->prefill#apply" data-prefill-interest-param="<%= Lead::INTRO %>" data-prefill-starting-from-param="Beginner" data-prefill-who-param="Just me">Book an intro session</a>
+        <a href="#schedule" class="btn btn--ghost">See the schedule</a>
+      </div>
+      <% if site.hero_tag_list.any? %>
+        <div class="hero__tags">
+          <% site.hero_tag_list.each_with_index do |tag_text, i| %>
+            <% if i > 0 %><span class="sep">/</span><% end %><span><%= tag_text %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

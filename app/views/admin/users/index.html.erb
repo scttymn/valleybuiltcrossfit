@@ -1,0 +1,20 @@
+<% content_for :title, "Admins" %>
+<header class="admin-head">
+  <h1>Admins</h1>
+  <%= link_to "Add admin", new_admin_user_path, class: "button" %>
+</header>
+<table class="table">
+  <thead><tr><th>Email</th><th></th></tr></thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.email_address, edit_admin_user_path(user) %><%= " (you)" if user == Current.user %></td>
+        <td class="table__actions">
+          <% unless user == Current.user %>
+            <%= button_to "Remove", admin_user_path(user), method: :delete, class: "link-button link-button--danger", form: { data: { turbo_confirm: "Remove #{user.email_address}?" } } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

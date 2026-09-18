@@ -1,0 +1,134 @@
+<%= turbo_frame_tag "schedule_frame", data: { controller: "schedule", action: "turbo:frame-load->schedule#reset" } do %>
+  <% days = schedule.days %>
+  <% today_index = days.index { |d| d.date == Date.current } || 0 %>
+  <% label = ->(date) { date.strftime("%b %-d") } %>
+
+  <div class="wrap stack" style="gap:28px">
+    <div class="schedule-head">
+      <div class="section-head">
+        <span class="eyebrow">Book a class</span>
+        <h2 class="section-title">Class schedule</h2>
+        <p class="lede"><%= Site.instance.schedule_intro %></p>
+      </div>
+      <div class="weeknav" role="group" aria-label="Choose a week">
+        <% if week.zero? %>
+          <span class="weeknav__btn weeknav__btn--arrow" aria-disabled="true" aria-label="Previous week">←</span>
+        <% else %>
+          <%= link_to "←", schedule_path(week: week - 1), class: "weeknav__btn weeknav__btn--arrow", aria: { label: "Previous week" } %>
+        <% end %>
+
+        <span class="weeknav__label"><%= label.(schedule.dates.first) %> – <%= label.(schedule.dates.last) %></span>
+        <%= link_to "→", schedule_path(week: week + 1), class: "weeknav__btn weeknav__btn--arrow", aria: { label: "Next week" } %>
+
+        <% today_label = "Back to this week (today, #{Date.current.strftime("%B %-d")})" %>
+        <% if week.zero? %>
+          <span class="weeknav__btn" aria-disabled="true" aria-current="true" aria-label="<%= today_label %>">Today</span>
+        <% else %>
+          <%= link_to "Today", schedule_path(week: 0), class: "weeknav__btn", aria: { label: today_label } %>
+        <% end %>
+      </div>
+    </div>
+
+    <% if schedule.error %>
+      <p class="schedule-notice">We couldn't load the live schedule just now. Try again in a minute, or call <a href="<%= Site.instance.phone_href %>"><%= Site.instance.phone %></a>.</p>
+    <% end %>
+
+    <%# Desktop: the whole week %>
+    <div class="week">
+      <% days.each_with_index do |day, i| %>
+        <div class="day<%= " day--today" if day.date == Date.current %>">
+          <div class="day__head">
+            <div class="stack" style="gap:2px">
+              <span class="day__dow"><%= day.date == Date.current ? "Today" : day.date.strftime("%a") %></span>
+              <span class="day__date"><%= label.(day.date) %></span>
+            </div>
+            <% if day.workout %>
+              <button type="button" class="day__wod" data-action="schedule#openWod" data-schedule-day-param="<%= i %>">View WOD</button>
+            <% else %>
+              <span class="day__wod day__wod--none">No WOD</span>
+            <% end %>
+          </div>
+          <div class="day__classes">
+            <% if day.rest? %><div class="slot slot--empty slot--closed"><span class="slot__time">Rest day</span></div><% end %>
+            <%= render partial: "schedules/slot", collection: day.classes, locals: { day: } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Mobile: one day at a time %>
+    <div class="picker">
+      <div class="picker__days" role="tablist">
+        <% days.each_with_index do |day, i| %>
+          <button type="button" role="tab" class="picker__day<%= " picker__day--today" if day.date == Date.current %>" aria-selected="<%= i == today_index %>" data-schedule-target="dayTab" data-action="schedule#pick" data-schedule-day-param="<%= i %>">
+            <span class="picker__day__dow"><%= day.date.strftime("%a") %></span><span class="picker__day__num"><%= day.date.day %></span><span class="picker__day__dot" aria-hidden="true"></span>
+          </button>
+        <% end %>
+      </div>
+      <% days.each_with_index do |day, i| %>
+        <div class="stack" style="gap:16px" data-schedule-target="dayPanel" <%= "hidden" unless i == today_index %>>
+          <% if day.workout %>
+            <button type="button" class="picker__wod" data-action="schedule#openWod" data-schedule-day-param="<%= i %>">View the WOD</button>
+          <% else %>
+            <span class="picker__wod picker__wod--none">No WOD posted</span>
+          <% end %>
+          <div class="picker__panel">
+            <% if day.rest? %><div class="slot slot--empty slot--closed"><span class="slot__time">Rest day</span></div><% end %>
+            <%= render partial: "schedules/slot", collection: day.classes, locals: { day: } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <dialog class="dialog dialog--class" data-schedule-target="classDialog" aria-labelledby="class-dialog-title">
+    <div class="dialog__inner">
+      <div class="stack" style="gap:6px">
+        <span class="label">Reserve a spot</span>
+        <h3 id="class-dialog-title" data-field="name"></h3>
+      </div>
+      <div class="facts">
+        <div class="fact"><span>When</span><span data-field="when"></span></div>
+        <div class="fact"><span>Coach</span><span data-field="coach"></span></div>
+        <div class="fact"><span>Spots</span><span data-field="spots"></span></div>
+      </div>
+      <div class="stack" style="gap:10px">
+        <a class="btn btn--primary btn--block" data-field="url" target="_blank" rel="noopener">Reserve spot</a>
+        <button type="button" class="dialog__close-text" data-action="schedule#close">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <% days.each_with_index do |day, i| %>
+    <% next unless (wod = day.workout) %>
+    <dialog class="dialog dialog--wod" data-schedule-target="wodDialog" data-day="<%= i %>" aria-label="Workout of the day, <%= day.date.strftime("%A, %b %-d") %>">
+      <div class="dialog__inner">
+        <div class="wod-head">
+          <span class="label">Workout of the day • <%= day.date.strftime("%a, %b %-d") %></span>
+          <button type="button" class="wod-close" aria-label="Close" data-action="schedule#close">✕</button>
+        </div>
+        <div class="wod-grid">
+          <div>
+            <% if wod.name.present? %><h3><%= wod.name %></h3><% end %>
+            <% if wod.workout_type.present? %><span class="wod-type"><%= wod.workout_type %></span><% end %>
+            <% if wod.rx.present? %><p class="wod-rx"><%= wod.rx %></p><% end %>
+            <% if wod.loads.present? %><p class="wod-loads"><%= wod.loads %></p><% end %>
+            <% if wod.source.present? %><p class="wod-meta"><%= wod.source %></p><% end %>
+            <% if wod.score.present? %><p class="wod-meta"><%= wod.score %></p><% end %>
+          </div>
+          <div class="wod-side">
+            <% if wod.stimulus.present? %>
+              <div class="wod-note"><span>Stimulus &amp; strategy</span><p><%= wod.stimulus %></p></div>
+            <% end %>
+            <% if wod.intermediate.present? %>
+              <div class="wod-note"><span>Intermediate option</span><p><%= wod.intermediate %></p></div>
+            <% end %>
+            <% if wod.beginner.present? %>
+              <div class="wod-note"><span>Beginner option</span><p><%= wod.beginner %></p></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  <% end %>
+<% end %>

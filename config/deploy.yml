@@ -1,0 +1,48 @@
+# Deploy with Kamal: https://kamal-deploy.org
+# First time: `bin/kamal setup`. After that: `bin/kamal deploy`.
+service: valleybuilt
+image: valleybuilt
+
+servers:
+  web:
+    - YOUR.SERVER.IP # <- replace with your server's IP or hostname
+
+# Kamal proxy terminates SSL with Let's Encrypt. Point the domain's DNS at the
+# server before running setup.
+proxy:
+  ssl: true
+  host: valleybuiltcrossfit.com # <- replace if the domain differs
+
+# Builds locally and pushes to a temporary registry tunnelled to the server,
+# so no Docker Hub account is needed.
+registry:
+  server: localhost:5555
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - PUSHPRESS_API_KEY
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
+  clear:
+    # Run Solid Queue (PushPress refresh job + emails) inside Puma.
+    SOLID_QUEUE_IN_PUMA: true
+    APP_HOST: valleybuiltcrossfit.com
+    SMTP_ADDRESS: smtp.example.com # <- your mail provider (Postmark, SES, Fastmail, …)
+    MAILER_FROM: "Valley Built CrossFit <no-reply@valleybuiltcrossfit.com>"
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
+  create-admin: app exec --interactive --reuse "bin/rails admin:create"
+
+# SQLite databases and uploaded photos live here and survive deploys.
+volumes:
+  - "valleybuilt_storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64

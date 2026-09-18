@@ -1,0 +1,11 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit" %>
+    <div class="footer__links">
+      <% if site.instagram_url.present? %><a href="<%= site.instagram_url %>">Instagram</a><% end %>
+      <% if site.email.present? %><%= mail_to site.email, "Email" %><% end %>
+      <% if site.phone.present? %><a href="<%= site.phone_href %>"><%= site.phone %></a><% end %>
+      <span>© <%= Date.current.year %> Valley Built CrossFit</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,13 @@
+<% if pillars.any? %>
+  <section class="band" aria-label="What we're about">
+    <div class="pillars">
+      <% pillars.each_with_index do |pillar, i| %>
+        <div class="pillar">
+          <span class="pillar__num"><%= format("%02d", i + 1) %></span>
+          <h3><%= pillar.title %></h3>
+          <p><%= pillar.body %></p>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>

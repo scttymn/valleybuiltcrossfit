@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Class Schedule · Week of Oct 5 · Valley Built CrossFit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #16120e;
+      --bg-2: #1f1a14;
+      --ink: #f4ece1;
+      --muted: #b3a494;
+      --line: #3a3228;
+      --olive: #6f9140;
+      --olive-deep: #417505;
+      --rust: #c56a2a;
+      --card: #241e17;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #2a2318 0%, transparent 50%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Source Sans 3", system-ui, sans-serif;
+    }
+    header {
+      padding: 28px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+    }
+    .brand {
+      font-family: Oswald, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+    .brand small {
+      display: block;
+      color: var(--olive);
+      font-size: 12px;
+      letter-spacing: 0.28em;
+      margin-bottom: 4px;
+    }
+    .brand strong { font-size: clamp(28px, 4vw, 42px); font-weight: 700; }
+    .meta { color: var(--muted); font-size: 14px; text-align: right; }
+    .meta b { color: var(--ink); font-weight: 700; }
+    main { padding: 20px 16px 48px; max-width: 1280px; margin: 0 auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .day {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      min-height: 280px;
+    }
+    .day h2 {
+      margin: 0;
+      padding: 10px 10px 8px;
+      font-family: Oswald, sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .day h2 span { display: block; color: var(--ink); font-size: 20px; letter-spacing: 0.04em; }
+    .day.empty { opacity: 0.45; }
+    .slots { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+    button.class {
+      appearance: none;
+      border: 0;
+      text-align: left;
+      cursor: pointer;
+      padding: 9px 10px;
+      background: #2d4a16;
+      color: #f7f3ea;
+      font: inherit;
+      width: 100%;
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+    button.class:hover { filter: brightness(1.12); transform: translateY(-1px); }
+    button.class:focus-visible { outline: 2px solid #e8d7b0; outline-offset: 2px; }
+    button.class.open-build { background: #8a4a18; }
+    button.class .t { font-family: Oswald, sans-serif; font-size: 16px; letter-spacing: 0.04em; }
+    button.class .n { font-size: 12px; opacity: 0.9; }
+    button.class .c { display: block; font-size: 11px; opacity: 0.85; margin-top: 2px; }
+    button.class .s { display: block; font-size: 11px; opacity: 0.75; margin-top: 2px; }
+    dialog {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      padding: 0;
+      width: min(420px, 92vw);
+    }
+    dialog::backdrop { background: rgba(8, 6, 4, 0.72); }
+    .sheet { padding: 22px 22px 18px; }
+    .sheet h3 {
+      font-family: Oswald, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 28px;
+      margin: 0 0 6px;
+    }
+    .sheet dl { margin: 16px 0; display: grid; grid-template-columns: 92px 1fr; gap: 8px 10px; }
+    .sheet dt { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; padding-top: 2px; }
+    .sheet dd { margin: 0; font-weight: 600; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .actions #s-close { flex-basis: 100%; }
+    .actions a, .actions button {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      font-family: Oswald, sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 13px;
+      padding: 12px 10px;
+      border: 0;
+      cursor: pointer;
+    }
+    .actions a { background: var(--olive); color: #111; }
+    .actions a.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .actions button { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .note { margin: 18px 4px 0; color: var(--muted); font-size: 13px; }
+    .day-tabs { display: none; }
+    @media (max-width: 768px) {
+      header { padding: 20px 16px 14px; }
+      .meta { text-align: left; }
+      .day-tabs {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .day-tabs::-webkit-scrollbar { display: none; }
+      .day-tabs button {
+        appearance: none;
+        flex: 1 0 2.75rem;
+        border: 1px solid var(--line);
+        background: var(--bg-2);
+        color: var(--muted);
+        font-family: Oswald, sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 10px 4px 8px;
+        cursor: pointer;
+      }
+      .day-tabs button span { display: block; color: var(--ink); font-size: 16px; letter-spacing: 0.04em; }
+      .day-tabs button.is-active {
+        background: var(--olive);
+        border-color: var(--olive);
+        color: #1a140c;
+      }
+      .day-tabs button.is-active span { color: #111; }
+      .grid { display: block; }
+      .day { display: none; min-height: 0; }
+      .day.is-active { display: block; }
+      .day h2 { display: none; }
+      .slots { padding: 10px; gap: 8px; }
+      button.class { padding: 14px; }
+      button.class .t { font-size: 20px; }
+      button.class .n { font-size: 14px; }
+      button.class .c, button.class .s { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <small>Grain Valley, Missouri</small>
+      <strong>Valley Built CrossFit</strong>
+    </div>
+    <div class="meta">
+      <div><b>Week of October 5, 2026</b></div>
+      <div>Mon–Sat class schedule · 1450 NW Olympic Dr, Unit D</div>
+    </div>
+  </header>
+  <main>
+    <nav class="day-tabs" id="day-tabs" role="tablist" aria-label="Days of the week"></nav>
+    <div class="grid" id="grid"></div>
+    <p class="note">Live snapshot from PushPress for Oct 5–11. Times are gym local (America/Chicago). Reserve opens the official class registration page — you won’t have to hunt the slot on their week view.</p>
+  </main>
+  <dialog id="sheet">
+    <div class="sheet">
+      <h3 id="s-title"></h3>
+      <dl>
+        <dt>When</dt><dd id="s-when"></dd>
+        <dt>Coach</dt><dd id="s-coach"></dd>
+        <dt>Spots</dt><dd id="s-spots"></dd>
+      </dl>
+      <div class="actions">
+        <a id="s-reserve" href="#" target="_blank" rel="noopener">Reserve spot</a>
+        <a id="s-signup" class="secondary" href="#" target="_blank" rel="noopener">Create account</a>
+        <button type="button" id="s-close">Close</button>
+      </div>
+    </div>
+  </dialog>
+  <script>
+    const CLASSES = [{"id":"cal-585accb5b2734b9aac2c2fcf246d","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T05:00:00","end":"2026-10-05T06:00:00","weekday":"Monday","date":"2026-10-05","time":"5:00 am","timeEnd":"6:00 am","coach":"Jessica Isaacson","cap":18,"spots":12,"reserved":6,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-585accb5b2734b9aac2c2fcf246d"},{"id":"cal-461360c720ff493eb2208f06dd22","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T06:00:00","end":"2026-10-05T07:00:00","weekday":"Monday","date":"2026-10-05","time":"6:00 am","timeEnd":"7:00 am","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-461360c720ff493eb2208f06dd22"},{"id":"cal-3a9c2c5d7b574241842d9546da8f","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T07:00:00","end":"2026-10-05T08:00:00","weekday":"Monday","date":"2026-10-05","time":"7:00 am","timeEnd":"8:00 am","coach":"Jessica Isaacson","cap":18,"spots":15,"reserved":3,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-3a9c2c5d7b574241842d9546da8f"},{"id":"cal-a33f2dba97994f5f8805084f290a","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T09:00:00","end":"2026-10-05T10:00:00","weekday":"Monday","date":"2026-10-05","time":"9:00 am","timeEnd":"10:00 am","coach":"Jessica Isaacson","cap":18,"spots":14,"reserved":4,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-a33f2dba97994f5f8805084f290a"},{"id":"cal-8fa872f6edad47289a6a885d83e9","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T12:00:00","end":"2026-10-05T13:00:00","weekday":"Monday","date":"2026-10-05","time":"12:00 pm","timeEnd":"1:00 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-8fa872f6edad47289a6a885d83e9"},{"id":"cal-a964018e84b5408a9dfadc422142","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T16:00:00","end":"2026-10-05T17:00:00","weekday":"Monday","date":"2026-10-05","time":"4:00 pm","timeEnd":"5:00 pm","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-a964018e84b5408a9dfadc422142"},{"id":"cal-41acd0b16e564d98b079d3baeb8b","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T17:15:00","end":"2026-10-05T18:15:00","weekday":"Monday","date":"2026-10-05","time":"5:15 pm","timeEnd":"6:15 pm","coach":"Chad Worman","cap":18,"spots":12,"reserved":6,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-41acd0b16e564d98b079d3baeb8b"},{"id":"cal-7fabc0f78fe7421394db98fcaa61","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-05T18:30:00","end":"2026-10-05T19:30:00","weekday":"Monday","date":"2026-10-05","time":"6:30 pm","timeEnd":"7:30 pm","coach":"Chad Worman","cap":18,"spots":14,"reserved":4,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-7fabc0f78fe7421394db98fcaa61"},{"id":"cal-eb8009eb4173484583a6b57f0a8b","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T05:00:00","end":"2026-10-06T06:00:00","weekday":"Tuesday","date":"2026-10-06","time":"5:00 am","timeEnd":"6:00 am","coach":"Chad Worman","cap":18,"spots":14,"reserved":4,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-eb8009eb4173484583a6b57f0a8b"},{"id":"cal-09f55a97fbe14b7e90ed13e2996c","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T06:00:00","end":"2026-10-06T07:00:00","weekday":"Tuesday","date":"2026-10-06","time":"6:00 am","timeEnd":"7:00 am","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-09f55a97fbe14b7e90ed13e2996c"},{"id":"cal-0198de9dcdd3488ebe2f62cbb345","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T07:00:00","end":"2026-10-06T08:00:00","weekday":"Tuesday","date":"2026-10-06","time":"7:00 am","timeEnd":"8:00 am","coach":"Chad Worman","cap":18,"spots":16,"reserved":2,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-0198de9dcdd3488ebe2f62cbb345"},{"id":"cal-5f0f4dd03ee2459a8a3073d19cfd","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T09:00:00","end":"2026-10-06T10:00:00","weekday":"Tuesday","date":"2026-10-06","time":"9:00 am","timeEnd":"10:00 am","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-5f0f4dd03ee2459a8a3073d19cfd"},{"id":"cal-7c9e1c040c6748458537395002fa","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T12:00:00","end":"2026-10-06T13:00:00","weekday":"Tuesday","date":"2026-10-06","time":"12:00 pm","timeEnd":"1:00 pm","coach":"Jessica Isaacson","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-7c9e1c040c6748458537395002fa"},{"id":"cal-c0f90ddc8bcf448ca4978c62321b","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T16:00:00","end":"2026-10-06T17:00:00","weekday":"Tuesday","date":"2026-10-06","time":"4:00 pm","timeEnd":"5:00 pm","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-c0f90ddc8bcf448ca4978c62321b"},{"id":"cal-3982f97c636a45789c902bfc5425","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T17:15:00","end":"2026-10-06T18:15:00","weekday":"Tuesday","date":"2026-10-06","time":"5:15 pm","timeEnd":"6:15 pm","coach":"Jessica Isaacson","cap":18,"spots":16,"reserved":2,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-3982f97c636a45789c902bfc5425"},{"id":"cal-6ff84682ae2e4b588cd3a3831259","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-06T18:30:00","end":"2026-10-06T19:30:00","weekday":"Tuesday","date":"2026-10-06","time":"6:30 pm","timeEnd":"7:30 pm","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-6ff84682ae2e4b588cd3a3831259"},{"id":"cal-666788885d1c44da9375d2f8764e","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T05:00:00","end":"2026-10-07T06:00:00","weekday":"Wednesday","date":"2026-10-07","time":"5:00 am","timeEnd":"6:00 am","coach":"Chad Worman","cap":18,"spots":15,"reserved":3,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-666788885d1c44da9375d2f8764e"},{"id":"cal-7114250895584368a525e920366b","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T06:00:00","end":"2026-10-07T07:00:00","weekday":"Wednesday","date":"2026-10-07","time":"6:00 am","timeEnd":"7:00 am","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-7114250895584368a525e920366b"},{"id":"cal-1949c833dab54aafb0b4682ab722","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T07:00:00","end":"2026-10-07T08:00:00","weekday":"Wednesday","date":"2026-10-07","time":"7:00 am","timeEnd":"8:00 am","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-1949c833dab54aafb0b4682ab722"},{"id":"cal-b9b2d3470ac041fca918df963634","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T09:00:00","end":"2026-10-07T10:00:00","weekday":"Wednesday","date":"2026-10-07","time":"9:00 am","timeEnd":"10:00 am","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-b9b2d3470ac041fca918df963634"},{"id":"cal-bac0b3c0f0ea40aa9aa2a847b0ec","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T12:00:00","end":"2026-10-07T13:00:00","weekday":"Wednesday","date":"2026-10-07","time":"12:00 pm","timeEnd":"1:00 pm","coach":"Jessica Isaacson","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-bac0b3c0f0ea40aa9aa2a847b0ec"},{"id":"cal-d1ef1f4caf2e43eebc195169d9c1","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T16:00:00","end":"2026-10-07T17:00:00","weekday":"Wednesday","date":"2026-10-07","time":"4:00 pm","timeEnd":"5:00 pm","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-d1ef1f4caf2e43eebc195169d9c1"},{"id":"cal-9f051670aaaa42e8b88b0406bc01","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T17:15:00","end":"2026-10-07T18:15:00","weekday":"Wednesday","date":"2026-10-07","time":"5:15 pm","timeEnd":"6:15 pm","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-9f051670aaaa42e8b88b0406bc01"},{"id":"cal-10cef1b516f54dec8644ab4cc1cd","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-07T18:30:00","end":"2026-10-07T19:30:00","weekday":"Wednesday","date":"2026-10-07","time":"6:30 pm","timeEnd":"7:30 pm","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-10cef1b516f54dec8644ab4cc1cd"},{"id":"cal-7230aa2aeaa84c16a74ce50897bb","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T05:00:00","end":"2026-10-08T06:00:00","weekday":"Thursday","date":"2026-10-08","time":"5:00 am","timeEnd":"6:00 am","coach":"Jessica Isaacson","cap":18,"spots":16,"reserved":2,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-7230aa2aeaa84c16a74ce50897bb"},{"id":"cal-b0b7416c24ee4cc6a1638b4af211","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T06:00:00","end":"2026-10-08T07:00:00","weekday":"Thursday","date":"2026-10-08","time":"6:00 am","timeEnd":"7:00 am","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-b0b7416c24ee4cc6a1638b4af211"},{"id":"cal-a9030b6cba0e424194fd8931abe7","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T07:00:00","end":"2026-10-08T08:00:00","weekday":"Thursday","date":"2026-10-08","time":"7:00 am","timeEnd":"8:00 am","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-a9030b6cba0e424194fd8931abe7"},{"id":"cal-e1e2c368a6fd465d9bdef5fbf663","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T09:00:00","end":"2026-10-08T10:00:00","weekday":"Thursday","date":"2026-10-08","time":"9:00 am","timeEnd":"10:00 am","coach":"Jessica Isaacson","cap":18,"spots":16,"reserved":2,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-e1e2c368a6fd465d9bdef5fbf663"},{"id":"cal-984e2255d15242128e1c56668e5f","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T12:00:00","end":"2026-10-08T13:00:00","weekday":"Thursday","date":"2026-10-08","time":"12:00 pm","timeEnd":"1:00 pm","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-984e2255d15242128e1c56668e5f"},{"id":"cal-6edf12cb1fda4150ae9d728ae03f","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T16:00:00","end":"2026-10-08T17:00:00","weekday":"Thursday","date":"2026-10-08","time":"4:00 pm","timeEnd":"5:00 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-6edf12cb1fda4150ae9d728ae03f"},{"id":"cal-8b0d3f584b1d4514991eacbbd19d","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T17:15:00","end":"2026-10-08T18:15:00","weekday":"Thursday","date":"2026-10-08","time":"5:15 pm","timeEnd":"6:15 pm","coach":"Chad Worman","cap":18,"spots":17,"reserved":1,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-8b0d3f584b1d4514991eacbbd19d"},{"id":"cal-e1e8d2b9e4564098b7e333c86f89","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-08T18:30:00","end":"2026-10-08T19:30:00","weekday":"Thursday","date":"2026-10-08","time":"6:30 pm","timeEnd":"7:30 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-e1e8d2b9e4564098b7e333c86f89"},{"id":"cal-83745ff5ebaa4e6c863afdd646ad","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T05:00:00","end":"2026-10-09T06:00:00","weekday":"Friday","date":"2026-10-09","time":"5:00 am","timeEnd":"6:00 am","coach":"Jessica Isaacson","cap":18,"spots":15,"reserved":3,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-83745ff5ebaa4e6c863afdd646ad"},{"id":"cal-9829dfa6a8d041818be8ffa106fd","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T06:00:00","end":"2026-10-09T07:00:00","weekday":"Friday","date":"2026-10-09","time":"6:00 am","timeEnd":"7:00 am","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-9829dfa6a8d041818be8ffa106fd"},{"id":"cal-d5dbc6c01309462d9bc5f44fa17a","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T07:00:00","end":"2026-10-09T08:00:00","weekday":"Friday","date":"2026-10-09","time":"7:00 am","timeEnd":"8:00 am","coach":"Jessica Isaacson","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-d5dbc6c01309462d9bc5f44fa17a"},{"id":"cal-bf047f0433cd4b8aa4ff43583434","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T09:00:00","end":"2026-10-09T10:00:00","weekday":"Friday","date":"2026-10-09","time":"9:00 am","timeEnd":"10:00 am","coach":"Jessica Isaacson","cap":18,"spots":16,"reserved":2,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-bf047f0433cd4b8aa4ff43583434"},{"id":"cal-f7058b5b51a14d0b9692103cc860","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T12:00:00","end":"2026-10-09T13:00:00","weekday":"Friday","date":"2026-10-09","time":"12:00 pm","timeEnd":"1:00 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-f7058b5b51a14d0b9692103cc860"},{"id":"cal-6edd5ae8624d48a3937cb6c8aa52","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T16:00:00","end":"2026-10-09T17:00:00","weekday":"Friday","date":"2026-10-09","time":"4:00 pm","timeEnd":"5:00 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-6edd5ae8624d48a3937cb6c8aa52"},{"id":"cal-297d6e39b0444c82856b0582e8d6","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T17:15:00","end":"2026-10-09T18:15:00","weekday":"Friday","date":"2026-10-09","time":"5:15 pm","timeEnd":"6:15 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-297d6e39b0444c82856b0582e8d6"},{"id":"cal-1ca4e5ff5069467e80af8310cdeb","title":"CrossFit","type":"CrossFit","color":"#417505","typeId":"calitemtype_f92ffb6b9a7611f19cca0affe13b3daf","start":"2026-10-09T18:30:00","end":"2026-10-09T19:30:00","weekday":"Friday","date":"2026-10-09","time":"6:30 pm","timeEnd":"7:30 pm","coach":"Chad Worman","cap":18,"spots":18,"reserved":0,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-1ca4e5ff5069467e80af8310cdeb"},{"id":"cal-ec187a57c4d24a459730e8cf08d5","title":"Open Build","type":"General","color":"#1A90D8","typeId":"cit_00000000000000","start":"2026-10-10T07:30:00","end":"2026-10-10T10:30:00","weekday":"Saturday","date":"2026-10-10","time":"7:30 am","timeEnd":"10:30 am","coach":"Chad Worman","cap":null,"spots":null,"reserved":null,"registerUrl":"https://valleybuiltcrossfit.pushpress.com/landing/events/cal-ec187a57c4d24a459730e8cf08d5"}];
+    const DAYS = [
+      ["2026-10-05", "Mon", "5"],
+      ["2026-10-06", "Tue", "6"],
+      ["2026-10-07", "Wed", "7"],
+      ["2026-10-08", "Thu", "8"],
+      ["2026-10-09", "Fri", "9"],
+      ["2026-10-10", "Sat", "10"],
+      ["2026-10-11", "Sun", "11"],
+    ];
+    const byDate = Object.fromEntries(DAYS.map(([d]) => [d, []]));
+    for (const c of CLASSES) (byDate[c.date] || (byDate[c.date] = [])).push(c);
+
+    const grid = document.getElementById("grid");
+    const tabs = document.getElementById("day-tabs");
+    const sheet = document.getElementById("sheet");
+    const byId = Object.fromEntries(CLASSES.map((c) => [c.id, c]));
+
+    function todayStamp() {
+      const n = new Date();
+      const z = n.getTimezoneOffset() * 60000;
+      return new Date(n - z).toISOString().slice(0, 10);
+    }
+
+    function selectDay(date) {
+      document.querySelectorAll(".day").forEach((el) => {
+        const on = el.dataset.date === date;
+        el.classList.toggle("is-active", on);
+      });
+      document.querySelectorAll(".day-tabs button").forEach((el) => {
+        const on = el.dataset.date === date;
+        el.classList.toggle("is-active", on);
+        el.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) el.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+      });
+    }
+
+    function spotsLabel(c) {
+      if (!c.cap || c.spots == null) return "Open session";
+      if (c.spots <= 0) return "Full";
+      if (c.spots <= 3) return c.spots + " left";
+      return c.reserved + " reserved · " + c.spots + " open";
+    }
+
+    function openClass(id) {
+      const c = byId[id];
+      if (!c) return;
+      document.getElementById("s-title").textContent = c.title;
+      document.getElementById("s-when").textContent =
+        c.weekday + ", Oct " + Number(c.date.slice(-2)) + " · " + c.time + " – " + c.timeEnd;
+      document.getElementById("s-coach").textContent = c.coach || "TBA";
+      document.getElementById("s-spots").textContent = c.cap
+        ? (c.reserved + " of " + c.cap + " reserved (" + c.spots + " open)")
+        : "No cap";
+      const reserve = document.getElementById("s-reserve");
+      reserve.href = c.registerUrl;
+      reserve.onclick = (e) => {
+        e.preventDefault();
+        window.open(c.registerUrl, "_blank", "noopener,noreferrer");
+      };
+      const signupUrl = c.typeId
+        ? "https://valleybuiltcrossfit.pushpress.com/landing/plans?calendar-item=" +
+          encodeURIComponent(c.id) +
+          "&calendar-type=" +
+          encodeURIComponent(c.typeId)
+        : "https://valleybuiltcrossfit.pushpress.com/landing/plans";
+      const signup = document.getElementById("s-signup");
+      signup.href = signupUrl;
+      signup.onclick = (e) => {
+        e.preventDefault();
+        window.open(signupUrl, "_blank", "noopener,noreferrer");
+      };
+      sheet.showModal();
+    }
+
+    const initial = DAYS.some(([d]) => d === todayStamp()) ? todayStamp() : DAYS[0][0];
+
+    for (const [date, label, num] of DAYS) {
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.role = "tab";
+      tab.dataset.date = date;
+      tab.id = "tab-" + date;
+      tab.setAttribute("aria-controls", "day-" + date);
+      tab.innerHTML = label + "<span>" + num + "</span>";
+      tab.addEventListener("click", () => selectDay(date));
+      tabs.appendChild(tab);
+
+      const col = document.createElement("section");
+      col.className = "day" + (byDate[date].length ? "" : " empty");
+      col.id = "day-" + date;
+      col.dataset.date = date;
+      col.setAttribute("role", "tabpanel");
+      col.setAttribute("aria-labelledby", "tab-" + date);
+      col.innerHTML = "<h2>" + label + "<span>Oct " + num + "</span></h2>";
+      const slots = document.createElement("div");
+      slots.className = "slots";
+      if (!byDate[date].length) {
+        const p = document.createElement("p");
+        p.className = "n";
+        p.style.cssText = "color:var(--muted);padding:10px;margin:0;font-size:13px";
+        p.textContent = "Rest day";
+        slots.appendChild(p);
+      }
+      for (const c of byDate[date]) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "class" + (c.type === "General" || c.title === "Open Build" ? " open-build" : "");
+        b.dataset.id = c.id;
+        b.innerHTML =
+          '<div class="t">' + c.time + '</div>' +
+          '<div class="n">' + c.title + '</div>' +
+          '<span class="c">' + (c.coach || "TBA") + '</span>' +
+          '<span class="s">' + spotsLabel(c) + '</span>';
+        b.addEventListener("click", () => openClass(c.id));
+        slots.appendChild(b);
+      }
+      col.appendChild(slots);
+      grid.appendChild(col);
+    }
+
+    selectDay(initial);
+
+    document.getElementById("s-close").addEventListener("click", () => sheet.close());
+    sheet.addEventListener("click", (e) => { if (e.target === sheet) sheet.close(); });
+  </script>
+</body>
+</html>

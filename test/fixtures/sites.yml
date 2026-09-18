@@ -1,0 +1,19 @@
+main:
+  announcement: Opening October 5, 2026
+  phone: (816) 355-6595
+  email: jessica@valleybuiltcrossfit.com
+  instagram_url: https://www.instagram.com/valleybuiltcrossfit
+  address_line1: 1450 NW Olympic Drive
+  address_line2: Unit D
+  city_state_zip: Grain Valley, MO 64029
+  hero_eyebrow: Grain Valley, Missouri
+  hero_title: Come as you are.
+  hero_title_accent: Build from here.
+  hero_tags: All fitness levels / 60-minute classes
+  dropin_price: $25.00
+  pushpress_subdomain: valleybuiltcrossfit
+  class_capacity: 18
+  uncapped_class_types: General
+  announcement: Opening October 5, 2026
+  announcement_visible: true
+  image_quality: 80

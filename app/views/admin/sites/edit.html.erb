@@ -1,0 +1,23 @@
+<% content_for :title, "Site content" %>
+<header class="admin-head">
+  <h1>Site content</h1>
+  <p class="admin-head__note">Text for the home page. Line breaks are kept; simple <code>&lt;a href="…"&gt;</code> links are allowed in longer fields.</p>
+</header>
+
+<%= form_with model: @site, url: admin_site_path, method: :patch, class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @site %>
+  <nav class="jump">
+    <% Admin::SitesController::SECTIONS.each_key do |section| %><a href="#<%= section.parameterize %>"><%= section %></a><% end %>
+  </nav>
+  <% Admin::SitesController::SECTIONS.each do |section, fields| %>
+    <fieldset class="form__section" id="<%= section.parameterize %>">
+      <legend><%= section %></legend>
+      <% fields.each do |field| %>
+        <%= render "admin/resources/field", form:, field:, record: @site %>
+      <% end %>
+    </fieldset>
+  <% end %>
+  <div class="form__actions form__actions--sticky">
+    <%= form.submit "Save site content", class: "button" %>
+  </div>
+<% end %>
