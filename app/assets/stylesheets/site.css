@@ -50,11 +50,12 @@
 .owners .photo img { object-position: center top; }
 .cert { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bg); background: var(--accent-text); padding: 3px 7px; }
 
-.btn { display: inline-block; font-family: var(--font-condensed); font-size: 19px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 28px; text-align: center; cursor: pointer; border: 0; }
+.btn { display: inline-block; font-family: var(--font-condensed); font-size: 19px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px 28px; text-align: center; cursor: pointer; border: var(--border-width) solid transparent; }
 .site a.btn--primary, .btn--primary { background: var(--accent); color: var(--on-accent); }
 .site a.btn--primary:hover, .btn--primary:hover { background: var(--ink); color: var(--bg); }
 .site a.btn--ghost, .btn--ghost { color: var(--ink); border: var(--border-width) solid var(--accent); background: transparent; }
 .site a.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
+button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
 .btn--block { display: block; width: 100%; padding: 16px; }
 
 /* ---------- announcement + nav ---------- */
@@ -264,8 +265,6 @@ html:has(dialog[open]) { overflow: hidden; }
 .fact:last-child { border-bottom: 0; padding-bottom: 0; }
 .fact span:first-child { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); flex: 0 0 74px; }
 .fact span:last-child { font-size: 16.5px; color: var(--ink); }
-.dialog__close-text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding: 12px; text-align: center; cursor: pointer; background: none; border: 0; width: 100%; }
-.dialog__close-text:hover { color: var(--ink); }
 /* Header (with the close button) stays pinned while the workout scrolls. */
 .wod-head { display: flex; gap: 16px; align-items: center; justify-content: space-between; border-bottom: var(--border-width) solid var(--line); padding: 20px 0 12px; margin-top: -20px; position: sticky; top: 0; z-index: 1; background: var(--surface); }
 .wod-close { flex: 0 0 auto; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 17px; line-height: 1; color: var(--muted); border: var(--border-width) solid var(--line); background: none; cursor: pointer; }

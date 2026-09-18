@@ -245,6 +245,20 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#get-options.lead-form", 1
   end
 
+  test "filled and outlined buttons are the same size, so side-by-side ones line up" do
+    css = Rails.root.join("app/assets/stylesheets/site.css").read
+    btn = css[/^\.btn \{([^}]*)\}/, 1]
+    assert_match(/border:\s*var\(--border-width\) solid transparent/, btn, "every button reserves the outline's width")
+  end
+
+  test "the class dialog closes with a full-size button, not a small text link" do
+    get root_path
+
+    assert_select "dialog .btn.btn--primary.btn--block", text: "Reserve spot"
+    assert_select "dialog button.btn.btn--ghost.btn--block[type=button][data-action='schedule#close']", text: "Close"
+    assert_select ".dialog__close-text", 0
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]
