@@ -36,6 +36,13 @@
                 data: { theme_preview_target: "setting", part: "border_width", action: "change->theme-preview#refresh" } %>
           <p class="field__hint">Every border on the site: buttons, the schedule, cards, class slots. Default <%= Theme::DEFAULT_BORDER_WIDTH %>px.</p>
         </div>
+
+        <div class="field">
+          <%= form.label :theme_photo_style, "Photo style" %>
+          <%= form.select :theme_photo_style, Theme::PHOTO_STYLES.map { |key, style| [ style[:label], key ] }, { selected: @site.theme.photo_style },
+                data: { theme_preview_target: "setting", part: "photo_style", action: "change->theme-preview#refresh" } %>
+          <p class="field__hint">One look for every photo on the site: the hero, programs, owners and coaches. Tints use the accent color.</p>
+        </div>
       </div>
 
       <iframe class="theme-editor__sample" title="Color sample" src="<%= preview_admin_settings_theme_path %>"

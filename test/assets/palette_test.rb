@@ -114,6 +114,14 @@ class PaletteTest < ActiveSupport::TestCase
     assert_includes rule, "color: var(--bg)"
   end
 
+  test "every photo takes the theme's photo style" do
+    # One treatment for every photo: the wrapper every photo goes through
+    # carries the tint and darken layers, and the image carries the filter.
+    assert_match(/^\.photo img \{[^}]*filter: var\(--photo-filter\)/, @css)
+    assert_match(/^\.photo:has\(img\)::before \{[^}]*opacity: var\(--photo-darken\)/, @css)
+    assert_match(/^\.photo:has\(img\)::after \{[^}]*background: var\(--accent\)[^}]*mix-blend-mode: var\(--photo-blend\)[^}]*opacity: var\(--photo-tint\)/, @css)
+  end
+
   test "no two theme colors are within ΔE 3 of each other" do
     close = Theme.default.palette.to_a.combination(2).filter_map do |(a, x), (b, y)|
       distance = Theme.delta_e(x, y)

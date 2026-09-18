@@ -143,6 +143,26 @@ class ThemeTest < ActiveSupport::TestCase
     end
   end
 
+  test "each photo style sets the photo variables, and None changes nothing" do
+    none = Theme.default.variables
+    assert_equal "none", Theme.default.photo_style
+    assert_equal [ "none", "0", "0" ], none.values_at("--photo-filter", "--photo-tint", "--photo-darken")
+
+    Theme::PHOTO_STYLES.each_key do |style|
+      variables = Theme.new(**Theme::DEFAULTS, photo_style: style).variables
+      assert_equal Theme::PHOTO_STYLES[style][:filter], variables["--photo-filter"], style
+    end
+    duotone = Theme.new(**Theme::DEFAULTS, photo_style: "duotone").variables
+    assert_match(/grayscale/, duotone["--photo-filter"])
+    assert_not_includes Theme.default.palette.keys, "--photo-tint", "a photo setting is not a color"
+  end
+
+  test "an unknown photo style is refused" do
+    [ "sepia", "", nil, "none; } body { display: none" ].each do |bad|
+      assert_raises(ArgumentError, "accepted #{bad.inspect}") { Theme.new(**Theme::DEFAULTS, photo_style: bad) }
+    end
+  end
+
   test "contrast matches WCAG for known pairs" do
     assert_in_delta 21.0, Theme.contrast("#000000", "#ffffff"), 0.01
     assert_in_delta 1.0, Theme.contrast("#607248", "#607248"), 0.01

@@ -28,14 +28,18 @@ class Site < ApplicationRecord
   normalizes :theme_border_width, with: ->(value) { value == Theme::DEFAULT_BORDER_WIDTH ? nil : value }
   validates :theme_border_width, inclusion: { in: Theme::BORDER_WIDTHS, message: "must be 1 to 4 pixels" }, allow_nil: true
 
-  def theme_customized? = [ *THEME_COLORS.values, :theme_border_width ].any? { self[_1].present? }
+  normalizes :theme_photo_style, with: ->(value) { value.presence unless value == Theme::DEFAULT_PHOTO_STYLE }
+  validates :theme_photo_style, inclusion: { in: Theme::PHOTO_STYLES.keys, message: "isn't one of the photo styles" }, allow_nil: true
+
+  def theme_customized? = [ *THEME_COLORS.values, :theme_border_width, :theme_photo_style ].any? { self[_1].present? }
 
   # A stored value that isn't a color — set from the console, say — falls back
   # to the default rather than reaching the page's <style> tag.
   def theme
     colors = THEME_COLORS.to_h { |part, column| [ part, self[column].to_s.match?(Theme::HEX) ? self[column] : Theme::DEFAULTS[part] ] }
     width = theme_border_width if Theme::BORDER_WIDTHS.cover?(theme_border_width.to_i)
-    Theme.new(**colors, border_width: width || Theme::DEFAULT_BORDER_WIDTH)
+    photo_style = theme_photo_style if Theme::PHOTO_STYLES.key?(theme_photo_style)
+    Theme.new(**colors, border_width: width || Theme::DEFAULT_BORDER_WIDTH, photo_style: photo_style || Theme::DEFAULT_PHOTO_STYLE)
   end
 
   def announcement_showing? = announcement_visible? && announcement.present?

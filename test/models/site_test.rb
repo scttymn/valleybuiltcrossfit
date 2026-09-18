@@ -71,4 +71,18 @@ class SiteTest < ActiveSupport::TestCase
     site.update!(theme_danger: Theme::DEFAULTS[:danger].upcase)
     assert_nil site.theme_danger
   end
+
+  test "the photo style is one of the named styles, and the default is stored as nil" do
+    site = sites(:main)
+
+    site.update!(theme_photo_style: "tint_darken")
+    assert_equal "tint_darken", site.theme.photo_style
+    assert site.theme_customized?
+
+    site.update!(theme_photo_style: Theme::DEFAULT_PHOTO_STYLE)
+    assert_nil site.theme_photo_style
+
+    site.theme_photo_style = "sepia"
+    assert_not site.valid?
+  end
 end

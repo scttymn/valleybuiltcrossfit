@@ -131,3 +131,4 @@
 .contrast-guide td { padding: 6px 8px; border-bottom: var(--border-width) solid var(--line); }
 .contrast-guide__sample { display: inline-block; padding: 2px 8px; border: var(--border-width) solid var(--line); font-weight: 600; }
 .contrast-guide tr.is-failing td { color: var(--danger); }
+.theme-sample__photo { height: 140px; flex: 1 1 200px; max-width: 280px; }

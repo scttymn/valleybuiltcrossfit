@@ -24,6 +24,13 @@
 
   <span class="eyebrow">Book a class</span>
   <div class="hero"><h1 class="theme-sample__headline">Come as you are.<br><span>Build from here.</span></h1></div>
+  <% if @sample_photos.any? %>
+    <div class="theme-sample__row">
+      <% @sample_photos.each do |photo| %>
+        <%= photo_or_placeholder photo, css: "photo theme-sample__photo", size: :program %>
+      <% end %>
+    </div>
+  <% end %>
   <p>Coached CrossFit classes for every body in the valley. <a href="#">Read more</a></p>
   <p class="lede">Muted text, for the quieter parts of a page.</p>
 

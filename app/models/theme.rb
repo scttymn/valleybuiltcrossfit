@@ -18,6 +18,20 @@ class Theme
   HEX = /\A#\h{6}\z/
   DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248", danger: "#e0785a" }.freeze
 
+  # One treatment for every photo, as named styles. Each is plain CSS the
+  # stylesheet reads from variables: a filter on the image, a darkening layer
+  # in the background color, and a tint layer in the accent blended onto it.
+  # Values here, never admin input, are all that reach the <style> tag.
+  PHOTO_STYLES = {
+    "none" => { label: "None", filter: "none", tint: "0", blend: "normal", darken: "0" },
+    "darken" => { label: "Darken", filter: "none", tint: "0", blend: "normal", darken: "0.3" },
+    "tint" => { label: "Tint", filter: "none", tint: "0.45", blend: "color", darken: "0" },
+    "tint_darken" => { label: "Tint + darken", filter: "none", tint: "0.45", blend: "color", darken: "0.25" },
+    "duotone" => { label: "Duotone", filter: "grayscale(1) contrast(1.05)", tint: "0.8", blend: "color", darken: "0" },
+    "wash" => { label: "Soft wash", filter: "none", tint: "0.6", blend: "soft-light", darken: "0" }
+  }.freeze
+  DEFAULT_PHOTO_STYLE = "none"
+
   # Every border on the site, in pixels.
   BORDER_WIDTHS = 1..4
   DEFAULT_BORDER_WIDTH = 2
@@ -87,7 +101,7 @@ class Theme
 
   Warning = Data.define(:part, :ratio, :minimum, :suggestion)
 
-  attr_reader :background, :text, :accent, :danger, :border_width
+  attr_reader :background, :text, :accent, :danger, :border_width, :photo_style
 
   def self.default = new(**DEFAULTS)
 
@@ -101,13 +115,15 @@ class Theme
     candidate.match?(HEX) ? candidate.downcase : value
   end
 
-  def initialize(background:, text:, accent:, danger: DEFAULTS[:danger], border_width: DEFAULT_BORDER_WIDTH)
+  def initialize(background:, text:, accent:, danger: DEFAULTS[:danger], border_width: DEFAULT_BORDER_WIDTH, photo_style: DEFAULT_PHOTO_STYLE)
     @background, @text, @accent, @danger = [ background, text, accent, danger ].map do |color|
       raise ArgumentError, "not a #rrggbb color: #{color.inspect}" unless color.is_a?(String) && color.match?(HEX)
       color.downcase
     end
     raise ArgumentError, "not a border width: #{border_width.inspect}" unless border_width.is_a?(Integer) && BORDER_WIDTHS.cover?(border_width)
     @border_width = border_width
+    raise ArgumentError, "not a photo style: #{photo_style.inspect}" unless PHOTO_STYLES.key?(photo_style)
+    @photo_style = photo_style
   end
 
   def variables
@@ -123,12 +139,14 @@ class Theme
         "--accent-text" => Theme.suggest(accent, against: hardest, ratio: TEXT_CONTRAST) || accent,
         "--on-accent" => [ background, text ].max_by { Theme.contrast(_1, accent) },
         "--danger" => Theme.suggest(danger, against: hardest, ratio: TEXT_CONTRAST) || danger
-      }.merge(layers.transform_keys { "--#{_1}" }, error_box.transform_keys { "--#{_1}" }, "--border-width" => "#{border_width}px")
+      }.merge(layers.transform_keys { "--#{_1}" }, error_box.transform_keys { "--#{_1}" }, { "--border-width" => "#{border_width}px" }, photo_variables)
     end
   end
 
   # The colors themselves, without the names that point at one of them.
-  def palette = variables.except(*ALIASES, "--border-width")
+  # The colors themselves: no widths or photo settings, and no names that
+  # point at another color.
+  def palette = variables.select { |_, value| value.match?(HEX) }.except(*ALIASES)
 
   def pairings
     PAIRINGS.map do |pairing|
@@ -146,15 +164,16 @@ class Theme
   # is nothing in here that could close the tag.
   def to_css = ":root{#{variables.map { |token, value| "#{token}:#{value}" }.join(";")}}"
 
-  def to_h = { background:, text:, accent:, danger:, border_width: }
+  def to_h = { background:, text:, accent:, danger:, border_width:, photo_style: }
 
   # This theme with some settings swapped, from raw input such as preview
   # params. Anything that isn't valid is ignored rather than raised: a
   # half-typed hex in the picker shouldn't break the preview.
-  def with(border_width: nil, **colors)
+  def with(border_width: nil, photo_style: nil, **colors)
     valid = colors.slice(*DEFAULTS.keys).transform_values { Theme.normalize(_1) }.select { |_, value| value&.match?(HEX) }
     width = Integer(border_width.to_s, exception: false)
     valid[:border_width] = width if width && BORDER_WIDTHS.cover?(width)
+    valid[:photo_style] = photo_style if PHOTO_STYLES.key?(photo_style)
     Theme.new(**to_h.merge(valid))
   end
 
@@ -204,6 +223,11 @@ class Theme
       @error_box ||= DANGER_SHADES.transform_values { |s, d| step(s, d, toward: danger) }.then do |box|
         box.merge("danger-ink" => Theme.suggest(box["danger-ink"], against: box["danger-bg"], ratio: TEXT_CONTRAST) || box["danger-ink"])
       end
+    end
+
+    def photo_variables
+      style = PHOTO_STYLES.fetch(photo_style)
+      { "--photo-filter" => style[:filter], "--photo-tint" => style[:tint], "--photo-blend" => style[:blend], "--photo-darken" => style[:darken] }
     end
 
     # The background moved s of the way toward the text and u toward `toward`.

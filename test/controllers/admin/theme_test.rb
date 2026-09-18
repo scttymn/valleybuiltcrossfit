@@ -161,6 +161,20 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_includes theme_style, "--danger-line:#{expected["--danger-line"]}"
   end
 
+  test "a photo style picked in admin reaches the site, and the sample shows a photo in it" do
+    sign_in_as users(:one)
+    @site.hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+
+    get preview_admin_settings_theme_path, params: { photo_style: "duotone" }
+    assert_includes theme_style, "--photo-filter:#{Theme::PHOTO_STYLES["duotone"][:filter]}"
+    assert_select ".theme-sample .photo img"
+    assert_nil @site.reload.theme_photo_style, "previewing must not save"
+
+    patch admin_settings_theme_path, params: { site: { theme_photo_style: "tint" } }
+    get root_path
+    assert_includes theme_style, "--photo-tint:#{Theme::PHOTO_STYLES["tint"][:tint]}"
+  end
+
   private
     def theme_style = css_select("head style").map(&:text).join
 end
