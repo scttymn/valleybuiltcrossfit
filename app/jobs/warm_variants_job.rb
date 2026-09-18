@@ -17,6 +17,8 @@ class WarmVariantsJob < ApplicationJob
   ].freeze
 
   def perform
+    @built = 0
+
     ATTACHMENTS.each do |model, name, size|
       widths = ApplicationHelper::PHOTO_SIZES.fetch(size).fetch(:widths)
       # Owners share the staff table but render at their own size.
@@ -24,16 +26,27 @@ class WarmVariantsJob < ApplicationJob
 
       model.find_each do |record|
         attachment = record.public_send(name)
-        next unless attachment.attached? && attachment.variable?
+        next unless attachment.attached?
+
+        # A blob attached moments ago may not have been identified yet —
+        # Active Storage does that in its own job, and until it has, the content
+        # type is a placeholder and variable? is false. Asking here settles it
+        # rather than silently skipping every photo we were enqueued to build.
+        attachment.blob.identify
+        next unless attachment.variable?
 
         widths.each { |width| warm(attachment, width) }
       end
     end
+
+    Rails.logger.info("[variants] built #{@built} size#{"s" unless @built == 1}")
   end
 
   private
     def warm(attachment, width)
-      ApplicationController.helpers.web_variant(attachment, width).processed
+      variant = ApplicationController.helpers.web_variant(attachment, width)
+      @built += 1 unless variant.send(:processed?)
+      variant.processed
     rescue => e
       # One unreadable photo should not cost every other page its images.
       Rails.logger.warn("[variants] could not warm #{attachment.blob.filename} at #{width}px: #{e.message}")

@@ -6,13 +6,16 @@ module WarmsPhotoVariants
   extend ActiveSupport::Concern
 
   included do
+    # attachment_changes is only populated while the save is in flight, so note
+    # it there and act once the file is actually committed to storage. Without
+    # the check every edit to a name or a bio would queue a job with no work.
+    before_save { @photo_changed = attachment_changes.any? }
     after_commit :warm_photo_variants, on: [ :create, :update ]
   end
 
   private
     def warm_photo_variants
-      # The job is a no-op for sizes that already exist, so it is cheap to run
-      # after any save rather than trying to detect which photo changed.
-      WarmVariantsJob.perform_later
+      WarmVariantsJob.perform_later if @photo_changed
+      @photo_changed = false
     end
 end

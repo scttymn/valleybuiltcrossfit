@@ -19,6 +19,22 @@ class WarmVariantsJobTest < ActiveJob::TestCase
     end
   end
 
+  test "builds a photo Active Storage has not identified yet" do
+    site = sites(:main)
+    site.hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+    # How a blob looks in the window between being attached and being analysed:
+    # the job used to read variable? as false here and skip every photo.
+    blob = site.hero_photo.blob
+    blob.update_columns(content_type: "application/octet-stream",
+                        metadata: blob.metadata.except("identified", :identified).to_json)
+
+    WarmVariantsJob.perform_now
+
+    width = ApplicationHelper::PHOTO_SIZES.fetch(:hero).fetch(:widths).last
+    assert ApplicationController.helpers.web_variant(site.reload.hero_photo, width).send(:processed?),
+           "an unidentified blob was skipped instead of being built"
+  end
+
   test "one unreadable photo does not stop the rest" do
     program = programs(:crossfit)
     program.photo.attach(io: StringIO.new("not an image"), filename: "broken.webp", content_type: "image/webp")
