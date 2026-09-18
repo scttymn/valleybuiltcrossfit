@@ -151,15 +151,20 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_select ".visit__map", 0
-    assert_select ".directions a", 2
+    assert_select ".visit__actions a.btn--map", 2
   end
 
-  test "get directions lets the visitor pick Apple Maps or Google Maps instead of assuming one" do
+  test "directions are two buttons side by side, one per map app, so nobody is sent to an app they don't use" do
     get root_path
 
-    assert_select ".directions summary", text: "Get directions"
-    assert_select ".directions a[target=_blank][rel~=noopener]", 2
-    [ "Apple Maps", "Google Maps" ].each { |app| assert_select ".directions a", text: app }
+    assert_select "details.directions", 0, "no menu to open first"
+    assert_select ".visit__maps[role=group][aria-label='Get directions'] a.btn--map[target=_blank][rel~=noopener]", 2, "the two stay together when the row wraps"
+    { "Apple Maps" => "maps.apple.com", "Google Maps" => "google.com/maps" }.each do |app, host|
+      assert_select ".visit__actions a.btn--map[aria-label='Directions in #{app}'][href*='#{host}']" do
+        assert_select "svg[aria-hidden=true]", 1
+        assert_select "span", "Maps"
+      end
+    end
   end
 
   test "theme-color matches the palette background" do
