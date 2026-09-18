@@ -21,6 +21,25 @@ export default class extends Controller {
       }
     }
 
-    document.querySelector(params.scroll || "#get-options")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    // Wait a frame: the mobile menu closes on the same tap, and measuring
+    // before it's gone overshoots by the menu's height.
+    requestAnimationFrame(() => this.scrollTo(params.scroll))
+  }
+
+  // The form, or the section a link names (Membership) when the form still
+  // shows from there. On a phone the form sits below the section's list, so
+  // it's the form itself.
+  scrollTo(selector) {
+    const form = document.querySelector("#get-options")
+    const section = selector && document.querySelector(selector)
+    const target = section && this.formShowsFrom(section, form) ? section : form
+    target?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
+  formShowsFrom(section, form) {
+    if (!form) return true
+    const offset = parseFloat(getComputedStyle(section).scrollMarginTop) || 0
+    const formTop = form.getBoundingClientRect().top - section.getBoundingClientRect().top + offset
+    return formTop + Math.min(form.offsetHeight, 200) <= window.innerHeight
   }
 }
