@@ -49,6 +49,12 @@ class LogoTest < ActiveSupport::TestCase
     assert_not Rails.public_path.join("icon.png").exist?, "Rails' placeholder icon is still there"
   end
 
+  test "the horizontal logo is the VB letters, not the mountain mark" do
+    horizontal = Nokogiri::XML(LOGOS[:horizontal].read)
+    letters = Nokogiri::XML(Rails.root.join("docs/brand/logo-vb.svg").read)
+    assert_equal letters.css("path").map { _1["d"] }, horizontal.css("g.logo-mark path").map { _1["d"] }
+  end
+
   test "the stylesheet fills each part from the theme" do
     css = Rails.root.join("app/assets/stylesheets/application.css").read
     { "logo-mark" => "--accent", "logo-tagline" => "--accent", "logo-name" => "--ink" }.each do |part, variable|

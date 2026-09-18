@@ -8,9 +8,10 @@
 #   bin/rails runner docs/brand/trace_logo.rb
 #
 # The shapes come from the large stacked file (vbc-logo-stacked-black.png,
-# 2150px). The horizontal version reuses those shapes, each placed where it
-# sits in the official horizontal logo (vbc-logo-horizontal.png),
-# whose CROSSFIT rules are shorter than the stacked one's.
+# 2150px). The horizontal version is laid out like the designer's horizontal
+# logo (vbc-logo-horizontal-black.png): the VB letters on the left at its size,
+# and on the right the stacked logo's curved name and CROSSFIT line, kept
+# together as drawn and scaled into the designer's name-and-tagline area.
 require "tmpdir"
 
 BRAND = Rails.root.join("docs/brand")
@@ -19,7 +20,7 @@ STACKED = BRAND.join("vbc-logo-stacked-black.png")
 HORIZONTAL_SVG = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
 STACKED_SVG = Rails.root.join("app/assets/images/logo-valley-built-stacked.svg")
 LETTERS_SVG = BRAND.join("logo-vb.svg")
-HORIZONTAL = BRAND.join("vbc-logo-horizontal.png")
+HORIZONTAL = BRAND.join("vbc-logo-horizontal-black.png")
 
 def grid(img) = Vips::Image.xyz(img.width, img.height).bandsplit
 
@@ -57,13 +58,26 @@ def stacked_parts
     .merge(tagline_pieces((y >= 1228).ifthenelse(ink, 0)))
 end
 
-def horizontal_boxes
-  img = Vips::Image.new_from_file(HORIZONTAL.to_s)
-  r, g, alpha = img[0].cast(:float), img[1].cast(:float), img[3].cast(:float) / 255
-  x, _y = grid(img)
-  green, cream = (g >= r).ifthenelse(alpha, 0), (r > g).ifthenelse(alpha, 0)
-  parts = { "mark" => (x < 470).ifthenelse(green, 0), "name" => cream }.merge(tagline_pieces((x >= 470).ifthenelse(green, 0)))
-  [ parts.transform_values { box(_1) }, [ img.width, img.height ] ]
+# The designer's horizontal logo: where the VB sits, and where the name and
+# tagline sit, split at the gap between them.
+def horizontal_layout
+  ink = Vips::Image.new_from_file(HORIZONTAL.to_s)[3].cast(:float) / 255
+  x, _y = grid(ink)
+  left, _top, _width, height = box(ink)
+  columns = (left...ink.width).map { |col| ink.crop(col, 0, 1, height).max > 0.5 }
+  gap = left + columns.index(false)
+  { "mark" => box((x < gap).ifthenelse(ink, 0)), "words" => box((x >= gap).ifthenelse(ink, 0)) }
+end
+
+# Moves and scales `from` (a box) to fit inside `to`, keeping its proportions,
+# at the left of `to` and centered down it.
+def fit(paths, from, to)
+  sl, st, sw, sh = from
+  tl, tt, tw, th = to
+  scale = [ tw.fdiv(sw), th.fdiv(sh) ].min
+  dx = tl - scale * sl
+  dy = tt + (th - scale * sh) / 2.0 - scale * st
+  %(<g transform="translate(#{dx.round(2)} #{dy.round(2)}) scale(#{scale.round(5)})">#{paths}</g>)
 end
 
 # potrace's paths for one part, in the source image's pixel coordinates.
@@ -99,24 +113,19 @@ Dir.mktmpdir do |dir|
   vb = letters(parts["mark"])
   File.write(LETTERS_SVG, svg(padded(*box(vb), 8), { "mark" => [ trace(vb, dir, "letters") ] }))
 
-  # Horizontal: each shape moved and scaled onto its place in the official layout.
-  # The mark and the word keep their proportions (fit by height); the name fits by
-  # width; the rules stretch to their shorter length.
-  targets, _size = horizontal_boxes
-  placed = traced.to_h do |name, paths|
-    sl, st, sw, sh = boxes[name]
-    tl, tt, tw, th = targets[name]
-    sx, sy = tw.fdiv(sw), th.fdiv(sh)
-    sx = sy if %w[mark word].include?(name)
-    sy = sx if name == "name"
-    dx = tl + tw / 2.0 - sx * (sl + sw / 2.0)
-    dy = tt + th / 2.0 - sy * (st + sh / 2.0)
-    [ name, %(<g transform="translate(#{dx.round(2)} #{dy.round(2)}) scale(#{sx.round(5)} #{sy.round(5)})">#{paths}</g>) ]
-  end
-  lefts, tops = targets.values.map { _1[0] }, targets.values.map { _1[1] }
-  rights, bottoms = targets.values.map { _1[0] + _1[2] }, targets.values.map { _1[1] + _1[3] }
-  extent = [ lefts.min, tops.min, rights.max - lefts.min, bottoms.max - tops.min ]
-  File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), GROUPS.transform_values { |names| names.map { placed[_1] } }))
+  # Horizontal: the designer's layout, with the stacked logo's curved name.
+  # The VB fills the designer's VB area; the name and tagline move together as
+  # one block (their spacing is drawn around the curve) into the words' area.
+  layout = horizontal_layout
+  words_from = box(%w[name rule-left word rule-right].map { parts[_1] }.reduce(:+))
+  placed = { "mark" => [ fit(trace(vb, dir, "letters"), box(vb), layout["mark"]) ] }
+  placed["name"] = [ fit(traced["name"], words_from, layout["words"]) ]
+  placed["tagline"] = GROUPS["tagline"].map { fit(traced[_1], words_from, layout["words"]) }
+  ml, mt, mw, mh = layout["mark"]
+  wl, _wt, ww, _wh = layout["words"]
+  scale = [ ww.fdiv(words_from[2]), layout["words"][3].fdiv(words_from[3]) ].min
+  extent = [ ml, mt, wl + scale * words_from[2] - ml, mh ]
+  File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), placed))
 end
 
 # Icons, from the VB letters. The favicon is the letters in a square frame with
