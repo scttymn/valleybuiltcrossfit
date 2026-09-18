@@ -13,6 +13,8 @@ if site.hero_title.blank?
     address_line1: "1450 NW Olympic Drive",
     address_line2: "Unit D",
     city_state_zip: "Grain Valley, MO 64029",
+    map_latitude: 39.0251858,
+    map_longitude: -94.2158759,
     hero_eyebrow: "Grain Valley, Missouri",
     hero_title: "Come as you are.",
     hero_title_accent: "Build from here.",

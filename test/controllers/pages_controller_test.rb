@@ -132,6 +132,36 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "the map is drawn by the site at the gym's location, not embedded from Google" do
+    get root_path
+
+    assert_select ".visit__map[data-controller=map][data-map-latitude-value='39.0251858'][data-map-longitude-value='-94.2158759']"
+    assert_select "iframe", 0
+    assert_no_match %r{maps\.google\.com/maps\?.*output=embed}, response.body
+    script = Rails.root.join("app/javascript/controllers/map_controller.js").read
+    library = script[%r{LIBRARY = "(/vendor/maplibre-gl-[\d.]+/)"}, 1]
+    assert library, "the map controller doesn't load MapLibre from the site"
+    %w[maplibre-gl.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs maplibre-gl.css].each do |file|
+      assert Rails.public_path.join(library.delete_prefix("/"), file).file?, "#{library}#{file} is missing"
+    end
+  end
+
+  test "without a location there is no map, and directions still work" do
+    sites(:main).update!(map_latitude: nil, map_longitude: nil)
+
+    get root_path
+    assert_select ".visit__map", 0
+    assert_select ".directions a", 3
+  end
+
+  test "get directions offers each map app instead of assuming Google" do
+    get root_path
+
+    assert_select ".directions summary", text: "Get directions"
+    assert_select ".directions a[target=_blank][rel~=noopener]", 3
+    [ "Apple Maps", "Google Maps", "Waze" ].each { |app| assert_select ".directions a", text: app }
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

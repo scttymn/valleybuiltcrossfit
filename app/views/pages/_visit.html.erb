@@ -15,11 +15,19 @@
       </div>
       <div class="visit__actions">
         <a href="#get-options" class="btn btn--primary" data-action="click->prefill#apply" data-prefill-interest-param="<%= Lead::QUESTION %>">Contact us</a>
-        <a href="<%= site.directions_url %>" class="btn btn--ghost" target="_blank" rel="noopener">Get directions</a>
+        <details class="directions">
+          <summary class="btn btn--ghost">Get directions</summary>
+          <div class="directions__menu">
+            <% site.directions_links.each do |app, url| %>
+              <a href="<%= url %>" target="_blank" rel="noopener"><%= app %></a>
+            <% end %>
+          </div>
+        </details>
       </div>
     </div>
-    <div class="visit__map">
-      <iframe src="<%= site.map_embed_url %>" title="Map to <%= site.full_address %>" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+    <% if site.map_location? %>
+      <div class="visit__map" role="region" aria-label="Map to <%= site.full_address %>"
+           data-controller="map" data-map-latitude-value="<%= site.map_latitude %>" data-map-longitude-value="<%= site.map_longitude %>"></div>
+    <% end %>
   </div>
 </section>

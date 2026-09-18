@@ -139,7 +139,7 @@ class Theme
         "--accent-text" => Theme.suggest(accent, against: hardest, ratio: TEXT_CONTRAST) || accent,
         "--on-accent" => [ background, text ].max_by { Theme.contrast(_1, accent) },
         "--danger" => Theme.suggest(danger, against: hardest, ratio: TEXT_CONTRAST) || danger
-      }.merge(layers.transform_keys { "--#{_1}" }, error_box.transform_keys { "--#{_1}" }, { "--border-width" => "#{border_width}px" }, photo_variables, map_variables)
+      }.merge(layers.transform_keys { "--#{_1}" }, error_box.transform_keys { "--#{_1}" }, { "--border-width" => "#{border_width}px" }, photo_variables)
     end
   end
 
@@ -228,19 +228,6 @@ class Theme
     def photo_variables
       style = PHOTO_STYLES.fetch(photo_style)
       { "--photo-filter" => style[:filter], "--photo-tint" => style[:tint], "--photo-blend" => style[:blend], "--photo-darken" => style[:darken] }
-    end
-
-    # The embedded Google map can't be restyled, so it is turned grey and then
-    # recolored with two blended layers: its ground takes the background color,
-    # its roads and labels the text color. Google draws a light map, so on a
-    # dark theme it is inverted first, and the two layers swap blend modes.
-    def map_variables
-      dark = Color.luminance(background) < Color.luminance(text)
-      {
-        "--map-filter" => dark ? "grayscale(1) invert(1) contrast(1.15)" : "grayscale(1) contrast(1.05)",
-        "--map-lines-blend" => dark ? "multiply" : "screen",
-        "--map-ground-blend" => dark ? "screen" : "multiply"
-      }
     end
 
     # The background moved s of the way toward the text and u toward `toward`.

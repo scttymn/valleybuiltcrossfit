@@ -5,7 +5,9 @@ module Admin
     SECTIONS = {
       "Contact" => [
         Field[:phone], Field[:email], Field[:instagram_url], Field[:address_line1], Field[:address_line2], Field[:city_state_zip],
-        Field[:lead_notification_email, hint: "Where \"Get your options\" form submissions are emailed. Defaults to the email above."]
+        Field[:lead_notification_email, hint: "Where \"Get your options\" form submissions are emailed. Defaults to the email above."],
+        Field[:map_latitude, hint: "Where the map's pin goes. In Google Maps, right-click the building and click the numbers at the top to copy them."],
+        Field[:map_longitude, hint: "The second number (negative in the US). Leave both blank to hide the map."]
       ],
       "Hero" => [
         Field[:hero_eyebrow], Field[:hero_title], Field[:hero_title_accent, hint: "Second line, in green."], Field[:hero_body, :text],

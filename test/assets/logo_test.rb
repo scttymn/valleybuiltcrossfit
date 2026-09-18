@@ -25,12 +25,12 @@ class LogoTest < ActiveSupport::TestCase
   end
 
   test "no stylesheet blends the logo into the page" do
-    # Blending is allowed on photo and map layers (both recolored by the
-    # theme) and nowhere else — and the logo is neither.
+    # Blending is allowed on photo layers (the theme's photo style) and
+    # nowhere else — and the logo is never a photo.
     Rails.root.glob("app/assets/stylesheets/*.css").each do |sheet|
       sheet.read.gsub(%r{/\*.*?\*/}m, "").scan(/([^{}]+)\{([^}]*)\}/).each do |selector, body|
         next unless body.include?("mix-blend-mode")
-        assert_match(/\A\s*(\.photo:has\(img\):not\(\.photo--broken\)::after|\.visit__map::(before|after))\s*\z/, selector, "#{sheet.basename}: #{selector.strip} blends — only photo and map layers may")
+        assert_match(/\A\s*\.photo:has\(img\):not\(\.photo--broken\)::after\s*\z/, selector, "#{sheet.basename}: #{selector.strip} blends — only photo layers may")
       end
     end
   end

@@ -157,20 +157,6 @@ class ThemeTest < ActiveSupport::TestCase
     assert_not_includes Theme.default.palette.keys, "--photo-tint", "a photo setting is not a color"
   end
 
-  test "the map is drawn in the theme: ground in the background color, roads and labels in the text color" do
-    dark = Theme.default.variables
-    assert_match(/invert\(1\)/, dark["--map-filter"], "a dark theme turns the light map dark")
-    assert_equal "multiply", dark["--map-lines-blend"]
-    assert_equal "screen", dark["--map-ground-blend"]
-
-    light = Theme.new(**Theme::DEFAULTS, background: "#f4efe6", text: "#1c1c1c").variables
-    assert_no_match(/invert/, light["--map-filter"], "a light theme keeps the map light")
-    assert_equal "screen", light["--map-lines-blend"]
-    assert_equal "multiply", light["--map-ground-blend"]
-
-    assert_not_includes Theme.default.palette.keys, "--map-filter", "a map setting is not a color"
-  end
-
   test "an unknown photo style is refused" do
     [ "sepia", "", nil, "none; } body { display: none" ].each do |bad|
       assert_raises(ArgumentError, "accepted #{bad.inspect}") { Theme.new(**Theme::DEFAULTS, photo_style: bad) }

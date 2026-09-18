@@ -8,6 +8,9 @@ class Site < ApplicationRecord
 
   validates :image_quality, inclusion: { in: IMAGE_QUALITY_RANGE }
   validates :class_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validates :map_latitude, numericality: { in: -90..90 }, allow_nil: true
+  validates :map_longitude, numericality: { in: -180..180 }, allow_nil: true
+  validate :map_location_is_whole
 
   def self.instance
     first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 18)
@@ -48,6 +51,20 @@ class Site < ApplicationRecord
   def hero_tag_list = hero_tags.to_s.split("/").map(&:strip).compact_blank
   def address_short = [ address_line1, address_line2, city_state_zip.to_s.sub(/,?\s*\d{5}(-\d{4})?\z/, "").delete(",") ].compact_blank.join(", ")
   def full_address = [ address_line1, address_line2, city_state_zip ].compact_blank.join(", ")
-  def directions_url = "https://www.google.com/maps/dir/?api=1&destination=#{CGI.escape(full_address)}"
-  def map_embed_url = "https://maps.google.com/maps?q=#{CGI.escape(full_address)}&output=embed"
+  def map_location? = map_latitude.present? && map_longitude.present?
+
+  # Each app finds the address itself, so a moved pin never sends anyone astray.
+  def directions_links
+    address = CGI.escape(full_address)
+    {
+      "Apple Maps" => "https://maps.apple.com/?daddr=#{address}",
+      "Google Maps" => "https://www.google.com/maps/dir/?api=1&destination=#{address}",
+      "Waze" => "https://waze.com/ul?q=#{address}&navigate=yes"
+    }
+  end
+
+  private
+    def map_location_is_whole
+      errors.add(:base, "Give both a map latitude and longitude, or neither.") if map_latitude.present? != map_longitude.present?
+    end
 end
