@@ -295,6 +295,28 @@ that must not change.
   redraw, typing a hex, Use this → picker. It needs a signed-in admin, and
   Claude doesn't enter passwords.
 
+## Brand defaults and a themed admin (after Batch 3)
+
+- **Defaults are the client's logo** (`docs/brand/vbc-logo.png`, supplied by
+  the client): background `#000000`, text `#d3c7b8` (the lettering), accent
+  `#607248` (the mark). A test reads the file's three most common colors and
+  compares — a new logo can't leave the defaults behind. The site's text is
+  now cream rather than the design file's `#f2f1e8` (decided, visible).
+- The nav logo asset (`logo-valley-built-horizontal.png`) has cream `#d3c7b7`,
+  one step off the client's file; invisible, left as is.
+- With cream text, `--accent-wash` came out ΔE 2.8 from `--line`. Its (s, u)
+  moved from (−0.098, 0.419) to (−0.14, 0.49): ΔE 4.3 from its nearest shade,
+  and still within ΔE 1.8 of the hand-built value. The parity test now checks
+  the formula against the hand-built palette *from its own base colors*
+  (`#f2f1e8` text), since the defaults changed on purpose.
+- **The admin and login follow the saved theme** (decided): `admin.css`'s
+  `--a-*` roles map onto theme shades, its 13 literals are gone, and the palette
+  tests now cover both stylesheets. Page background is `--bg` (black), panels
+  and sidebar `--surface`, inputs `--surface-2`. The delete-link red joined the
+  fixed error colors as `--danger`.
+- Known risk, accepted: an unreadable saved theme makes the admin unreadable
+  too. The sample warns before saving and Reset restores the defaults.
+
 ## Agent loop checkpoints
 
 - Before touching CSS: screenshot the current site (the "before" set) so the

@@ -1,7 +1,9 @@
 /* Admin area */
 .admin {
-  --a-bg: #14150f; --a-panel: #1b1d17; --a-input: #101109; --a-line: #2c2f24; --a-line-2: #3b4030;
-  --a-ink: #f2f1e8; --a-muted: #96988a; --a-accent: #a8bb5c; --a-danger: #e0785a;
+  /* The admin follows the saved theme too (app/models/theme.rb, emitted by the
+     layout). These names just map the admin's roles onto theme shades. */
+  --a-bg: var(--bg); --a-panel: var(--surface); --a-input: var(--surface-2); --a-line: var(--line); --a-line-2: var(--line-strong);
+  --a-ink: var(--ink); --a-muted: var(--muted); --a-accent: var(--accent); --a-danger: var(--danger);
   margin: 0; background: var(--a-bg); color: var(--a-ink); font: 15px/1.5 Barlow, system-ui, sans-serif;
   display: flex; min-height: 100vh;
 }
@@ -12,12 +14,12 @@
 .admin h2 { font-size: 18px; }
 .admin code { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
 
-.admin-nav { width: 240px; flex: 0 0 240px; background: #0f1009; border-right: 1px solid var(--a-line); padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.admin-nav { width: 240px; flex: 0 0 240px; background: var(--surface); border-right: 1px solid var(--a-line); padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
 .admin-nav__brand img { height: 38px; display: block; }
 .admin-nav nav { display: flex; flex-direction: column; gap: 2px; }
-.admin-nav nav a { color: #cdcec2; text-decoration: none; padding: 8px 10px; font-weight: 500; }
+.admin-nav nav a { color: var(--ink-soft); text-decoration: none; padding: 8px 10px; font-weight: 500; }
 .admin-nav nav a:hover { background: var(--a-panel); color: var(--a-ink); }
-.admin-nav nav a.is-active { background: #22291a; color: var(--a-accent); }
+.admin-nav nav a.is-active { background: var(--accent-wash); color: var(--a-accent); }
 .admin-nav__foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding: 0 10px; }
 .admin-nav__foot form { margin: 0; }
 
@@ -26,16 +28,16 @@
 .admin-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: 24px; }
 .admin-head__note { flex-basis: 100%; margin: 0; color: var(--a-muted); }
 
-.button { display: inline-block; background: var(--a-accent); color: #14150f !important; border: 1px solid var(--a-accent); padding: 10px 18px; font: 600 14px/1 Barlow, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
-.button:hover { background: #cfdc94; }
+.button { display: inline-block; background: var(--a-accent); color: var(--bg) !important; border: 1px solid var(--a-accent); padding: 10px 18px; font: 600 14px/1 Barlow, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.button:hover { background: var(--accent-pale); }
 .button--ghost { background: transparent; color: var(--a-accent) !important; }
-.button--ghost:hover { background: #22291a; }
+.button--ghost:hover { background: var(--accent-wash); }
 .link-button { background: none; border: 0; padding: 0; color: var(--a-accent); font: inherit; cursor: pointer; }
 .link-button--danger { color: var(--a-danger); }
 
 .flash { padding: 10px 14px; border: 1px solid; margin: 0 0 20px; }
-.flash--notice { border-color: #4a5a28; background: #1d2414; color: #cfdc94; }
-.flash--alert { border-color: #7a3b2a; background: #2a1812; color: #f0c2b0; }
+.flash--notice { border-color: var(--accent-border); background: var(--accent-wash); color: var(--accent-pale); }
+.flash--alert { border-color: var(--danger-line); background: var(--danger-bg); color: var(--danger-ink); }
 
 .table { width: 100%; border-collapse: collapse; background: var(--a-panel); border: 1px solid var(--a-line); }
 .table th, .table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--a-line); vertical-align: top; }
@@ -48,7 +50,7 @@
 .form__section { border: 1px solid var(--a-line); background: var(--a-panel); padding: 20px 22px 24px; margin: 0; display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 20px; }
 .form__section legend { font: 600 17px Oswald, sans-serif; text-transform: uppercase; letter-spacing: 0.04em; padding: 0 8px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field > label { font: 500 11px "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; color: #cdcec2; }
+.field > label { font: 500 11px "IBM Plex Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
 .field input[type=text], .field input[type=email], .field input[type=password], .field input[type=number], .field input[type=date], .field textarea, .field select {
   width: 100%; background: var(--a-input); color: var(--a-ink); border: 1px solid var(--a-line-2); padding: 10px 12px; font: 15px/1.5 Barlow, sans-serif; border-radius: 0;
 }

@@ -28,7 +28,7 @@
             </div>
           </div>
         <% end %>
-        <p class="field__hint">The accent is the logo green, <code><%= Theme::DEFAULTS[:accent] %></code>, until you change it.</p>
+        <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>. Reset puts them back.</p>
       </div>
 
       <iframe class="theme-editor__sample" title="Color sample" src="<%= theme_preview_admin_settings_path %>"

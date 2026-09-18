@@ -17,6 +17,17 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_select "meta[name='theme-color'][content='#ffffff']"
   end
 
+  test "the admin and the login page use the saved theme" do
+    @site.update!(**LIGHT)
+
+    get login_path
+    assert_includes theme_style, "--bg:#ffffff", "login page ignores the theme"
+
+    sign_in_as users(:one)
+    get admin_root_path
+    assert_includes theme_style, "--bg:#ffffff", "admin ignores the theme"
+  end
+
   test "a low-contrast theme still saves, and the preview flags it" do
     sign_in_as users(:one)
 

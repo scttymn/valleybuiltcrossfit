@@ -1,22 +1,24 @@
 require "test_helper"
 
 class ThemeTest < ActiveSupport::TestCase
-  # The palette as it stood in site.css before the theme took it over. The
-  # default theme has to keep the site looking exactly like this.
+  # The palette as it stood in site.css before the theme took it over, and the
+  # three colors it was built around. The formula has to reproduce it.
   CURRENT_PALETTE = {
     "bg" => "#000000", "surface" => "#0a0d03", "surface-2" => "#13170a",
     "line" => "#202318", "line-strong" => "#343827",
     "muted-soft" => "#6f7563", "muted" => "#939587", "ink-soft" => "#c8c9bc", "ink" => "#f2f1e8",
     "accent-wash" => "#181d0e", "accent-wash-2" => "#212817", "accent-edge" => "#2c351f",
     "accent-border" => "#3f4930", "accent-dim" => "#86996c", "accent" => "#607248", "accent-pale" => "#ccdab7",
-    "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0"
+    "danger" => "#e0785a", "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0"
   }.freeze
 
   LIGHT = { background: "#ffffff", text: "#1b1b1b", accent: "#607248" }.freeze
   SURFACES = %w[--bg --surface --surface-2].freeze
 
-  test "the default theme reproduces the current palette within ΔE 2" do
-    variables = Theme.default.variables
+  HAND_BUILT_BASE = { background: "#000000", text: "#f2f1e8", accent: "#607248" }.freeze
+
+  test "the formula reproduces the hand-built palette from its three base colors within ΔE 2" do
+    variables = Theme.new(**HAND_BUILT_BASE).variables
 
     assert_equal CURRENT_PALETTE.keys.map { "--#{_1}" }.sort, variables.keys.sort
     off = CURRENT_PALETTE.filter_map do |token, was|
@@ -24,7 +26,25 @@ class ThemeTest < ActiveSupport::TestCase
       distance = Theme.delta_e(was, now)
       "--#{token}: #{was} → #{now} (ΔE #{distance.round(1)})" if distance > 2
     end
-    assert_empty off, "the default theme would visibly change the site"
+    assert_empty off, "the derived shades drifted from the design"
+  end
+
+  test "the defaults are the colors of the client's logo" do
+    # docs/brand/vbc-logo.png is the file the client supplied. Its three most
+    # common colors — the background, then the lettering, then the mark — are
+    # the brand, so a new logo can't leave the defaults behind.
+    logo = Vips::Image.new_from_file(Rails.root.join("docs/brand/vbc-logo.png").to_s).extract_band(0, n: 3)
+    counts = Hash.new(0)
+    logo.to_a.each { |row| row.each { |pixel| counts[pixel] += 1 } }
+    background, lettering, mark = counts.max_by(3) { _2 }.map { |(rgb, _)| format("#%02x%02x%02x", *rgb) }
+
+    assert_equal({ background:, text: lettering, accent: mark }, Theme::DEFAULTS)
+  end
+
+  test "the defaults are distinct and warning-free" do
+    assert_empty Theme.default.warnings
+    close = Theme.default.variables.to_a.combination(2).select { |(_, x), (_, y)| Theme.delta_e(x, y) < 3 }
+    assert_empty close
   end
 
   test "a light theme derives distinct colors and keeps text readable on every surface" do

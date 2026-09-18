@@ -1,15 +1,15 @@
 require "test_helper"
 
-# The public stylesheet takes every color from the theme (Theme#variables,
-# emitted into the page by the layout). A theme can only work if that holds —
-# a color typed straight into a rule would ignore it — and CSS gives no error
-# for a misspelled variable: it just renders nothing.
+# The site and admin stylesheets take every color from the theme
+# (Theme#variables, emitted into the page by both layouts). A theme can only
+# work if that holds — a color typed straight into a rule would ignore it — and
+# CSS gives no error for a misspelled variable: it just renders nothing.
 class PaletteTest < ActiveSupport::TestCase
-  STYLESHEET = Rails.root.join("app/assets/stylesheets/site.css")
+  STYLESHEETS = %w[site.css admin.css].map { Rails.root.join("app/assets/stylesheets", _1) }
   COLOR_LITERAL = /(?<=[\s:(,])#\h{3,8}\b|\b(?:rgba?|hsla?)\(/
 
   setup do
-    @css = STYLESHEET.read.gsub(%r{/\*.*?\*/}m, "") # comments may name colors
+    @css = STYLESHEETS.map(&:read).join("\n").gsub(%r{/\*.*?\*/}m, "") # comments may name colors
     @theme = Theme.default.variables
   end
 
@@ -30,7 +30,7 @@ class PaletteTest < ActiveSupport::TestCase
     assert_empty @theme.keys.map { _1.delete_prefix("--") } - used, "the theme defines colors nothing paints with"
   end
 
-  test "site.css contains no color literals" do
+  test "the stylesheets contain no color literals" do
     stray = @css.lines.each_with_index.filter_map do |line, i|
       "line #{i + 1}: #{line.strip}" if line.match?(COLOR_LITERAL)
     end

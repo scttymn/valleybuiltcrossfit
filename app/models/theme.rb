@@ -1,18 +1,20 @@
-# The public site's colors, derived from three the admin picks: background, text
-# and accent. The stylesheet paints only with the variables this emits.
+# The site's colors — public pages and admin alike — derived from three the
+# admin picks: background, text and accent. The stylesheets paint only with the
+# variables this emits. The defaults are the logo's three colors.
 #
 # Every other shade is the background moved some way toward the text and some
 # way toward the accent, in CIE Lab:
 #
 #   shade = background + s·(text − background) + u·(accent − background)
 #
-# The (s, u) pairs were fitted to the hand-built palette, which the defaults
-# reproduce within ΔE 1.5 — invisible. Because each shade moves toward whatever
+# The (s, u) pairs were fitted to the hand-built palette, which the same three
+# base colors reproduce within ΔE 2 — invisible. (accent-wash was nudged off its
+# best fit so it stays distinct from --line with the logo's cream as the text.) Because each shade moves toward whatever
 # the text and accent are, a light theme comes out right too: its surfaces go a
 # touch darker than white and its slot tints go pale green.
 class Theme
   HEX = /\A#\h{6}\z/
-  DEFAULTS = { background: "#000000", text: "#f2f1e8", accent: "#607248" }.freeze
+  DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248" }.freeze
 
   SHADES = {
     "surface" => [ -0.049, 0.173 ],
@@ -22,7 +24,7 @@ class Theme
     "muted-soft" => [ 0.333, 0.365 ],
     "muted" => [ 0.543, 0.209 ],
     "ink-soft" => [ 0.786, 0.129 ],
-    "accent-wash" => [ -0.098, 0.419 ],
+    "accent-wash" => [ -0.14, 0.49 ],
     "accent-wash-2" => [ -0.079, 0.493 ],
     "accent-edge" => [ -0.072, 0.605 ],
     "accent-border" => [ 0.003, 0.639 ],
@@ -31,7 +33,7 @@ class Theme
   }.freeze
 
   # Errors stay red whatever the accent is: they mean something went wrong.
-  FIXED = { "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
+  FIXED = { "danger" => "#e0785a", "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
 
   # Below these the sample warns; it never blocks a save. Body text follows the
   # WCAG guideline for normal text; the accent, which is mostly headlines,
