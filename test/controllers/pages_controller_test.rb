@@ -74,6 +74,13 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".announce", 0
   end
 
+  test "theme-color matches the palette background" do
+    background = Rails.root.join("app/assets/stylesheets/site.css").read[/--bg:\s*(#\h{6})/, 1]
+
+    get root_path
+    assert_select "meta[name='theme-color'][content=?]", background
+  end
+
   test "schedule frame is available per week" do
     get schedule_path(week: 2)
     assert_response :success
