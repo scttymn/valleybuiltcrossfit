@@ -13,7 +13,14 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+  # Spots left changes by the minute for classes people can book now.
   refresh_schedule:
     class: RefreshScheduleJob
     queue: default
     schedule: every 5 minutes
+  # The rest of the two-month horizon, so paging ahead is never a cold fetch.
+  refresh_schedule_horizon:
+    class: RefreshScheduleJob
+    queue: default
+    args: [ { weeks: 8 } ]
+    schedule: every 30 minutes

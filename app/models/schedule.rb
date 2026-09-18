@@ -2,8 +2,23 @@
 # views never wait on the API.
 class Schedule
   WEEK_START = :sunday # PushPress calendars start the week on Sunday
-  CACHE_TTL = 10.minutes
   THREADS = 6
+
+  # How far ahead the refresh job keeps warm. PushPress returns the whole
+  # horizon in one paginated pass — two months is 205 classes and 44 KB — so
+  # the width of this window costs almost nothing. What costs is the reservation
+  # count, which is a separate request per class, so that is what the tiered
+  # refresh in RefreshScheduleJob is pacing, not the calendar itself.
+  HORIZON_WEEKS = 8
+
+  # Long enough that a week stays warm between full refreshes, so paging ahead
+  # never lands on an empty cache and waits for PushPress.
+  CACHE_TTL = 1.hour
+
+  # How far past the week being viewed to warm in the background. Someone paging
+  # forward usually keeps going, so the next few weeks are fetched before they
+  # are asked for and the arrow never lands on a spinner.
+  PREFETCH_WEEKS = 3
 
   Day = Data.define(:date, :classes, :workout) do
     # Any day PushPress has no classes for is a rest day.
@@ -42,10 +57,39 @@ class Schedule
 
   def dates = (week_start..week_start + 6)
 
-  # Force a fresh pull from PushPress (used by the recurring refresh job).
-  def refresh!
-    Rails.cache.write(cache_key, fetch_classes, expires_in: CACHE_TTL)
+  # Warm the weeks just past the one being viewed, unless they are warm already.
+  # This is what carries a visitor past the horizon the refresh job maintains.
+  def self.prefetch_ahead(offset, site: Site.instance)
+    wanted = (1..PREFETCH_WEEKS).map { |i| offset + i }.select { |o| o <= 52 }
+    missing = wanted.reject { |o| for_offset(o, site:).cached? }
+    return if missing.empty?
+
+    RefreshScheduleJob.perform_later(starting: missing.min, weeks: missing.max - missing.min + 1)
   end
+
+  # Pull several weeks in one pass and prime each week's cache, for the recurring
+  # refresh job. One request covers the whole span, where a week-at-a-time loop
+  # paid for the same pagination over and over.
+  def self.refresh!(weeks: HORIZON_WEEKS, starting: 0, site: Site.instance, client: nil)
+    first = Date.current.beginning_of_week(WEEK_START) + starting.weeks
+    client ||= Pushpress::Client.new
+    schedules = weeks.times.map { |offset| new(first + offset.weeks, site:, client:) }
+    from = first.in_time_zone
+    raw = client.classes(from:, to: from + weeks.weeks)
+
+    by_week = raw.group_by { |c| Time.zone.at(c["start"]).to_date.beginning_of_week(WEEK_START) }
+    schedules.each { |schedule| schedule.prime(by_week.fetch(schedule.week_start, [])) }
+    schedules
+  end
+
+  # Turn this week's share of a horizon fetch into slots and cache them.
+  def prime(raw)
+    Rails.cache.write(cache_key, build_slots(raw, @client || Pushpress::Client.new), expires_in: CACHE_TTL)
+  end
+
+  def cached? = Rails.cache.exist?(cache_key)
+
+  def cache_key = [ "schedule/v2", week_start.iso8601, @site.class_capacity, @site.uncapped_class_types ]
 
   private
 
@@ -57,12 +101,13 @@ class Schedule
     []
   end
 
-  def cache_key = [ "schedule/v2", week_start.iso8601, @site.class_capacity, @site.uncapped_class_types ]
-
   def fetch_classes
     client = @client || Pushpress::Client.new
     from = week_start.in_time_zone
-    raw = client.classes(from:, to: from + 7.days)
+    build_slots(client.classes(from:, to: from + 7.days), client)
+  end
+
+  def build_slots(raw, client)
     counts = reservation_counts(client, raw.map { |c| c["id"] })
 
     raw.map do |c|

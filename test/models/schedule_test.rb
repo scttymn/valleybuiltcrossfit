@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ScheduleTest < ActiveSupport::TestCase
+class ScheduleTest < ActiveJob::TestCase
   SUNDAY = Date.new(2026, 10, 4) # weeks run Sun–Sat, like PushPress
   MONDAY = SUNDAY + 1
   SATURDAY = SUNDAY + 6
@@ -102,7 +102,81 @@ class ScheduleTest < ActiveSupport::TestCase
     end
   end
 
+  test "refreshing the horizon primes every week from a single class listing" do
+    client = fake
+
+    with_cache do
+    travel_to Date.new(2026, 10, 4) do
+      Schedule.refresh!(weeks: 3, site: sites(:main), client:)
+
+      assert_equal 1, client.class_calls, "one pass should cover the whole horizon"
+
+      # Every week is now served from cache, without touching PushPress again.
+      before = client.class_calls
+      this_week = Schedule.new(SUNDAY, site: sites(:main), client: broken_client)
+      next_week = Schedule.new(SUNDAY + 7, site: sites(:main), client: broken_client)
+
+      assert_equal [ "cal-1", "cal-2" ], this_week.days[1].classes.map(&:id)
+      assert_equal [ "cal-next" ], next_week.days[1].classes.map(&:id)
+      assert_nil this_week.error, "a primed week must not fall through to the API"
+      assert_equal before, client.class_calls
+    end
+    end
+  end
+
+  test "a week beyond the primed horizon still fetches on its own" do
+    client = fake
+
+    with_cache do
+    travel_to Date.new(2026, 10, 4) do
+      Schedule.refresh!(weeks: 1, site: sites(:main), client:)
+      assert_equal [ "cal-next" ], Schedule.new(SUNDAY + 7, site: sites(:main), client:).days[1].classes.map(&:id)
+      assert_equal 2, client.class_calls, "the unprimed week fetches for itself"
+    end
+    end
+  end
+
+  test "paging ahead warms the weeks just past the one being viewed" do
+    travel_to Date.new(2026, 10, 4) do
+      with_cache do
+        assert_enqueued_with(job: RefreshScheduleJob, args: [ { starting: 1, weeks: 3 } ]) do
+          Schedule.prefetch_ahead(0, site: sites(:main))
+        end
+      end
+    end
+  end
+
+  test "nothing is queued when the weeks ahead are already warm" do
+    client = fake
+
+    travel_to Date.new(2026, 10, 4) do
+      with_cache do
+        Schedule.refresh!(weeks: 4, site: sites(:main), client:)
+        assert_no_enqueued_jobs(only: RefreshScheduleJob) { Schedule.prefetch_ahead(0, site: sites(:main)) }
+      end
+    end
+  end
+
+  test "prefetching stops at the last week the site will page to" do
+    travel_to Date.new(2026, 10, 4) do
+      with_cache do
+        assert_enqueued_with(job: RefreshScheduleJob, args: [ { starting: 51, weeks: 2 } ]) do
+          Schedule.prefetch_ahead(50, site: sites(:main))
+        end
+      end
+    end
+  end
+
   private
+
+  # The suite runs on a null store; these tests are about what the cache holds.
+  def with_cache
+    original = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+    yield
+  ensure
+    Rails.cache = original
+  end
 
   def broken_client
     Object.new.tap { |client| def client.classes(**) = raise(Pushpress::Client::Error, "boom") }
