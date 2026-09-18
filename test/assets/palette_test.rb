@@ -75,11 +75,12 @@ class PaletteTest < ActiveSupport::TestCase
     assert_includes outlined_hover, "border-color: var(--ink)"
   end
 
-  test "the announcement bar sits on the card shade, not the logo green" do
+  test "the announcement bar is cream with background-colored text" do
+    # Its text is small, so it can't sit on the logo green (4.0:1); the text
+    # color reversed reads at 12.6:1 on the defaults, and inverts on a light theme.
     rule = @css[/^\.announce \{[^}]*\}/] or flunk ".announce rule not found"
-    assert_includes rule, "background: var(--surface)"
-    assert_includes rule, "color: var(--ink)"
-    assert_includes rule, "border-top: 3px solid var(--accent)"
+    assert_includes rule, "background: var(--ink)"
+    assert_includes rule, "color: var(--bg)"
   end
 
   test "no two theme colors are within ΔE 3 of each other" do
