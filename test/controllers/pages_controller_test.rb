@@ -75,10 +75,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "theme-color matches the palette background" do
-    background = Rails.root.join("app/assets/stylesheets/site.css").read[/--bg:\s*(#\h{6})/, 1]
-
     get root_path
-    assert_select "meta[name='theme-color'][content=?]", background
+    assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]
+  end
+
+  test "the page declares the theme colors in a style tag" do
+    get root_path
+
+    style = css_select("head style").map(&:text).join
+    Theme.default.variables.each do |token, value|
+      assert_includes style, "#{token}:#{value}", "#{token} is missing from the page"
+    end
   end
 
   test "schedule frame is available per week" do

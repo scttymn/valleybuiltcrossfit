@@ -1,27 +1,7 @@
 /* Valley Built CrossFit — public site. Ported from the Claude Design file. */
 :root {
-  /* The palette. Every color on the public site is one of these; nothing is
-     typed straight into a rule (test/assets/palette_test.rb holds that line). */
-  --bg: #000000;
-  --surface: #0a0d03;
-  --surface-2: #13170a;
-  --line: #202318;
-  --line-strong: #343827;
-  --muted-soft: #6f7563;
-  --muted: #939587;
-  --ink-soft: #c8c9bc;
-  --ink: #f2f1e8;
-  --accent-wash: #181d0e;
-  --accent-wash-2: #212817;
-  --accent-edge: #2c351f;
-  --accent-border: #3f4930;
-  --accent-dim: #86996c;
-  --accent: #607248;
-  --accent-pale: #ccdab7;
-  /* Errors stay red whatever the accent is: they mean something went wrong. */
-  --danger-bg: #2a1812;
-  --danger-line: #7a3b2a;
-  --danger-ink: #f0c2b0;
+  /* Colors come from the theme (app/models/theme.rb), which the layout emits
+     into the page — nothing here, so there's one place they're set. */
   --font-body: Barlow, system-ui, sans-serif;
   --font-display: Oswald, sans-serif;
   --font-condensed: "Barlow Condensed", sans-serif;

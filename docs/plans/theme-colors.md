@@ -162,9 +162,11 @@ that must not change.
   with saturation scaled to its lower chroma (26 vs 50). The dark slot tints
   needed a small bump over proportional (wash C7→11, edge C13→15) to stay
   ≥ ΔE 4 from the neutral lines.
-- Known consequence: the accent as **small text** on the background is 3.5:1
-  (2.8:1 on a schedule slot), below the 4.5:1 guideline — eyebrows, "N open",
-  links. `--accent-dim` (6.1:1) is the readable same-hue option if the client
+- Known consequence: the accent as **small text** is below the 4.5:1
+  guideline — eyebrows, "N open", links. (Measured on the black background
+  adopted next: 4.0:1 on the page, 3.7:1 on a surface, 3.3:1 on a schedule
+  slot. An earlier note said 3.5:1 on black; that figure was against the old
+  `#14150f` background.) `--accent-dim` (6.1:1) is the readable same-hue option if the client
   agrees to it for small text only.
 
 ## Background → logo black
@@ -179,16 +181,104 @@ that must not change.
   black. Text colors unchanged.
 - Batch 2's default background is therefore `#000000`.
 
-## Later batches (titles only)
+## Batch 2 — Derive the palette from three colors
 
-- **Batch 2 — Derive from three.** A Ruby `Theme` computes all 16 tokens from
-  background, text and accent; the layout emits them. Defaults must reproduce
-  Batch 1's palette within a stated tolerance (the earlier check showed neutrals
-  within 1–7/255; accent shades need lightness shifts, not mixing).
-- **Batch 3 — Admin editor with live sample.** Three color pickers on Settings,
-  a sample panel beside them (button, card, schedule slot, body text, muted text,
-  line) that repaints as you pick, six-digit-hex validation, a readable-contrast
-  check, and Reset to defaults.
+### Design
+- **`Theme`** (`app/models/theme.rb`), a pure value object: `Theme.new(background:, text:, accent:)`
+  with `DEFAULTS = { background: "#000000", text: "#f2f1e8", accent: "#607248" }`.
+- **One rule for every other shade**, in CIE Lab:
+  `shade = background + s·(text − background) + u·(accent − background)`,
+  with a fixed `(s, u)` per token. The pairs are fitted to the current palette —
+  checked with a throwaway least-squares fit: all 13 derived shades land within
+  **ΔE 1.5** of today's values (9 of them within 0.5). Because the rule moves
+  toward whatever the text and accent are, a light theme works the same way: its
+  surfaces go slightly darker than white and its slot tints go pale green.
+- Lab → sRGB clamps to gamut, so every output is a valid `#rrggbb`.
+- The three error colors stay fixed constants in `Theme`.
+- `Theme#variables` → `{ "--bg" => "#000000", … }` for all 19 color tokens.
+- **Layout** emits `<style>:root{…}</style>` from `Site.instance.theme` and
+  `theme-color` from its background. The color tokens leave `site.css :root`
+  (fonts and `--stripes` stay) — one source of truth.
+- `Site#theme` returns `Theme.default` in this batch (no columns yet).
+- The palette test's color math moves into `Theme` and the test reuses it.
+
+### Contract pin
+- `Theme.new` takes three `#rrggbb` strings (validated upstream in Batch 3;
+  `Theme` raises `ArgumentError` on anything else — it is never handed raw input).
+- Output: exactly the tokens `site.css` references, each a lowercase `#rrggbb`.
+- Pure: no I/O, same input → same output.
+
+### AC ↔ test map (Batch 2)
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| Defaults look like today | `test/models/theme_test.rb` | `the default theme reproduces the current palette within ΔE 2` | Parity |
+| Every token defined | `test/assets/palette_test.rb` | `every variable the stylesheet uses is defined` (now counting `Theme` output) | Contract |
+| No colors left in CSS | `test/assets/palette_test.rb` | `site.css contains no color literals` | Honest surface |
+| Palette stays distinct | `test/assets/palette_test.rb` | `no two theme colors are within ΔE 3 of each other` | Parity |
+| Light theme works | `test/models/theme_test.rb` | `a light theme derives distinct colors and keeps text readable on every surface` | Contract |
+| Extreme input stays valid | `test/models/theme_test.rb` | `saturated or extreme inputs still produce valid hex for every token` | Contract |
+| Bad input can't reach CSS | `test/models/theme_test.rb` | `anything but six-digit hex is refused` | Contract |
+| Page carries the theme | `test/controllers/pages_controller_test.rb` | `the page declares the theme colors in a style tag` | Contract |
+| Browser chrome matches | `test/controllers/pages_controller_test.rb` | `theme-color matches the palette background` (now read from `Theme`) | Contract |
+| No visible change | — evidence | Pixel diff vs. a fresh "before" capture, desktop and phone | Parity |
+
+### Batch 2 result — done
+
+- All map rows green; full suite 86/86.
+- Map correction during execution: the WCAG row expected the logo green at
+  3.5:1 on black; it is **4.0:1** (3.5 was against the old `#14150f`). The test
+  was wrong, not the code — fixed, and the figures in this plan corrected.
+- Pixel diff vs. a fresh pre-Batch-2 capture: phone 11 pixels off (noise is ~8);
+  desktop 246, all inside the embedded Google Map, which loaded an extra
+  point-of-interest label on one run. No difference from the theme.
+- Layout reads `Site.instance` once per render (review pass).
+
+## Batch 3 — Admin color editor with live sample
+
+### Design
+- Migration: `sites.theme_background`, `theme_text`, `theme_accent` (nullable
+  strings; `nil` = default). `Site#theme` builds from them, falling back per
+  color to the default for anything stored that isn't valid hex (defense in
+  depth: a value set from the console still can't reach the `<style>` tag).
+- `Site` validations: strip, add a missing `#`, downcase; blank → `nil`;
+  anything else that isn't `#rrggbb` → error on that field. **Contrast never
+  blocks a save** (decided): the sample shows text/background and
+  accent/background ratios and flags anything under 4.5:1 / 3:1 **with a
+  suggestion**: the nearest color of the same hue and saturation (lightness
+  moved away from the background) that meets the guideline, with a **Use this**
+  button that puts it in the picker. `Theme.suggest(color, against:, ratio:)`
+  owns the search, so the preview and any later caller share it.
+- **Settings → Colors**: three `<input type="color">` (with the hex shown), a
+  **Reset colors** button (separate submit that nils all three and nothing else).
+- **Live sample**: an `<iframe>` beside the pickers showing
+  `GET /admin/settings/theme_preview?…` — a small page rendered with the real
+  `site.css` and the real `Theme`: heading with accent, eyebrow, body and muted
+  text, primary button, a program card, two schedule slots, a chip, a link, and
+  the contrast ratios. A Stimulus controller updates the iframe `src`
+  (debounced) as the pickers move. One implementation of the palette — the
+  preview never re-derives colors in JavaScript.
+- Preview endpoint is admin-only and never writes.
+
+### AC ↔ test map (Batch 3)
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| Saves and shows on site | `test/controllers/admin_test.rb` | `admin saves theme colors and the public page uses them` | Contract |
+| Normalizes input | `test/models/site_test.rb` | `theme colors normalize case and a missing #, and blank means default` | Contract |
+| Rejects garbage / CSS injection | `test/models/site_test.rb` | `theme colors reject anything that isn't six-digit hex` | Contract |
+| Low contrast warns, never blocks | `test/controllers/admin_test.rb` | `a low-contrast theme still saves, and the preview flags it` | Contract |
+| Suggestion passes and keeps the hue | `test/models/theme_test.rb` | `a suggestion meets the ratio, keeps the hue, and moves as little as it can` | Contract |
+| Suggestion on a light background | `test/models/theme_test.rb` | `on a light background the suggestion goes darker, not lighter` | Contract |
+| No suggestion when none is needed | `test/models/theme_test.rb` | `a color that already passes is returned unchanged` | Honest surface |
+| Preview offers it | `test/controllers/admin_test.rb` | `the preview suggests a readable color with a Use this button` | Contract |
+| Reset | `test/controllers/admin_test.rb` | `reset colors restores the defaults and leaves other settings alone` | Contract |
+| Anonymous can't save | `test/controllers/admin_test.rb` | `anonymous visitors cannot change theme colors` | Authz |
+| Anonymous can't preview | `test/controllers/admin_test.rb` | `the theme preview is admin-only` | Authz |
+| Preview renders the picked colors | `test/controllers/admin_test.rb` | `the preview renders the requested colors without saving them` | Contract |
+| Preview survives bad input | `test/controllers/admin_test.rb` | `the preview falls back to the saved theme for invalid colors` | Contract |
+| Bad DB value never renders | `test/controllers/pages_controller_test.rb` | `a malformed stored color never reaches the style tag` | Contract |
+| Migration | — | `bin/rails db:migrate` up and down; `schema.rb` regenerated | Migrate & deploy |
 
 ## Agent loop checkpoints
 
@@ -200,5 +290,7 @@ that must not change.
 
 ## Open questions
 
-1. The single visible change — slot coach name dims slightly. OK, or keep it
-   on its own token?
+1. ~~Coach name dims slightly~~ — accepted.
+2. ~~Contrast rule~~ — never block; warn in the sample (text under 4.5:1,
+   accent under 3:1) with a same-hue suggestion and a Use this button.
+   The client's green is 4.0:1 on black (3.3:1 on a schedule slot).

@@ -13,6 +13,8 @@ class Site < ApplicationRecord
     first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 18)
   end
 
+  def theme = Theme.default
+
   def announcement_showing? = announcement_visible? && announcement.present?
 
   def phone_href = "tel:#{phone.to_s.gsub(/\D/, "")}"
