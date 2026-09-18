@@ -129,9 +129,12 @@ end
 # Photos live on the server's disk, not in the database, so a new server starts
 # with none. These ship in the repo and fill any slot that is still empty — a
 # photo swapped out through the admin is never overwritten.
+# A lookup that finds nothing used to attach nothing, quietly, and the gap only
+# turned up by eye on the deployed site — so a miss raises instead.
 attach = ->(record, name, file) do
   path = Rails.root.join("db/seed_images", file)
-  return unless record && path.exist?
+  raise "#{file} has no record to attach to" if record.nil?
+  raise "db/seed_images/#{file} is missing" unless path.exist?
 
   slot = record.public_send(name)
   slot.attach(io: path.open, filename: file) unless slot.attached?
@@ -140,7 +143,7 @@ end
 attach.(Site.instance, :hero_photo, "hero.webp")
 {
   "crossfit" => "crossfit.webp",
-  "recovery-studio" => "recovery-studio.webp",
+  "recovery" => "recovery-studio.webp",
   "personal-training" => "personal-training.webp"
 }.each { |key, file| attach.(Program.find_by(key:), :photo, file) }
 {

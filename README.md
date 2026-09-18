@@ -52,6 +52,12 @@ port 80), so Coolify needs no build configuration beyond choosing the Dockerfile
 build pack.
 
 1. **Application** → source: this Git repo, branch `main`, build pack `Dockerfile`.
+   Clone over SSH by the host's own address &mdash; `git.svnmns.com` is proxied
+   through Cloudflare, which carries no SSH, so port 22 there is a black hole.
+   Forgejo listens on **2222**: `ssh://git@192.168.0.99:2222/scttymn/valley-built-crossfit.git`.
+   Add Coolify's public key under the repo's Settings → Deploy Keys; Forgejo
+   scopes deploy keys per repository, so a key that works for another repo is
+   still refused here.
 2. **Persistent storage**: mount a volume at `/rails/storage`. The SQLite
    databases and every uploaded photo live there &mdash; without it, each deploy
    starts empty.
