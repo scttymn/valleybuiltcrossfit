@@ -85,7 +85,6 @@
 
 /* ---------- hero ---------- */
 .hero { position: relative; overflow: hidden; background: linear-gradient(105deg, var(--surface) 0%, var(--surface) 45%, var(--bg) 100%); }
-.hero__texture { position: absolute; inset: 0; background-image: repeating-linear-gradient(118deg, color-mix(in srgb, var(--accent) 5%, transparent) 0 2px, transparent 2px 11px); }
 .hero__photo { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; }
 /* Solid behind the headline, then clear by three-quarters across so the photo —
    and whatever photo style the theme applies to it — shows through untouched. */
