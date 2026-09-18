@@ -18,6 +18,12 @@ bin/rails server
   (dev seed user `admin@example.com` / `password`)
 - Put `PUSHPRESS_API_KEY=...` in `.env` (git-ignored) for the live schedule.
 - Run `bin/rails dev:cache` once so the schedule is cached between page loads.
+- To see the site as it will look at another moment (which day is today,
+  which classes are over), start it with `TRAVEL_TO`:
+  `TRAVEL_TO="2026-10-07 12:00" bin/rails server`. The clock stands still at
+  that moment, in the app's time zone, until the server restarts. Development
+  only; `config/initializers/travel_to.rb`. In Claude Code's browser pane, the
+  `rails-oct7-noon` preview does the same.
 
 Tests: `bin/rails test` (PushPress is faked; no network).
 

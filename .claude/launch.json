@@ -1,6 +1,24 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "rails", "runtimeExecutable": "bin/rails", "runtimeArgs": ["server"], "port": 3100, "autoPort": true }
+    {
+      "name": "rails",
+      "runtimeExecutable": "bin/rails",
+      "runtimeArgs": [
+        "server"
+      ],
+      "port": 3100,
+      "autoPort": true
+    },
+    {
+      "name": "rails-oct7-noon",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "TRAVEL_TO=2026-10-07 12:00",
+        "bin/rails",
+        "server"
+      ],
+      "port": 3100
+    }
   ]
 }
