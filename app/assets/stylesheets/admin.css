@@ -13,7 +13,7 @@
 .admin code { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
 
 .admin-nav { width: 240px; flex: 0 0 240px; background: #0f1009; border-right: 1px solid var(--a-line); padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.admin-nav__brand img { height: 38px; mix-blend-mode: screen; display: block; }
+.admin-nav__brand img { height: 38px; display: block; }
 .admin-nav nav { display: flex; flex-direction: column; gap: 2px; }
 .admin-nav nav a { color: #cdcec2; text-decoration: none; padding: 8px 10px; font-weight: 500; }
 .admin-nav nav a:hover { background: var(--a-panel); color: var(--a-ink); }
@@ -73,7 +73,7 @@
 .prose { white-space: pre-line; }
 
 .auth { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
-.auth__logo { height: 48px; width: auto; align-self: flex-start; mix-blend-mode: screen; }
+.auth__logo { height: 48px; width: auto; align-self: flex-start; }
 
 @media (max-width: 800px) {
   .admin { flex-direction: column; }
