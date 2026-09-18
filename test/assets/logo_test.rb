@@ -4,20 +4,26 @@ require "test_helper"
 # the CROSSFIT line in the accent, the name in the text color. It has no colors
 # of its own, and nothing blends it into the background.
 class LogoTest < ActiveSupport::TestCase
-  LOGO = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
+  LOGOS = ApplicationHelper::LOGOS
 
-  setup { @svg = Nokogiri::XML(LOGO.read) }
-
-  test "the logo has its three parts and no colors of its own" do
-    root = @svg.root
-    assert_equal "svg", root.name
-    assert_match(/\A[-\d.]+ [-\d.]+ [\d.]+ [\d.]+\z/, root["viewBox"])
-    %w[logo-mark logo-name logo-tagline].each do |part|
-      assert_equal 1, @svg.css("g.#{part}").size, "no #{part}"
-      assert_operator @svg.css("g.#{part} path").size, :>=, 1, "#{part} is empty"
+  test "each logo has its three parts and no colors of its own" do
+    LOGOS.each do |layout, file|
+      svg = Nokogiri::XML(file.read)
+      assert_equal "svg", svg.root.name, layout
+      assert_match(/\A[-\d.]+ [-\d.]+ [\d.]+ [\d.]+\z/, svg.root["viewBox"], layout)
+      %w[logo-mark logo-name logo-tagline].each do |part|
+        assert_equal 1, svg.css("g.#{part}").size, "#{layout}: no #{part}"
+        assert_operator svg.css("g.#{part} path").size, :>=, 1, "#{layout}: #{part} is empty"
+      end
+      assert_empty svg.xpath("//*[@fill or @stroke or @style]"), "#{layout}: a color in the file would override the theme"
+      assert_empty svg.xpath("//*[local-name()='script' or local-name()='image' or local-name()='foreignObject']"), layout
     end
-    assert_empty @svg.xpath("//*[@fill or @stroke or @style]"), "a color in the file would override the theme"
-    assert_empty @svg.xpath("//*[local-name()='script' or local-name()='image' or local-name()='foreignObject']")
+  end
+
+  test "the horizontal logo is wide and the stacked one is not" do
+    width = ->(layout) { Nokogiri::XML(LOGOS[layout].read).root["viewBox"].split.map(&:to_f).then { _1[2] / _1[3] } }
+    assert_operator width[:horizontal], :>, 3
+    assert_operator width[:stacked], :<, 2
   end
 
   test "the stylesheet fills each part from the theme" do

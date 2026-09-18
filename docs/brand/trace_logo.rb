@@ -1,5 +1,5 @@
-# Traces the client's logo into themeable SVGs: stacked, horizontal (the one
-# the site uses, written to app/assets/images) and the mark alone. Every part
+# Traces the client's logo into themeable SVGs: horizontal and stacked (the
+# ones the site uses, written to app/assets/images) and the mark alone. Every part
 # is its own <g class="logo-…"> (mark, name, tagline), with no colors of its
 # own, so CSS can fill each from the theme.
 #
@@ -14,8 +14,9 @@ require "tmpdir"
 
 BRAND = Rails.root.join("docs/brand")
 STACKED = BRAND.join("vbc-logo-stacked-black.png")
-# The one the site draws; the other two are kept here for later.
+# The ones the site draws; the mark alone is kept here for later.
 HORIZONTAL_SVG = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
+STACKED_SVG = Rails.root.join("app/assets/images/logo-valley-built-stacked.svg")
 HORIZONTAL = BRAND.join("vbc-logo-horizontal.png")
 
 def grid(img) = Vips::Image.xyz(img.width, img.height).bandsplit
@@ -78,7 +79,7 @@ Dir.mktmpdir do |dir|
 
   # Stacked: the shapes where they are.
   all = parts.values.reduce(:+)
-  File.write(BRAND.join("logo-stacked.svg"), svg(padded(*box(all), 8), GROUPS.transform_values { |names| names.map { traced[_1] } }))
+  File.write(STACKED_SVG, svg(padded(*box(all), 8), GROUPS.transform_values { |names| names.map { traced[_1] } }))
 
   # Mark alone.
   File.write(BRAND.join("logo-mark.svg"), svg(padded(*boxes["mark"], 8), { "mark" => [ traced["mark"] ] }))
@@ -103,4 +104,4 @@ Dir.mktmpdir do |dir|
   File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), GROUPS.transform_values { |names| names.map { placed[_1] } }))
 end
 
-[ BRAND.join("logo-stacked.svg"), HORIZONTAL_SVG, BRAND.join("logo-mark.svg") ].each { puts "#{_1.basename}: #{_1.size} bytes" }
+[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg") ].each { puts "#{_1.basename}: #{_1.size} bytes" }

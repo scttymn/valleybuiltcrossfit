@@ -1,11 +1,11 @@
 module ApplicationHelper
-  LOGO = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
+  LOGOS = %i[horizontal stacked].index_with { Rails.root.join("app/assets/images/logo-valley-built-#{_1}.svg") }.freeze
 
   # The logo drawn into the page, so the stylesheet colors it from the theme.
   # With no label it's hidden from screen readers (its link is labelled).
-  def brand_logo(label: "Valley Built CrossFit", **options)
-    svg = logo_document.root.dup
-    svg["class"] = [ "logo", options[:class] ].compact.join(" ")
+  def brand_logo(layout = :horizontal, label: "Valley Built CrossFit", **options)
+    svg = logo_document(layout).root.dup
+    svg["class"] = [ "logo", "logo--#{layout}", options[:class] ].compact.join(" ")
     if label
       svg["role"], svg["aria-label"] = "img", label
     else
@@ -70,8 +70,9 @@ module ApplicationHelper
   def clock(time) = time.strftime("%-l:%M %P")
 
   private
-    def logo_document
-      return Nokogiri::XML(LOGO.read) unless Rails.configuration.cache_classes
-      @@logo_document ||= Nokogiri::XML(LOGO.read)
+    def logo_document(layout)
+      file = LOGOS.fetch(layout)
+      return Nokogiri::XML(file.read) unless Rails.configuration.cache_classes
+      (@@logo_documents ||= {})[layout] ||= Nokogiri::XML(file.read)
     end
 end

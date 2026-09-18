@@ -91,7 +91,7 @@
 .prose { white-space: pre-line; }
 
 .auth { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
-.auth__logo { height: 48px; width: auto; align-self: flex-start; }
+.auth__logo { width: 200px; height: auto; align-self: center; margin-bottom: 8px; }
 
 @media (max-width: 800px) {
   .admin { flex-direction: column; }
