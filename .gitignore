@@ -36,3 +36,6 @@
 
 # Local email previews rendered from docs/emails
 /public/email-preview*.html
+
+# macOS folder view settings
+.DS_Store
