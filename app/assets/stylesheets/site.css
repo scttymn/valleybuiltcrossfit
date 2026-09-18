@@ -219,7 +219,7 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
 .picker { display: none; flex-direction: column; gap: 16px; }
 .picker__days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
 .picker__day { background: var(--surface); border: var(--border-width) solid var(--line); padding: 12px 6px; min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font: inherit; }
-.picker__day__dot { display: none; width: 4px; height: 4px; margin-top: 3px; background: var(--accent); border-radius: 50%; }
+.picker__day__dot { display: none; width: 6px; height: 6px; margin-top: 4px; background: var(--accent); border-radius: 50%; }
 .picker__day[aria-selected="true"] .picker__day__dot { background: var(--bg); }
 .picker__day__dow { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-text); }
 .picker__day__num { font-family: var(--font-display); font-size: 19px; font-weight: 600; color: var(--ink); }
