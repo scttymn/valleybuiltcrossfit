@@ -7,7 +7,7 @@
       <h1><%= site.hero_title %><% if site.hero_title_accent.present? %><br><span><%= site.hero_title_accent %></span><% end %></h1>
       <p class="hero__text"><%= site.hero_body %></p>
       <div class="hero__actions">
-        <a href="#get-options" class="btn btn--primary" data-action="click->prefill#apply" data-prefill-interest-param="<%= Lead::INTRO %>" data-prefill-starting-from-param="Beginner" data-prefill-who-param="Just me">Book an intro session</a>
+        <a href="#get-options" class="btn btn--primary" data-turbo="false" data-action="click->prefill#apply" data-prefill-interest-param="<%= Lead::INTRO %>" data-prefill-starting-from-param="Beginner" data-prefill-who-param="Just me">Book an intro session</a>
         <a href="#schedule" class="btn btn--ghost">See the schedule</a>
       </div>
       <% if site.hero_tag_list.any? %>

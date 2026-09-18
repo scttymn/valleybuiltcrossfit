@@ -306,6 +306,11 @@ html:has(dialog[open]) { overflow: hidden; }
 .rate-note { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); line-height: 1.9; }
 
 .lead-form { border: var(--border-width) solid var(--accent); background: var(--surface); padding: clamp(28px, 3vw, 40px); display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 100px; }
+/* Once the form sits beside the membership copy (two 340px columns and the gap,
+   from 800px wide), links to it land the section heading where the header
+   leaves off, as a link to the section would: 74px, plus the 86px the form
+   sits below the section's top. */
+@media (min-width: 800px) { .lead-form { scroll-margin-top: 160px; } }
 .lead-form h3 { font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 30px); font-weight: 600; text-transform: uppercase; color: var(--ink); line-height: 1.1; }
 /* One rhythm down the form: the same gap between fields, groups and the button. */
 .lead-form form { display: flex; flex-direction: column; gap: 18px; }

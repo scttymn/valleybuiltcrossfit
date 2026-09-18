@@ -232,6 +232,19 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "every button that leads to the form is a plain anchor to it, which works everywhere" do
+    get root_path
+
+    links = css_select("a[data-action*='prefill#apply']")
+    assert_operator links.size, :>=, 6, "Book an intro (hero, header, menu), Membership (header, menu), Contact us, Ask about personal training"
+    links.each do |link|
+      assert_equal "#get-options", link["href"], "#{link.text.strip} should jump to the form"
+      assert_equal "false", link["data-turbo"], "#{link.text.strip}: Turbo would swap in a cached page and undo the pre-selected options"
+    end
+    assert_select "[data-prefill-scroll-param]", 0, "scrolling is the anchor's job"
+    assert_select "#get-options.lead-form", 1
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

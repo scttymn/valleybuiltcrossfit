@@ -1,6 +1,9 @@
 <% links = { "programs" => "Programs", "expect" => "What to expect", "schedule" => "Schedule", "dropin" => "Drop-in", "membership" => "Membership", "coaches" => "Coaches", "visit" => "Visit" } %>
-<% membership = { action: "click->prefill#apply", prefill_interest_param: "CrossFit", prefill_scroll_param: "#membership" } %>
-<% intro = { action: "click->prefill#apply", prefill_interest_param: Lead::INTRO, prefill_starting_from_param: "Beginner", prefill_who_param: "Just me" } %>
+<%# Links to the form are plain anchors; prefill only ticks the matching options.
+    Turbo is kept off them: it would swap in a cached page and undo the ticks. %>
+<% membership = { action: "click->prefill#apply", prefill_interest_param: "CrossFit", turbo: false } %>
+<% intro = { action: "click->prefill#apply", prefill_interest_param: Lead::INTRO, prefill_starting_from_param: "Beginner", prefill_who_param: "Just me", turbo: false } %>
+<% href = ->(anchor) { anchor == "membership" ? "#get-options" : "##{anchor}" } %>
 
 <% if site.announcement_showing? %>
   <% if site.announcement_url.present? %>
@@ -19,7 +22,7 @@
     <nav class="nav__desktop" aria-label="Primary">
       <div class="nav__links">
         <% links.each do |anchor, label| %>
-          <a href="#<%= anchor %>" <%= tag.attributes(data: anchor == "membership" ? membership : {}) %>><%= label %></a>
+          <a href="<%= href.(anchor) %>" <%= tag.attributes(data: anchor == "membership" ? membership : {}) %>><%= label %></a>
         <% end %>
       </div>
       <%= link_to "Book an intro", "#get-options", class: "btn btn--primary btn--compact", data: intro %>
@@ -32,7 +35,7 @@
 
   <nav class="nav__menu" hidden data-nav-target="menu" aria-label="Mobile">
     <% links.each do |anchor, label| %>
-      <a href="#<%= anchor %>" class="nav__item" data-action="<%= anchor == "membership" ? "click->prefill#apply click->nav#close" : "nav#close" %>" <%= tag.attributes(data: anchor == "membership" ? membership.except(:action) : {}) %>><%= label %></a>
+      <a href="<%= href.(anchor) %>" class="nav__item" data-action="<%= anchor == "membership" ? "click->prefill#apply click->nav#close" : "nav#close" %>" <%= tag.attributes(data: anchor == "membership" ? membership.except(:action) : {}) %>><%= label %></a>
     <% end %>
     <%= link_to "Book an intro", "#get-options", class: "btn btn--primary", data: intro.merge(action: "click->prefill#apply click->nav#close") %>
     <div class="nav__meta">
