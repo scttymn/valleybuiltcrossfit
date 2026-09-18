@@ -14,7 +14,7 @@ class AdminTest < ActionDispatch::IntegrationTest
   test "every admin page renders" do
     sign_in_as users(:one)
 
-    [ admin_root_path, edit_admin_site_path, edit_admin_settings_path, edit_admin_announcement_path, admin_leads_path, admin_lead_path(leads(:sam)), admin_users_path, new_admin_user_path ].each do |path|
+    [ admin_root_path, edit_admin_site_path, edit_admin_settings_theme_path, edit_admin_settings_photos_path, edit_admin_settings_pushpress_path, edit_admin_announcement_path, admin_leads_path, admin_lead_path(leads(:sam)), admin_users_path, new_admin_user_path ].each do |path|
       get path
       assert_response :success, path
     end
@@ -61,21 +61,9 @@ class AdminTest < ActionDispatch::IntegrationTest
 
   test "updates site content" do
     sign_in_as users(:one)
-    patch admin_site_path, params: { site: { hero_title: "Show up.", class_capacity: 20 } }
+    patch admin_site_path, params: { site: { hero_title: "Show up." } }
     assert_redirected_to edit_admin_site_path
-    assert_equal [ "Show up.", 20 ], [ Site.instance.hero_title, Site.instance.class_capacity ]
-  end
-
-  test "image quality is a setting, within sensible bounds" do
-    sign_in_as users(:one)
-
-    patch admin_settings_path, params: { site: { image_quality: 65 } }
-    assert_redirected_to edit_admin_settings_path
-    assert_equal 65, Site.instance.image_quality
-
-    patch admin_settings_path, params: { site: { image_quality: 5 } }
-    assert_response :unprocessable_entity
-    assert_equal 65, Site.instance.image_quality
+    assert_equal "Show up.", Site.instance.hero_title
   end
 
   test "new workout defaults to the day after the latest one" do

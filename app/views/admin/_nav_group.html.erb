@@ -1,0 +1,10 @@
+<%# A collapsible group in the admin menu. Open on its own pages, closed
+    elsewhere; the title toggles it and is never a link. %>
+<details class="nav-group" <%= "open" if items.any? { |_, path| admin_nav_current?(path) } %>>
+  <summary><%= title %></summary>
+  <div class="nav-group__items">
+    <% items.each do |label, path| %>
+      <%= link_to label, path, class: ("is-active" if admin_nav_current?(path)) %>
+    <% end %>
+  </div>
+</details>

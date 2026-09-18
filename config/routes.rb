@@ -13,9 +13,15 @@ Rails.application.routes.draw do
     root "dashboard#show"
     resource :site, only: %i[edit update]
     resource :announcement, only: %i[edit update]
-    resource :settings, only: %i[edit update] do
-      get :theme_preview
+    namespace :settings do
+      resource :theme, only: %i[edit update] do
+        get :preview
+      end
+      resource :photos, only: %i[edit update]
+      resource :pushpress, only: %i[edit update], controller: "pushpress"
     end
+    get "settings", to: redirect("/admin/settings/theme/edit")
+    get "settings/edit", to: redirect("/admin/settings/theme/edit")
     resources :pillars, :programs, :steps, :membership_options, :staff_members, :faqs, :workouts, except: :show
     resources :leads, only: %i[index show destroy]
     resources :users, except: :show

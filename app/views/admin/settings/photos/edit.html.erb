@@ -1,0 +1,24 @@
+<% content_for :title, "Photos" %>
+<header class="admin-head">
+  <h1>Photos</h1>
+</header>
+
+<%= form_with model: @site, url: admin_settings_photos_path, method: :patch, class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @site %>
+
+  <fieldset class="form__section">
+    <legend>Image quality</legend>
+
+    <div class="field">
+      <%= form.label :image_quality, "Image quality" %>
+      <%= form.number_field :image_quality, in: Site::IMAGE_QUALITY_RANGE, step: 5 %>
+      <p class="field__hint">
+        Uploaded photos are resized and converted to WebP before visitors see them; the originals are kept untouched.
+        80 is the sweet spot &mdash; lower means faster pages, higher means crisper photos.
+        Changing this rebuilds each photo the next time it&rsquo;s shown, so the first page load afterwards is a little slower.
+      </p>
+    </div>
+  </fieldset>
+
+  <div class="form__actions"><%= form.submit "Save", class: "button" %></div>
+<% end %>

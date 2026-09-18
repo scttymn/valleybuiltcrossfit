@@ -8,8 +8,8 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
   test "admin saves theme colors and the public page uses them" do
     sign_in_as users(:one)
 
-    patch admin_settings_path, params: { site: LIGHT }
-    assert_redirected_to edit_admin_settings_path
+    patch admin_settings_theme_path, params: { site: LIGHT }
+    assert_redirected_to edit_admin_settings_theme_path
 
     get root_path
     assert_includes theme_style, "--bg:#ffffff"
@@ -31,11 +31,11 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
   test "a low-contrast theme still saves, and the preview flags it" do
     sign_in_as users(:one)
 
-    patch admin_settings_path, params: { site: { theme_background: "#000000", theme_text: "#222222" } }
-    assert_redirected_to edit_admin_settings_path
+    patch admin_settings_theme_path, params: { site: { theme_background: "#000000", theme_text: "#222222" } }
+    assert_redirected_to edit_admin_settings_theme_path
     assert_equal "#222222", @site.reload.theme_text, "contrast must never block a save"
 
-    get theme_preview_admin_settings_path, params: { background: "#000000", text: "#222222" }
+    get preview_admin_settings_theme_path, params: { background: "#000000", text: "#222222" }
     assert_select ".theme-warning", text: /text/i
   end
 
@@ -43,8 +43,8 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     sign_in_as users(:one)
     @site.update!(**LIGHT, image_quality: 70)
 
-    patch admin_settings_path, params: { reset_colors: "1", site: { image_quality: 70 } }
-    assert_redirected_to edit_admin_settings_path
+    patch admin_settings_theme_path, params: { reset_colors: "1", site: { image_quality: 70 } }
+    assert_redirected_to edit_admin_settings_theme_path
 
     @site.reload
     assert_nil @site.theme_background
@@ -56,41 +56,40 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
   test "reset is offered only when the colors differ from the defaults" do
     sign_in_as users(:one)
 
-    get edit_admin_settings_path
+    get edit_admin_settings_theme_path
     assert_select "button[name='reset_colors']", 0
     assert_select ".theme-editor__status", /default/i
 
     @site.update!(theme_accent: "#aa3322")
-    get edit_admin_settings_path
+    get edit_admin_settings_theme_path
     assert_select "button[name='reset_colors']", 1
   end
 
-  test "saving other settings leaves the colors on the defaults" do
+  test "saving the theme page untouched leaves the colors on the defaults" do
     sign_in_as users(:one)
 
-    patch admin_settings_path, params: { site: { image_quality: 70, **Theme::DEFAULTS.transform_keys { Site::THEME_COLORS[_1] } } }
+    # The fields are always filled in, so an untouched save submits the defaults.
+    patch admin_settings_theme_path, params: { site: Theme::DEFAULTS.transform_keys { Site::THEME_COLORS[_1] } }
 
-    @site.reload
-    assert_equal 70, @site.image_quality
-    assert_not @site.theme_customized?, "submitting the prefilled defaults pinned them as custom colors"
+    assert_not @site.reload.theme_customized?, "submitting the prefilled defaults pinned them as custom colors"
   end
 
   test "anonymous visitors cannot change theme colors" do
-    patch admin_settings_path, params: { site: LIGHT }
+    patch admin_settings_theme_path, params: { site: LIGHT }
 
     assert_redirected_to login_path
     assert_nil @site.reload.theme_background
   end
 
   test "the theme preview is admin-only" do
-    get theme_preview_admin_settings_path, params: { accent: "#ff0000" }
+    get preview_admin_settings_theme_path, params: { accent: "#ff0000" }
     assert_redirected_to login_path
   end
 
   test "the preview renders the requested colors without saving them" do
     sign_in_as users(:one)
 
-    get theme_preview_admin_settings_path, params: { background: "#ffffff", text: "#1b1b1b", accent: "#aa3322" }
+    get preview_admin_settings_theme_path, params: { background: "#ffffff", text: "#1b1b1b", accent: "#aa3322" }
     assert_response :success
     assert_includes theme_style, "--bg:#ffffff"
     assert_includes theme_style, "--accent:#aa3322"
@@ -101,7 +100,7 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     sign_in_as users(:one)
     @site.update!(theme_accent: "#aa3322")
 
-    get theme_preview_admin_settings_path, params: { accent: "#000;}</style><script>alert(1)</script>" }
+    get preview_admin_settings_theme_path, params: { accent: "#000;}</style><script>alert(1)</script>" }
     assert_response :success
     assert_includes theme_style, "--accent:#aa3322"
     assert_not_includes response.body, "alert(1)"
@@ -110,7 +109,7 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
   test "the preview suggests a readable color with a Use this button" do
     sign_in_as users(:one)
 
-    get theme_preview_admin_settings_path, params: { background: "#000000", text: "#222222" }
+    get preview_admin_settings_theme_path, params: { background: "#000000", text: "#222222" }
 
     button = css_select(".theme-warning button[data-part='text']").first
     assert button, "no Use this button for the text color"

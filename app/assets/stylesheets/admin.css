@@ -20,6 +20,15 @@
 .admin-nav nav a { color: var(--ink-soft); text-decoration: none; padding: 8px 10px; font-weight: 500; }
 .admin-nav nav a:hover { background: var(--a-panel); color: var(--a-ink); }
 .admin-nav nav a.is-active { background: var(--accent-wash); color: var(--a-accent); }
+/* A collapsible group: the title toggles it; its pages sit indented beneath. */
+.nav-group__items { display: flex; flex-direction: column; gap: 2px; }
+.nav-group > summary { list-style: none; cursor: pointer; color: var(--ink-soft); padding: 8px 10px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+.nav-group > summary::-webkit-details-marker { display: none; }
+.nav-group > summary::after { content: "▸"; font-size: 11px; color: var(--a-muted); transition: transform 0.15s; }
+.nav-group[open] > summary::after { transform: rotate(90deg); }
+.nav-group > summary:hover { background: var(--a-panel); color: var(--a-ink); }
+.nav-group > summary:focus-visible { outline: 2px solid var(--a-accent); outline-offset: -2px; }
+.nav-group__items a { padding-left: 24px !important; }
 .admin-nav__foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding: 0 10px; }
 .admin-nav__foot form { margin: 0; }
 

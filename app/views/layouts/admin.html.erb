@@ -22,12 +22,17 @@
           <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit" %>
         <% end %>
         <nav>
-          <% [ [ "Dashboard", admin_root_path ], [ "Announcement bar", edit_admin_announcement_path ], [ "Site content", edit_admin_site_path ], [ "Programs", admin_programs_path ],
-               [ "Pillars", admin_pillars_path ], [ "Steps", admin_steps_path ], [ "Membership options", admin_membership_options_path ],
-               [ "Staff", admin_staff_members_path ], [ "FAQs", admin_faqs_path ], [ "Workouts", admin_workouts_path ],
-               [ "Inquiries", admin_leads_path ], [ "Admins", admin_users_path ], [ "Settings", edit_admin_settings_path ] ].each do |label, path| %>
-            <%= link_to label, path, class: ("is-active" if current_page?(path) || (path != admin_root_path && request.path.start_with?(path.sub(%r{/edit\z}, "")))) %>
+          <% link = ->(label, path) { link_to label, path, class: ("is-active" if admin_nav_current?(path)) } %>
+          <%= link.("Dashboard", admin_root_path) %>
+          <%= link.("Announcement bar", edit_admin_announcement_path) %>
+          <%= link.("Site content", edit_admin_site_path) %>
+          <% [ [ "Programs", admin_programs_path ], [ "Pillars", admin_pillars_path ], [ "Steps", admin_steps_path ],
+               [ "Membership options", admin_membership_options_path ], [ "Staff", admin_staff_members_path ], [ "FAQs", admin_faqs_path ],
+               [ "Workouts", admin_workouts_path ], [ "Inquiries", admin_leads_path ], [ "Admins", admin_users_path ] ].each do |label, path| %>
+            <%= link.(label, path) %>
           <% end %>
+          <%= render "admin/nav_group", title: "Settings", items: [
+                [ "Theme", edit_admin_settings_theme_path ], [ "Photos", edit_admin_settings_photos_path ], [ "PushPress", edit_admin_settings_pushpress_path ] ] %>
         </nav>
         <div class="admin-nav__foot">
           <%= link_to "View site ↗", root_path, target: "_blank" %>

@@ -363,6 +363,12 @@ Scotty: collapsible menu groups, one focused view per section.
 | Theme unchanged | `test/controllers/admin/theme_test.rb` | existing tests at the new paths | Contract |
 | All pages render | `test/controllers/admin/admin_test.rb` | `every admin page renders` (paths updated) | Contract |
 
+**4.0a result — done.** All rows green; full suite 111/111. Checked in the
+browser: the old `/admin/settings/edit` lands on Theme; the group is open on
+settings pages and closed on the dashboard; clicking the title toggles it.
+Fix during execution: a `<details>` doesn't reliably lay its children out as a
+column, so the group's links are wrapped in `.nav-group__items`.
+
 **4.0b — Site content sections**
 
 | AC | Test file | Test name | Lens |

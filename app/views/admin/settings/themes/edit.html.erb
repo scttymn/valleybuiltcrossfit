@@ -1,12 +1,12 @@
-<% content_for :title, "Settings" %>
+<% content_for :title, "Theme" %>
 <header class="admin-head">
-  <h1>Settings</h1>
+  <h1>Theme</h1>
 </header>
 
-<%= form_with model: @site, url: admin_settings_path, method: :patch, class: "form" do |form| %>
+<%= form_with model: @site, url: admin_settings_theme_path, method: :patch, class: "form" do |form| %>
   <%= render "admin/resources/errors", record: @site %>
 
-  <fieldset class="form__section" data-controller="theme-preview" data-theme-preview-url-value="<%= theme_preview_admin_settings_path %>" data-action="message@window->theme-preview#suggested">
+  <fieldset class="form__section" data-controller="theme-preview" data-theme-preview-url-value="<%= preview_admin_settings_theme_path %>" data-action="message@window->theme-preview#suggested">
     <legend>Colors</legend>
     <p class="field__hint">
       Pick three colors and every other shade on the site is worked out from them. The sample updates as you go;
@@ -31,7 +31,7 @@
         <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>.</p>
       </div>
 
-      <iframe class="theme-editor__sample" title="Color sample" src="<%= theme_preview_admin_settings_path %>"
+      <iframe class="theme-editor__sample" title="Color sample" src="<%= preview_admin_settings_theme_path %>"
               data-theme-preview-target="frame"></iframe>
     </div>
 
@@ -42,20 +42,6 @@
       <% else %>
         <p class="field__hint">Using the default colors.</p>
       <% end %>
-    </div>
-  </fieldset>
-
-  <fieldset class="form__section">
-    <legend>Photos</legend>
-
-    <div class="field">
-      <%= form.label :image_quality, "Image quality" %>
-      <%= form.number_field :image_quality, in: Site::IMAGE_QUALITY_RANGE, step: 5 %>
-      <p class="field__hint">
-        Uploaded photos are resized and converted to WebP before visitors see them; the originals are kept untouched.
-        80 is the sweet spot &mdash; lower means faster pages, higher means crisper photos.
-        Changing this rebuilds each photo the next time it&rsquo;s shown, so the first page load afterwards is a little slower.
-      </p>
     </div>
   </fieldset>
 

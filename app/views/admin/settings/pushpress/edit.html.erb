@@ -1,0 +1,18 @@
+<% content_for :title, "PushPress" %>
+<header class="admin-head">
+  <h1>PushPress</h1>
+  <p class="admin-head__note">The class schedule on the home page comes from PushPress.</p>
+</header>
+
+<%= form_with model: @site, url: admin_settings_pushpress_path, method: :patch, class: "form" do |form| %>
+  <%= render "admin/resources/errors", record: @site %>
+
+  <fieldset class="form__section">
+    <legend>Connection</legend>
+    <% Admin::Settings::PushpressController::FIELDS.each do |field| %>
+      <%= render "admin/resources/field", form:, field:, record: @site %>
+    <% end %>
+  </fieldset>
+
+  <div class="form__actions"><%= form.submit "Save", class: "button" %></div>
+<% end %>

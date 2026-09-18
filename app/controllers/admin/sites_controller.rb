@@ -21,12 +21,7 @@ module Admin
       "Membership" => [
         Field[:membership_title, :text], Field[:membership_body, :text], Field[:membership_rate_note]
       ],
-      "Find us" => [ Field[:visit_title], Field[:visit_script, hint: "Script-font line under the title."] ],
-      "PushPress" => [
-        Field[:pushpress_subdomain, hint: "e.g. valleybuiltcrossfit for valleybuiltcrossfit.pushpress.com"],
-        Field[:class_capacity, :number, hint: "Spots per class, used to show how many are open."],
-        Field[:uncapped_class_types, hint: "Comma-separated PushPress class types with no cap, e.g. General"]
-      ]
+      "Find us" => [ Field[:visit_title], Field[:visit_script, hint: "Script-font line under the title."] ]
     }.freeze
 
     before_action { @site = Site.instance }
