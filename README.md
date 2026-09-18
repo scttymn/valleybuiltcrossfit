@@ -75,6 +75,13 @@ build pack.
 4. **Health check**: `/up`.
 5. After the first deploy, create your admin login from Coolify's terminal:
    `bin/rails admin:create`.
+6. **Deploy on push to `main`**: Coolify's *Advanced → Auto deploy* is "Deploy
+   on push (webhooks)", and the Forgejo repo has a webhook (Settings → Webhooks):
+   type **Gitea**, target `http://192.168.0.55:8000/webhooks/source/gitea/events/manual`
+   (Coolify's LAN address — the `:8000` URL Coolify prints uses the public IP),
+   POST `application/json`, **Push events**, branch filter `main`, and the secret
+   from Coolify's *Webhooks → Manual Git webhooks → Gitea*. A good delivery
+   answers `"Deployment queued."`; a wrong secret is refused and nothing deploys.
 
 The database is created and migrated automatically on boot, and `db:seed_once`
 loads the design's content on any site that has no headline yet, so the first
