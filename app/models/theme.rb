@@ -63,6 +63,7 @@ class Theme
     Pairing["Announcement bar", "--bg", "--ink", 4.5],
     Pairing["Announcement bar link on hover", "--bg", "--ink-soft", 4.5],
     Pairing["Outlined button border", "--accent", "--bg", 3.0],
+    Pairing["Scrollbar", "--accent", "--surface", 3.0],
     Pairing["Text on small green buttons", "--bg", "--accent-text", 4.5],
     Pairing["Delete links", "--danger", "--bg", 4.5],
     Pairing["Delete links on panels", "--danger", "--surface", 4.5],

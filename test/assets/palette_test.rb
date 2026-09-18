@@ -5,7 +5,7 @@ require "test_helper"
 # work if that holds — a color typed straight into a rule would ignore it — and
 # CSS gives no error for a misspelled variable: it just renders nothing.
 class PaletteTest < ActiveSupport::TestCase
-  STYLESHEETS = %w[site.css admin.css].map { Rails.root.join("app/assets/stylesheets", _1) }
+  STYLESHEETS = %w[application.css site.css admin.css].map { Rails.root.join("app/assets/stylesheets", _1) }
   COLOR_LITERAL = /(?<=[\s:(,])#\h{3,8}\b|\b(?:rgba?|hsla?)\(/
 
   setup do
@@ -90,6 +90,13 @@ class PaletteTest < ActiveSupport::TestCase
       "line #{i + 1}: #{line.strip[0, 100]}" if line.match?(/border(?:-(?:top|bottom|left|right))?(?:-width)?:\s*[\d.]+px/)
     end
     assert_empty fixed
+  end
+
+  test "scrollbars are themed: an accent thumb on the card shade, cream on hover" do
+    assert_match(/scrollbar-color:\s*var\(--accent\)\s+var\(--surface\)/, @css)
+    # Safari still needs the -webkit- pseudo-elements.
+    assert_match(/::-webkit-scrollbar-thumb\s*\{[^}]*background:\s*var\(--accent\)/, @css)
+    assert_match(/::-webkit-scrollbar-thumb:hover\s*\{[^}]*background:\s*var\(--ink\)/, @css)
   end
 
   test "no two theme colors are within ΔE 3 of each other" do

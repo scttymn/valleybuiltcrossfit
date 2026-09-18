@@ -8,3 +8,15 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Scrollbars, on the public site and in admin alike: the accent on the card
+   shade, cream on hover — the same move the buttons make. scrollbar-color is
+   inherited, so this reaches every scrolling box, not only the page. */
+:root { scrollbar-color: var(--accent) var(--surface); }
+
+/* Safari takes only the -webkit- pseudo-elements. Browsers that understand
+   scrollbar-color ignore these. */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink); }
