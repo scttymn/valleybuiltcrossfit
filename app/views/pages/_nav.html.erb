@@ -22,7 +22,7 @@
           <a href="#<%= anchor %>" <%= tag.attributes(data: anchor == "membership" ? membership : {}) %>><%= label %></a>
         <% end %>
       </div>
-      <%= link_to "Book an intro", "#get-options", class: "nav__cta", data: intro %>
+      <%= link_to "Book an intro", "#get-options", class: "btn btn--primary btn--compact", data: intro %>
     </nav>
 
     <button type="button" class="nav__toggle" aria-label="Menu" aria-expanded="false" data-nav-target="toggle" data-action="nav#toggle">

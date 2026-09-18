@@ -47,12 +47,32 @@ class PaletteTest < ActiveSupport::TestCase
     assert_empty text_colors - listed, "text in these colors isn't checked for contrast anywhere"
   end
 
-  test "primary button text is at least 19px bold" do
-    # The logo green can't carry small text (4.0:1 at best), so the button
-    # text is sized to count as large text, where WCAG asks for 3:1.
-    rule = @css[/^\.btn \{[^}]*\}/] or flunk ".btn rule not found"
-    assert_operator rule[/font-size:\s*([\d.]+)px/, 1].to_f, :>=, 19
-    assert_operator rule[/font-weight:\s*(\d+)/, 1].to_i, :>=, 700
+  test "button text is never smaller than 19px bold" do
+    # The logo green can't carry small text (4.0:1 at best), so button text is
+    # sized to count as large text, where WCAG asks for 3:1 — in every variant.
+    base = @css[/^\.btn \{[^}]*\}/] or flunk ".btn rule not found"
+    assert_operator base[/font-size:\s*([\d.]+)px/, 1].to_f, :>=, 19
+    assert_operator base[/font-weight:\s*(\d+)/, 1].to_i, :>=, 700
+
+    shrunk = @css.scan(/^([^{}\n]*\.btn[^{}\n]*)\{([^}]*)\}/).filter_map do |selector, body|
+      size = body[/font-size:\s*([\d.]+)px/, 1]
+      selector.strip if size && size.to_f < 19
+    end
+    assert_empty shrunk, "these buttons shrink the text below large-text size"
+  end
+
+  test "there are two buttons: filled and outlined, both turning cream on hover" do
+    rule = ->(selector) { @css[/^#{Regexp.escape(selector)}\s*\{([^}]*)\}/, 1] or flunk "#{selector} not found" }
+
+    filled, filled_hover = rule[".site a.btn--primary, .btn--primary"], rule[".site a.btn--primary:hover, .btn--primary:hover"]
+    assert_includes filled, "background: var(--accent)"
+    assert_includes filled_hover, "background: var(--ink)"
+    assert_includes filled_hover, "color: var(--bg)"
+
+    outlined, outlined_hover = rule[".site a.btn--ghost, .btn--ghost"], rule[".site a.btn--ghost:hover"]
+    assert_includes outlined, "border: 1px solid var(--accent)"
+    assert_includes outlined, "color: var(--ink)"
+    assert_includes outlined_hover, "border-color: var(--ink)"
   end
 
   test "the announcement bar sits on the card shade, not the logo green" do

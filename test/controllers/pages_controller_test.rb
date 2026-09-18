@@ -74,6 +74,14 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".announce", 0
   end
 
+  test "the header's Book an intro is the same filled button as the hero's" do
+    get root_path
+
+    assert_select "nav a.btn.btn--primary", text: "Book an intro"
+    assert_select ".hero a.btn.btn--primary"
+    assert_select ".nav__cta", 0
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]
