@@ -126,6 +126,29 @@ if Faq.none?
   ].each { |question, answer| Faq.create!(question:, answer:) }
 end
 
+# Photos live on the server's disk, not in the database, so a new server starts
+# with none. These ship in the repo and fill any slot that is still empty — a
+# photo swapped out through the admin is never overwritten.
+attach = ->(record, name, file) do
+  path = Rails.root.join("db/seed_images", file)
+  return unless record && path.exist?
+
+  slot = record.public_send(name)
+  slot.attach(io: path.open, filename: file) unless slot.attached?
+end
+
+attach.(Site.instance, :hero_photo, "hero.webp")
+{
+  "crossfit" => "crossfit.webp",
+  "recovery-studio" => "recovery-studio.webp",
+  "personal-training" => "personal-training.webp"
+}.each { |key, file| attach.(Program.find_by(key:), :photo, file) }
+{
+  "Jessica & Greg Isaacson" => "jessica-greg-isaacson.jpg",
+  "Chad Worman" => "chad-worman.jpg",
+  "Chris Neske" => "chris-neske.jpg"
+}.each { |name, file| attach.(StaffMember.find_by(name:), :photo, file) }
+
 # Sample workouts from the design, for opening week — development only.
 if Rails.env.development? && Workout.none?
   monday = Date.new(2026, 10, 5)
