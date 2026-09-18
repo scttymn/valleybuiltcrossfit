@@ -26,13 +26,16 @@ class LogoTest < ActiveSupport::TestCase
     assert_operator width[:stacked], :<, 2
   end
 
-  test "the favicon and app icon are the logo mark in the brand green" do
-    favicon = Nokogiri::XML(Rails.public_path.join("favicon.svg").read)
+  test "the favicon and app icon are the logo mark" do
+    # The favicon is drawn per request in the saved accent (IconsControllerTest);
+    # its source is the mark, square and uncolored.
+    favicon = Nokogiri::XML(IconsController::FAVICON.read)
     mark = Nokogiri::XML(Rails.root.join("docs/brand/logo-mark.svg").read)
     assert_equal mark.css("path").map { _1["d"] }, favicon.css("path").map { _1["d"] }, "the favicon isn't the mark"
-    assert_equal Theme::DEFAULTS[:accent], favicon.at_css("g.logo-mark")["fill"]
+    assert_empty favicon.xpath("//*[@fill or @stroke or @style]")
     width, height = favicon.root["viewBox"].split.last(2).map(&:to_f)
     assert_equal width, height, "a favicon is square"
+    assert_not Rails.public_path.join("favicon.svg").exist?, "a static favicon.svg would be served instead of the themed one"
 
     icon = Vips::Image.new_from_file(Rails.public_path.join("app-icon.png").to_s)
     assert_equal [ 512, 512 ], [ icon.width, icon.height ]

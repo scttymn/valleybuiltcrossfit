@@ -177,7 +177,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "the site and admin use the logo mark for their icons" do
     [ root_path, login_path ].each do |path|
       get path
-      assert_select "link[rel=icon][type='image/svg+xml'][href='/favicon.svg']", 1, path
+      assert_select "link[rel=icon][type='image/svg+xml'][href^=?]", "/favicon.svg?v=", { count: 1 }, path
       assert_select "link[rel=icon][type='image/png'][href='/app-icon.png']", 1, path
       assert_select "link[href*='/icon.png'], link[href*='/icon.svg']", 0, path
     end

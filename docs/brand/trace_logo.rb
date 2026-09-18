@@ -1,6 +1,6 @@
 # Traces the client's logo into themeable SVGs: horizontal and stacked (the
 # ones the site uses, written to app/assets/images), the mark alone, and the
-# favicon and app icon made from the mark (written to public/). Every part
+# favicon and app icon made from the mark. Every part
 # is its own <g class="logo-…"> (mark, name, tagline), with no colors of its
 # own, so CSS can fill each from the theme.
 #
@@ -105,10 +105,11 @@ Dir.mktmpdir do |dir|
   File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), GROUPS.transform_values { |names| names.map { placed[_1] } }))
 end
 
-# Icons: the mark in the brand green. A browser tab can't use the site's CSS, so
-# the color is written in. The favicon's frame is square; the app icon puts the
-# mark on the brand black, small enough that a rounded or circular crop keeps it.
-FAVICON = Rails.public_path.join("favicon.svg")
+# Icons. The favicon is the mark in a square frame with no color of its own:
+# IconsController fills it with the saved accent on each request. The app icon
+# puts the whole mark, in the default green, on the brand black, small enough
+# that a rounded or circular crop keeps it.
+FAVICON = Rails.root.join("app/assets/images/logo-favicon.svg")
 APP_ICON = Rails.public_path.join("app-icon.png")
 green = Theme::DEFAULTS[:accent]
 mark = Nokogiri::XML(BRAND.join("logo-mark.svg").read)
@@ -120,8 +121,8 @@ tab_side = side * (1 - 2 * 0.08)
 mark.root["viewBox"] = [ x + w / 2 - tab_side / 2, y + h / 2 - tab_side / 2, tab_side, tab_side ].map { _1.round(1) }.join(" ")
 mark.root.delete("role")
 mark.root.delete("aria-label")
-mark.at_css("g.logo-mark")["fill"] = green
 File.write(FAVICON, mark.root.to_xml + "\n")
+mark.at_css("g.logo-mark")["fill"] = green
 
 size, inset = 512, 0.62 # the mark's width, as a share of the icon
 # Rails blocks libvips' SVG loader for uploads; this file is our own.

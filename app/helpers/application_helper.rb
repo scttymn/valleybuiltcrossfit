@@ -17,6 +17,9 @@ module ApplicationHelper
     svg.to_xml.html_safe
   end
 
+  # The favicon in the saved accent; the color in the URL makes a new color a new file.
+  def themed_favicon_path = favicon_path(v: Site.instance.theme.accent.delete("#"))
+
   # Each map app's own icon, in its real colors.
   MAP_APP_ICONS = { "Apple Maps" => "map-apps/apple-maps.png", "Google Maps" => "map-apps/google-maps.svg" }.freeze
 
