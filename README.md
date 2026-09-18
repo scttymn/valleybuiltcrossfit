@@ -70,8 +70,10 @@ build pack.
 5. After the first deploy, create your admin login from Coolify's terminal:
    `bin/rails admin:create`.
 
-The database is created and migrated automatically on boot, and seeds run on a
-fresh volume, so the first deploy comes up with the design's content in place.
+The database is created and migrated automatically on boot, and `db:seed_once`
+loads the design's content on any site that has no headline yet, so the first
+deploy comes up with real content in place. A site that is already set up is
+left alone, including content the admin has deliberately deleted.
 
 ## Deploying to your own server (Kamal)
 
