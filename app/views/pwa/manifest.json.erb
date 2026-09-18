@@ -1,17 +1,26 @@
-<%# Android builds its home-screen icon from this. "maskable" lets it crop the
-    icon edge to edge into its shape; without a manifest it shrinks the iPhone
-    icon onto a white disc. Rails' own controller renders this, without the
-    app's helpers, so they're called through ApplicationController. %>
+<%# Android builds its home-screen icon from this; without it, it shrinks the
+    iPhone icon onto a white disc. "maskable" lets it crop the icon edge to
+    edge into its shape (the VB sits inside the circle every crop keeps).
+
+    display "browser": a home-screen shortcut opens the site in the browser,
+    not as a full-screen app, since reserving a class, directions and chat all
+    lead to other sites.
+
+    Rails' own controller renders this, without the app's helpers, so they're
+    called through ApplicationController. %>
 <% helpers = ApplicationController.helpers %>
 <% background = Site.instance.theme.variables["--bg"] %>
+<% icons = [ 192, 512 ].flat_map { |size| %w[any maskable].map { |purpose| { src: helpers.app_icon_path(size), type: "image/png", sizes: "#{size}x#{size}", purpose: } } } %>
 <%= raw JSON.pretty_generate(
+  id: "/",
   name: "Valley Built CrossFit",
   short_name: "Valley Built",
   description: "Coached CrossFit classes for every body in Grain Valley, Missouri.",
+  lang: "en",
   start_url: "/",
   scope: "/",
   display: "browser",
   background_color: background,
   theme_color: background,
-  icons: [ 192, 512 ].map { |size| { src: helpers.app_icon_path(size), type: "image/png", sizes: "#{size}x#{size}", purpose: "any maskable" } }
+  icons:
 ) %>

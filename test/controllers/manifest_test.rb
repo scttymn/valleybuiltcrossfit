@@ -9,13 +9,17 @@ class ManifestTest < ActionDispatch::IntegrationTest
     manifest = response.parsed_body
 
     assert_equal "Valley Built CrossFit", manifest["name"]
+    assert_equal "/", manifest["id"]
     assert_equal "/", manifest["start_url"]
+    assert_equal "browser", manifest["display"], "reserving, directions and chat lead to other sites; an app window has no way back"
     assert_equal Theme.default.variables["--bg"], manifest["background_color"]
     assert_equal Theme.default.variables["--bg"], manifest["theme_color"]
 
     icons = manifest["icons"]
     assert_equal %w[192x192 512x512], icons.map { _1["sizes"] }.uniq.sort
-    assert icons.all? { _1["purpose"] == "any maskable" }, "maskable: fill the shape edge to edge, no white disc"
+    %w[192x192 512x512].each do |size|
+      assert_equal %w[any maskable], icons.select { _1["sizes"] == size }.map { _1["purpose"] }.sort, "#{size}: one icon for each purpose"
+    end
     icons.each do |icon|
       path = URI(icon["src"]).path
       assert Rails.public_path.join(path.delete_prefix("/")).file?, "#{path} is missing"
@@ -25,8 +29,12 @@ class ManifestTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "pages link the manifest" do
+  test "pages link the manifest, and there's no service worker to serve" do
     get root_path
     assert_select "link[rel=manifest][href='/manifest.json']", 1
+
+    get "/service-worker.js"
+    assert_response :not_found
+    assert_not Rails.root.join("app/views/pwa/service-worker.js").exist?, "an unrouted service worker only misleads"
   end
 end

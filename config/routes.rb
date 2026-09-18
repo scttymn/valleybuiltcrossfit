@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
   get "favicon.svg" => "icons#favicon", as: :favicon, format: false
-  # Android's home-screen icon and name.
-  get "manifest.json" => "rails/pwa#manifest", as: :pwa_manifest, format: false, defaults: { format: :json }
+  # The web app manifest (app/views/pwa): Android's home-screen name and icon.
+  # No service worker: the site sends no push notifications and works online only.
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 end
