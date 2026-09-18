@@ -64,6 +64,7 @@ build pack.
    | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | form captcha (omit and it's off) |
    | `SOLID_QUEUE_IN_PUMA=true` | runs the schedule refresh + mail jobs in the web process |
    | `APP_HOST` | domain, for links in emails |
+   | `DISABLE_SSL=true` | only on a plain-http host, e.g. the generated `sslip.io` URL before a real domain is pointed at it. Without it, session cookies are marked secure and nobody can log in over http. Drop it once the domain has a certificate. |
    | `SMTP_ADDRESS`, `SMTP_USERNAME`, `SMTP_PASSWORD` | only used if the webhook fails |
 4. **Health check**: `/up`.
 5. After the first deploy, create your admin login from Coolify's terminal:
