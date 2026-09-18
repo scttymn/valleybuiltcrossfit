@@ -23,6 +23,7 @@ const INSIDE = `
   .iti__selected-flag { background: transparent !important; }
   .btn.btn-primary { background: var(--accent) !important; color: var(--on-accent) !important; border-radius: 0 !important; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
   .btn.btn-primary.btn-disabled { opacity: 0.55; }
+  .lc_text-widget_heading--content > div { font-family: var(--font-display) !important; font-size: 22px !important; font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.02em; }
   .lc_text-widget_heading_close--btn svg path { stroke: var(--on-accent) !important; }
   .lc_text-widget--agency-branding { background: var(--surface) !important; color: var(--muted) !important; border-top: var(--border-width) solid var(--line); }
   .lc_text-widget--agency-branding a { color: var(--accent-text) !important; }
