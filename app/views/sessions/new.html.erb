@@ -1,6 +1,6 @@
 <% content_for :title, "Sign in" %>
 <div class="auth">
-  <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit", class: "auth__logo" %>
+  <%= brand_logo(class: "auth__logo") %>
   <h1>Admin sign in</h1>
   <%= form_with url: login_path, class: "form" do |form| %>
     <div class="field"><%= form.label :email_address, "Email" %><%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", value: params[:email_address] %></div>

@@ -1,26 +1,31 @@
 require "test_helper"
 
-# The logo has to sit on whatever background the theme sets. It used to carry a
-# solid black box, hidden with mix-blend-mode: screen — which only hides black on
-# a dark page, and lightens the logo's own colors on anything but pure black.
+# The logo is an SVG drawn into the page, so the theme colors it: the mark and
+# the CROSSFIT line in the accent, the name in the text color. It has no colors
+# of its own, and nothing blends it into the background.
 class LogoTest < ActiveSupport::TestCase
-  LOGO = Rails.root.join("app/assets/images/logo-valley-built-horizontal.png")
-  BRAND = { green: [ 96, 114, 72 ], cream: [ 211, 199, 183 ] }.freeze
+  LOGO = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
 
-  setup { @logo = Vips::Image.new_from_file(LOGO.to_s) }
+  setup { @svg = Nokogiri::XML(LOGO.read) }
 
-  test "the logo has a transparent background" do
-    assert_equal 4, @logo.bands, "no alpha channel"
-
-    corners = [ [ 0, 0 ], [ @logo.width - 1, 0 ], [ 0, @logo.height - 1 ], [ @logo.width - 1, @logo.height - 1 ] ]
-    corners.each { |x, y| assert_equal 0, @logo.getpoint(x, y).last, "corner #{x},#{y} is not transparent" }
+  test "the logo has its three parts and no colors of its own" do
+    root = @svg.root
+    assert_equal "svg", root.name
+    assert_match(/\A[-\d.]+ [-\d.]+ [\d.]+ [\d.]+\z/, root["viewBox"])
+    %w[logo-mark logo-name logo-tagline].each do |part|
+      assert_equal 1, @svg.css("g.#{part}").size, "no #{part}"
+      assert_operator @svg.css("g.#{part} path").size, :>=, 1, "#{part} is empty"
+    end
+    assert_empty @svg.xpath("//*[@fill or @stroke or @style]"), "a color in the file would override the theme"
+    assert_empty @svg.xpath("//*[local-name()='script' or local-name()='image' or local-name()='foreignObject']")
   end
 
-  test "the brand colors are solid, not faded by the transparency" do
-    colors = @logo.bandsplit.then { |r, g, b, a| [ r, g, b, a ] }
-    BRAND.each do |name, (r, g, b)|
-      solid = (colors[0] == r) & (colors[1] == g) & (colors[2] == b) & (colors[3] == 255)
-      assert_operator solid.avg, :>, 0.01, "no fully opaque #{name} in the logo"
+  test "the stylesheet fills each part from the theme" do
+    css = Rails.root.join("app/assets/stylesheets/application.css").read
+    { "logo-mark" => "--accent", "logo-tagline" => "--accent", "logo-name" => "--ink" }.each do |part, variable|
+      rule = css.scan(/([^{}]+)\{([^}]*)\}/).find { |selector, _| selector.include?(".#{part}") }
+      assert rule, "nothing colors .#{part}"
+      assert_match(/fill:\s*var\(#{variable}\)/, rule.last, ".#{part} isn't filled with #{variable}")
     end
   end
 

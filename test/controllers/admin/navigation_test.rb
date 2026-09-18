@@ -24,4 +24,9 @@ class Admin::NavigationTest < ActionDispatch::IntegrationTest
     assert_select "details.nav-group > summary", "Site content"
     assert_select "details.nav-group a", text: "Hero"
   end
+
+  test "the admin shows the themed logo" do
+    get admin_root_path
+    assert_select ".admin-nav__brand svg.logo g.logo-mark", 1
+  end
 end

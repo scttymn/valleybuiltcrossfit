@@ -166,6 +166,14 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "the header and footer draw the logo in the page, so the theme colors it" do
+    get root_path
+
+    assert_select "a.nav__logo[href='/'][aria-label] svg.logo[aria-hidden=true] g.logo-name", 1
+    assert_select "footer svg.logo[role=img][aria-label='Valley Built CrossFit'] g.logo-mark", 1
+    assert_select "img[src*='logo-valley-built']", 0
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

@@ -30,4 +30,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
     assert_empty cookies[:session_id]
   end
+
+  test "the login page shows the themed logo" do
+    get login_path
+    assert_select "svg.logo.auth__logo[role=img] g.logo-tagline", 1
+  end
 end

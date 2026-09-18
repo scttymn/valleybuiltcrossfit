@@ -1,4 +1,22 @@
 module ApplicationHelper
+  LOGO = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
+
+  # The logo drawn into the page, so the stylesheet colors it from the theme.
+  # With no label it's hidden from screen readers (its link is labelled).
+  def brand_logo(label: "Valley Built CrossFit", **options)
+    svg = logo_document.root.dup
+    svg["class"] = [ "logo", options[:class] ].compact.join(" ")
+    if label
+      svg["role"], svg["aria-label"] = "img", label
+    else
+      svg.delete("role")
+      svg.delete("aria-label")
+      svg["aria-hidden"] = "true"
+    end
+    svg["focusable"] = "false"
+    svg.to_xml.html_safe
+  end
+
   # Each map app's own icon, in its real colors.
   MAP_APP_ICONS = { "Apple Maps" => "map-apps/apple-maps.png", "Google Maps" => "map-apps/google-maps.svg" }.freeze
 
@@ -50,4 +68,10 @@ module ApplicationHelper
   end
 
   def clock(time) = time.strftime("%-l:%M %P")
+
+  private
+    def logo_document
+      return Nokogiri::XML(LOGO.read) unless Rails.configuration.cache_classes
+      @@logo_document ||= Nokogiri::XML(LOGO.read)
+    end
 end

@@ -1,6 +1,6 @@
 <footer class="footer">
   <div class="footer__inner">
-    <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit" %>
+    <%= brand_logo %>
     <div class="footer__links">
       <% if site.instagram_url.present? %><a href="<%= site.instagram_url %>">Instagram</a><% end %>
       <% if site.email.present? %><%= mail_to site.email, "Email" %><% end %>

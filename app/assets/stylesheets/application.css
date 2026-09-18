@@ -24,3 +24,8 @@
 /* Selected text: the theme's readable green, with the text set too — left to
    itself, green text selected on a green highlight would disappear. */
 ::selection { background: var(--accent-text); color: var(--bg); }
+
+/* The logo, drawn from the theme: the mark and CROSSFIT line in the accent
+   (the logo's own green by default), the name in the text color. */
+.logo .logo-mark, .logo .logo-tagline { fill: var(--accent); }
+.logo .logo-name { fill: var(--ink); }

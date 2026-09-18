@@ -15,7 +15,7 @@
 .admin code { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
 
 .admin-nav { width: 240px; flex: 0 0 240px; background: var(--surface); border-right: var(--border-width) solid var(--a-line); padding: 20px 14px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.admin-nav__brand img { height: 38px; display: block; }
+.admin-nav__brand .logo { height: 38px; width: auto; display: block; }
 .admin-nav nav { display: flex; flex-direction: column; gap: 2px; }
 .admin-nav nav a { color: var(--ink-soft); text-decoration: none; padding: 8px 10px; font-weight: 500; }
 .admin-nav nav a:hover { background: var(--a-panel); color: var(--a-ink); }

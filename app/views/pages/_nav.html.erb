@@ -12,8 +12,8 @@
 
 <header class="nav" data-controller="nav">
   <div class="nav__bar">
-    <a href="#top" class="nav__logo" aria-label="Valley Built CrossFit — back to top">
-      <%= image_tag "logo-valley-built-horizontal.png", alt: "Valley Built CrossFit — Grain Valley, Missouri" %>
+    <a href="<%= root_path %>" class="nav__logo" aria-label="Valley Built CrossFit — home">
+      <%= brand_logo(label: nil) %>
     </a>
 
     <nav class="nav__desktop" aria-label="Primary">
