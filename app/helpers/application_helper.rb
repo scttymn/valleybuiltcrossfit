@@ -60,8 +60,12 @@ module ApplicationHelper
 
       loading = priority ? { loading: "eager", fetchpriority: "high" } : { loading: "lazy" }
       widths, sizes = PHOTO_SIZES.fetch(size).values_at(:widths, :sizes)
+      # Its size, when recorded, so the browser holds the space before it loads.
+      dimensions = attachment.blob.metadata.slice("width", "height").symbolize_keys
+      dimensions = {} unless dimensions.size == 2
+
       if attachment.variable?
-        image_tag web_variant(attachment, widths.last), alt:, sizes:, **loading,
+        image_tag web_variant(attachment, widths.last), alt:, sizes:, **loading, **dimensions,
                   srcset: widths.map { |w| "#{url_for(web_variant(attachment, w))} #{w}w" }.join(", ")
       else
         image_tag attachment, alt:, **loading

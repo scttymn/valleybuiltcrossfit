@@ -112,6 +112,26 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal img["src"], css_select(".hero__photo img").first["src"], "the address changed between page loads"
   end
 
+  test "photos declare their size, so the page doesn't shift as they load" do
+    # Safari keeps no scroll anchor: a lazy photo growing as it loads moves the
+    # form out from under a scroll heading for it.
+    staff_members(:chad).photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "chad.webp")
+    blob = staff_members(:chad).photo.blob
+    blob.analyze
+    width, height = blob.reload.metadata.values_at("width", "height")
+
+    get root_path
+    assert_select ".coach .photo img[width='#{width}'][height='#{height}']", 1
+  end
+
+  test "a photo whose size isn't known yet still shows" do
+    staff_members(:chad).photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "chad.webp")
+    staff_members(:chad).photo.blob.update_columns(metadata: { identified: true, analyzed: true }.to_json)
+
+    get root_path
+    assert_select ".coach .photo img:not([width]):not([height])", 1
+  end
+
   test "a photo that could fail to load is watched; a missing one needs no watching" do
     sites(:main).hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
 

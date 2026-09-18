@@ -35,6 +35,19 @@ class WarmVariantsJobTest < ActiveJob::TestCase
            "an unidentified blob was skipped instead of being built"
   end
 
+  test "records a photo's size when Active Storage didn't, so pages can reserve its space" do
+    site = sites(:main)
+    site.hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+    # How the coach photos were stored: analyzed, but with no width or height.
+    blob = site.hero_photo.blob
+    blob.update_columns(metadata: { identified: true, analyzed: true }.to_json)
+
+    WarmVariantsJob.perform_now
+
+    metadata = blob.reload.metadata
+    assert metadata["width"].to_i.positive? && metadata["height"].to_i.positive?, "no size recorded: #{metadata.inspect}"
+  end
+
   test "one unreadable photo does not stop the rest" do
     program = programs(:crossfit)
     program.photo.attach(io: StringIO.new("not an image"), filename: "broken.webp", content_type: "image/webp")

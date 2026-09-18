@@ -35,6 +35,12 @@ class WarmVariantsJob < ApplicationJob
         attachment.blob.identify
         next unless attachment.variable?
 
+        # Pages give each photo its width and height so the browser can hold
+        # its space before it loads (Safari has no scroll anchoring, so a photo
+        # growing in place moves whatever a scroll was heading for). Some
+        # uploads were marked analyzed with no size recorded; measure those.
+        attachment.blob.analyze unless attachment.blob.metadata.key?("width")
+
         widths.each { |width| warm(attachment, width) }
       end
     end
