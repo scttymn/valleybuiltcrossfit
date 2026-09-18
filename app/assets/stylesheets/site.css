@@ -46,7 +46,7 @@
 .btn--block { display: block; width: 100%; padding: 16px; }
 
 /* ---------- announcement + nav ---------- */
-.announce { background: var(--ink); color: var(--bg); padding: 11px 24px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
+.announce { background: var(--ink); color: var(--bg); padding: 11px 24px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; }
 .announce--link { display: block; text-align: center; }
 .site a.announce--link { color: var(--bg); }
 .site a.announce--link:hover { background: var(--ink-soft); color: var(--bg); }
