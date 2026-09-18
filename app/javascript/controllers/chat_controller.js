@@ -35,7 +35,7 @@ const INSIDE = `
   .lc_text-widget_prompt--avatar { box-shadow: 0 0 0 var(--border-width) var(--accent) !important; }
   .lc_text-widget_prompt--prompt-text::after { width: 12px !important; height: 12px !important; bottom: calc(-6px - var(--border-width)) !important; background: var(--surface) !important; border-right: var(--border-width) solid var(--accent) !important; border-bottom: var(--border-width) solid var(--accent) !important; box-shadow: none !important; }
   .lc_text-widget_prompt--prompt-close { opacity: 1 !important; }
-  .lc_text-widget_prompt--prompt-close svg, .lc_text-widget_prompt--prompt-close path { fill: var(--ink-soft) !important; }
+  .lc_text-widget_prompt--prompt-close svg, .lc_text-widget_prompt--prompt-close path { fill: var(--accent) !important; }
   .lc_text-widget_prompt--prompt-close:hover svg, .lc_text-widget_prompt--prompt-close:hover path { fill: var(--ink) !important; }
   * { scrollbar-color: var(--accent) var(--surface); }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
