@@ -26,12 +26,13 @@ class LogoTest < ActiveSupport::TestCase
     assert_operator width[:stacked], :<, 2
   end
 
-  test "the favicon and app icon are the logo mark" do
+  test "the favicon and app icon are the VB letters, without the mountain" do
     # The favicon is drawn per request in the saved accent (IconsControllerTest);
-    # its source is the mark, square and uncolored.
+    # its source is the VB letters, square and uncolored.
     favicon = Nokogiri::XML(IconsController::FAVICON.read)
-    mark = Nokogiri::XML(Rails.root.join("docs/brand/logo-mark.svg").read)
-    assert_equal mark.css("path").map { _1["d"] }, favicon.css("path").map { _1["d"] }, "the favicon isn't the mark"
+    letters = Nokogiri::XML(Rails.root.join("docs/brand/logo-vb.svg").read)
+    assert_equal letters.css("path").map { _1["d"] }, favicon.css("path").map { _1["d"] }, "the favicon isn't the VB letters"
+    assert_operator favicon.css("path").map { _1["d"] }.join.length, :<, Nokogiri::XML(Rails.root.join("docs/brand/logo-mark.svg").read).css("path").map { _1["d"] }.join.length, "the mountain is still in it"
     assert_empty favicon.xpath("//*[@fill or @stroke or @style]")
     width, height = favicon.root["viewBox"].split.last(2).map(&:to_f)
     assert_equal width, height, "a favicon is square"
@@ -40,7 +41,11 @@ class LogoTest < ActiveSupport::TestCase
     icon = Vips::Image.new_from_file(Rails.public_path.join("app-icon.png").to_s)
     assert_equal [ 512, 512 ], [ icon.width, icon.height ]
     assert_equal [ 0, 0, 0 ], icon.getpoint(4, 4).first(3).map(&:round), "the app icon sits on the brand black"
-    assert_equal [ 96, 114, 72 ], icon.getpoint(256, 300).first(3).map(&:round), "no mark at the center"
+    green = (icon[0] == 96) & (icon[1] == 114) & (icon[2] == 72)
+    left, top, width, height = green.ifthenelse(255, 0).cast(:uchar).find_trim(threshold: 10, background: [ 0 ])
+    assert_in_delta 256, left + width / 2.0, 3, "the letters aren't centered across"
+    assert_in_delta 256, top + height / 2.0, 3, "the letters aren't centered down"
+    assert_in_delta 0.6, width / 512.0, 0.02, "the letters should span about 60% of the icon"
     assert_not Rails.public_path.join("icon.png").exist?, "Rails' placeholder icon is still there"
   end
 

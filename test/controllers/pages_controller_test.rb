@@ -178,11 +178,12 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     [ root_path, login_path ].each do |path|
       get path
       assert_select "link[rel=icon][type='image/svg+xml'][href^=?]", "/favicon.svg?v=", { count: 1 }, path
-      assert_select "link[rel=icon][type='image/png'][href='/app-icon.png']", 1, path
+      digest = Digest::SHA256.file(Rails.public_path.join("app-icon.png")).hexdigest.first(8)
+      assert_select "link[rel=icon][type='image/png'][href=?]", "/app-icon.png?v=#{digest}", { count: 1 }, "#{path}: a changed icon needs a new URL"
       assert_select "link[href*='/icon.png'], link[href*='/icon.svg']", 0, path
     end
     get root_path
-    assert_select "link[rel=apple-touch-icon][href='/app-icon.png']", 1
+    assert_select "link[rel=apple-touch-icon][href^=?]", "/app-icon.png?v=", { count: 1 }
   end
 
   test "theme-color matches the palette background" do

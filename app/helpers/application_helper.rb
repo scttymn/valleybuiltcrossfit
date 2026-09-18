@@ -20,6 +20,15 @@ module ApplicationHelper
   # The favicon in the saved accent; the color in the URL makes a new color a new file.
   def themed_favicon_path = favicon_path(v: Site.instance.theme.accent.delete("#"))
 
+  # public/ files are cached for a year, so the app icon's URL carries a
+  # fingerprint of the file: a new image is a new URL.
+  APP_ICON = Rails.public_path.join("app-icon.png")
+
+  def app_icon_path
+    version = Rails.configuration.cache_classes ? (@@app_icon_version ||= app_icon_digest) : app_icon_digest
+    "/app-icon.png?v=#{version}"
+  end
+
   # Each map app's own icon, in its real colors.
   MAP_APP_ICONS = { "Apple Maps" => "map-apps/apple-maps.png", "Google Maps" => "map-apps/google-maps.svg" }.freeze
 
@@ -73,6 +82,8 @@ module ApplicationHelper
   def clock(time) = time.strftime("%-l:%M %P")
 
   private
+    def app_icon_digest = Digest::SHA256.file(APP_ICON).hexdigest.first(8)
+
     def logo_document(layout)
       file = LOGOS.fetch(layout)
       return Nokogiri::XML(file.read) unless Rails.configuration.cache_classes

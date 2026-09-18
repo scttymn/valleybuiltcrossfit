@@ -10,9 +10,9 @@
     <%= csp_meta_tag %>
     <%= yield :head %>
 
-    <link rel="icon" href="/app-icon.png" type="image/png" sizes="512x512">
+    <link rel="icon" href="<%= app_icon_path %>" type="image/png" sizes="512x512">
     <link rel="icon" href="<%= themed_favicon_path %>" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/app-icon.png">
+    <link rel="apple-touch-icon" href="<%= app_icon_path %>">
     <%# Fonts are served from the site (fonts.css). The faces on screen when
         the page opens are fetched first, so the text never paints in a
         fallback and swaps — which made the hero jump 154px. %>

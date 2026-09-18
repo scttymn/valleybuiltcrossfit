@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <link rel="icon" href="/app-icon.png" type="image/png" sizes="512x512">
+    <link rel="icon" href="<%= app_icon_path %>" type="image/png" sizes="512x512">
     <link rel="icon" href="<%= themed_favicon_path %>" type="image/svg+xml">
     <style><%= Site.instance.theme.to_css %></style>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>

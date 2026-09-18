@@ -1,6 +1,6 @@
 # Traces the client's logo into themeable SVGs: horizontal and stacked (the
-# ones the site uses, written to app/assets/images), the mark alone, and the
-# favicon and app icon made from the mark. Every part
+# ones the site uses, written to app/assets/images), the mark alone, the VB
+# letters alone, and the favicon and app icon made from the letters. Every part
 # is its own <g class="logo-…"> (mark, name, tagline), with no colors of its
 # own, so CSS can fill each from the theme.
 #
@@ -18,6 +18,7 @@ STACKED = BRAND.join("vbc-logo-stacked-black.png")
 # The ones the site draws; the mark alone is kept here for later.
 HORIZONTAL_SVG = Rails.root.join("app/assets/images/logo-valley-built-horizontal.svg")
 STACKED_SVG = Rails.root.join("app/assets/images/logo-valley-built-stacked.svg")
+LETTERS_SVG = BRAND.join("logo-vb.svg")
 HORIZONTAL = BRAND.join("vbc-logo-horizontal.png")
 
 def grid(img) = Vips::Image.xyz(img.width, img.height).bandsplit
@@ -39,6 +40,14 @@ def tagline_pieces(cov)
     "word" => ((x >= word.first) & (x <= word.last)).ifthenelse(cov, 0),
     "rule-right" => (x >= runs.last.first).ifthenelse(cov, 0)
   }
+end
+
+# The VB letters without the mountain: in the mark they're one connected shape,
+# and the heaviest one (the mountain is two thin strokes).
+def letters(mark)
+  labels, info = (mark > 0.5).ifthenelse(255, 0).cast(:uchar).labelregions(segments: true)
+  heaviest = (0...info["segments"]).max_by { |i| ((labels == i).ifthenelse(mark, 0)).avg }
+  (labels == heaviest).ifthenelse(mark, 0)
 end
 
 def stacked_parts
@@ -85,6 +94,11 @@ Dir.mktmpdir do |dir|
   # Mark alone.
   File.write(BRAND.join("logo-mark.svg"), svg(padded(*boxes["mark"], 8), { "mark" => [ traced["mark"] ] }))
 
+  # The letters alone: the favicon and app icon, where the mountain's thin lines
+  # blur away.
+  vb = letters(parts["mark"])
+  File.write(LETTERS_SVG, svg(padded(*box(vb), 8), { "mark" => [ trace(vb, dir, "letters") ] }))
+
   # Horizontal: each shape moved and scaled onto its place in the official layout.
   # The mark and the word keep their proportions (fit by height); the name fits by
   # width; the rules stretch to their shorter length.
@@ -105,32 +119,28 @@ Dir.mktmpdir do |dir|
   File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), GROUPS.transform_values { |names| names.map { placed[_1] } }))
 end
 
-# Icons. The favicon is the mark in a square frame with no color of its own:
-# IconsController fills it with the saved accent on each request. The app icon
-# puts the whole mark, in the default green, on the brand black, small enough
-# that a rounded or circular crop keeps it.
+# Icons, from the VB letters. The favicon is the letters in a square frame with
+# no color of its own: IconsController fills it with the saved accent on each
+# request. The app icon puts them, in the default green, on the brand black,
+# small enough that a rounded or circular crop keeps them.
 FAVICON = Rails.root.join("app/assets/images/logo-favicon.svg")
 APP_ICON = Rails.public_path.join("app-icon.png")
 green = Theme::DEFAULTS[:accent]
-mark = Nokogiri::XML(BRAND.join("logo-mark.svg").read)
-x, y, w, h = mark.root["viewBox"].split.map(&:to_f)
+vb = Nokogiri::XML(LETTERS_SVG.read)
+x, y, w, h = vb.root["viewBox"].split.map(&:to_f)
 side = [ w, h ].max
-# The mark is wide, so in a square it's letterboxed. The favicon trims 8% off
-# each side (the tips of the mountain's base) to draw it about a fifth bigger.
-tab_side = side * (1 - 2 * 0.08)
-mark.root["viewBox"] = [ x + w / 2 - tab_side / 2, y + h / 2 - tab_side / 2, tab_side, tab_side ].map { _1.round(1) }.join(" ")
-mark.root.delete("role")
-mark.root.delete("aria-label")
-File.write(FAVICON, mark.root.to_xml + "\n")
-mark.at_css("g.logo-mark")["fill"] = green
+vb.root["viewBox"] = [ x - (side - w) / 2, y - (side - h) / 2, side, side ].map { _1.round(1) }.join(" ")
+vb.root.delete("role")
+vb.root.delete("aria-label")
+File.write(FAVICON, vb.root.to_xml + "\n")
+vb.at_css("g.logo-mark")["fill"] = green
 
-size, inset = 512, 0.62 # the mark's width, as a share of the icon
+size, inset = 512, 0.6 # the letters' width, as a share of the icon
 # Rails blocks libvips' SVG loader for uploads; this file is our own.
 Vips.block("VipsForeignLoadSvg", false)
-whole = mark.root.dup.tap { _1["viewBox"] = [ x - (side - w) / 2, y - (side - h) / 2, side, side ].map { |n| n.round(1) }.join(" ") }
-drawn = Vips::Image.svgload_buffer(whole.to_xml, scale: size * inset / side)
+drawn = Vips::Image.svgload_buffer(vb.root.to_xml, scale: size * inset / side)
 canvas = Vips::Image.black(size, size, bands: 3).bandjoin(255).copy(interpretation: :srgb)
 icon = canvas.composite2(drawn, :over, x: (size - drawn.width) / 2, y: (size - drawn.height) / 2)
 icon.extract_band(0, n: 3).write_to_file(APP_ICON.to_s)
 
-[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), FAVICON, APP_ICON ].each { puts "#{_1.basename}: #{_1.size} bytes" }
+[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), LETTERS_SVG, FAVICON, APP_ICON ].each { puts "#{_1.basename}: #{_1.size} bytes" }
