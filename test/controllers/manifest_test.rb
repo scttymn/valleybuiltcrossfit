@@ -11,7 +11,7 @@ class ManifestTest < ActionDispatch::IntegrationTest
     assert_equal "Valley Built CrossFit", manifest["name"]
     assert_equal "/", manifest["id"]
     assert_equal "/", manifest["start_url"]
-    assert_equal "browser", manifest["display"], "reserving, directions and chat lead to other sites; an app window has no way back"
+    assert_includes %w[standalone minimal-ui fullscreen], manifest["display"], "Chrome won't install a site that opens in a browser tab, so it can't use the maskable icon"
     assert_equal Theme.default.variables["--bg"], manifest["background_color"]
     assert_equal Theme.default.variables["--bg"], manifest["theme_color"]
 

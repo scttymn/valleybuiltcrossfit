@@ -2,9 +2,10 @@
     iPhone icon onto a white disc. "maskable" lets it crop the icon edge to
     edge into its shape (the VB sits inside the circle every crop keeps).
 
-    display "browser": a home-screen shortcut opens the site in the browser,
-    not as a full-screen app, since reserving a class, directions and chat all
-    lead to other sites.
+    display "standalone": Chrome only offers to install a site that opens in its
+    own window, and only an installed site gets the maskable icon. Links to
+    other sites (reserving a class, directions) open in an in-app browser panel
+    with a way back, on Android and iOS alike.
 
     Rails' own controller renders this, without the app's helpers, so they're
     called through ApplicationController. %>
@@ -19,7 +20,7 @@
   lang: "en",
   start_url: "/",
   scope: "/",
-  display: "browser",
+  display: "standalone",
   background_color: background,
   theme_color: background,
   icons:
