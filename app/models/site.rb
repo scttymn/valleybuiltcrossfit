@@ -14,7 +14,7 @@ class Site < ApplicationRecord
   end
 
   # Each part of the theme and the column holding it. nil = Theme::DEFAULTS.
-  THEME_COLORS = { background: :theme_background, text: :theme_text, accent: :theme_accent }.freeze
+  THEME_COLORS = { background: :theme_background, text: :theme_text, accent: :theme_accent, danger: :theme_danger }.freeze
 
   # A color equal to its default is stored as nil. The editor's fields always
   # hold a color, so every Settings save submits all three; without this, saving

@@ -3,7 +3,7 @@
   /* The admin follows the saved theme too (app/models/theme.rb, emitted by the
      layout). These names just map the admin's roles onto theme shades. */
   --a-bg: var(--bg); --a-panel: var(--surface); --a-input: var(--bg); --a-line: var(--line); --a-line-2: var(--line-strong);
-  --a-ink: var(--ink); --a-muted: var(--muted); --a-accent: var(--accent); --a-danger: var(--danger);
+  --a-ink: var(--ink); --a-muted: var(--muted); --a-accent: var(--accent);
   margin: 0; background: var(--a-bg); color: var(--a-ink); font: 15px/1.5 Barlow, system-ui, sans-serif;
   display: flex; min-height: 100vh;
 }
@@ -42,7 +42,7 @@
 .button--ghost { background: transparent; color: var(--accent-text) !important; }
 .button--ghost:hover { background: var(--accent-wash); }
 .link-button { background: none; border: 0; padding: 0; color: var(--accent-text); font: inherit; cursor: pointer; }
-.link-button--danger { color: var(--a-danger); }
+.link-button--danger { color: var(--danger); }
 
 .flash { padding: 10px 14px; border: var(--border-width) solid; margin: 0 0 20px; }
 .flash--notice { border-color: var(--line-strong); background: var(--accent-wash); color: var(--accent-text); }

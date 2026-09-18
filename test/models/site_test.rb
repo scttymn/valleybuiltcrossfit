@@ -62,4 +62,13 @@ class SiteTest < ActiveSupport::TestCase
       assert_not site.valid?, "accepted #{bad}"
     end
   end
+
+  test "the danger color is stored like the other colors" do
+    site = sites(:main)
+
+    site.update!(theme_danger: "CC3344")
+    assert_equal "#cc3344", site.theme.danger
+    site.update!(theme_danger: Theme::DEFAULTS[:danger].upcase)
+    assert_nil site.theme_danger
+  end
 end

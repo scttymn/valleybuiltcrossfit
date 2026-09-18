@@ -15,7 +15,7 @@
 
     <div class="theme-editor">
       <div class="theme-editor__fields">
-        <% { background: "Background", text: "Text", accent: "Accent" }.each do |part, label| %>
+        <% { background: "Background", text: "Text", accent: "Accent", danger: "Danger" }.each do |part, label| %>
           <% column = Site::THEME_COLORS[part] %>
           <div class="field">
             <%= form.label column, label %>
@@ -28,7 +28,7 @@
             </div>
           </div>
         <% end %>
-        <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>.</p>
+        <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>. Danger colors delete links and error messages.</p>
 
         <div class="field">
           <%= form.label :theme_border_width, "Border width" %>

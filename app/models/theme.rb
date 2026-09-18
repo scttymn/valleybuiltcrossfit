@@ -2,7 +2,7 @@
 # admin picks: background, text and accent. The stylesheets paint only with the
 # variables this emits. The defaults are the logo's three colors.
 #
-# Ten colors in all. Besides the three picks:
+# Four picks — background, text, accent, danger — and the rest follow:
 #
 # * Four layers — surface, line, line-strong, accent-wash — sit a fixed step
 #   from the background, moved some way toward the text (s) and toward the
@@ -16,7 +16,7 @@
 #   fail, and the editor warns about those.
 class Theme
   HEX = /\A#\h{6}\z/
-  DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248" }.freeze
+  DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248", danger: "#e0785a" }.freeze
 
   # Every border on the site, in pixels.
   BORDER_WIDTHS = 1..4
@@ -32,11 +32,14 @@ class Theme
   # WCAG AA for normal-size text.
   TEXT_CONTRAST = 4.5
 
-  # Delete links start from this red and move only as far as they must to read.
-  DANGER = "#e0785a"
-  # The error box keeps its own colors whatever the theme: they mean something
-  # went wrong, and they read against each other, not the page.
-  FIXED = { "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
+  # The error box, stepped from the background toward the text (s) and toward
+  # the danger pick (d) the same way the layers step toward the accent. Fitted
+  # to the design's reds, which the defaults reproduce within ΔE 2.2.
+  DANGER_SHADES = {
+    "danger-bg" => [ -0.041, 0.224 ],
+    "danger-line" => [ -0.125, 0.696 ],
+    "danger-ink" => [ 0.788, 0.293 ]
+  }.freeze
   # Names for another palette color, not colors of their own.
   ALIASES = %w[--on-accent].freeze
 
@@ -83,7 +86,7 @@ class Theme
 
   Warning = Data.define(:part, :ratio, :minimum, :suggestion)
 
-  attr_reader :background, :text, :accent, :border_width
+  attr_reader :background, :text, :accent, :danger, :border_width
 
   def self.default = new(**DEFAULTS)
 
@@ -97,8 +100,8 @@ class Theme
     candidate.match?(HEX) ? candidate.downcase : value
   end
 
-  def initialize(background:, text:, accent:, border_width: DEFAULT_BORDER_WIDTH)
-    @background, @text, @accent = [ background, text, accent ].map do |color|
+  def initialize(background:, text:, accent:, danger: DEFAULTS[:danger], border_width: DEFAULT_BORDER_WIDTH)
+    @background, @text, @accent, @danger = [ background, text, accent, danger ].map do |color|
       raise ArgumentError, "not a #rrggbb color: #{color.inspect}" unless color.is_a?(String) && color.match?(HEX)
       color.downcase
     end
@@ -118,8 +121,8 @@ class Theme
         "--ink-soft" => ink_soft, "--muted" => muted,
         "--accent-text" => Theme.suggest(accent, against: hardest, ratio: TEXT_CONTRAST) || accent,
         "--on-accent" => [ background, text ].max_by { Theme.contrast(_1, accent) },
-        "--danger" => Theme.suggest(DANGER, against: hardest, ratio: TEXT_CONTRAST) || DANGER
-      }.merge(layers.transform_keys { "--#{_1}" }, FIXED.transform_keys { "--#{_1}" }, "--border-width" => "#{border_width}px")
+        "--danger" => Theme.suggest(danger, against: hardest, ratio: TEXT_CONTRAST) || danger
+      }.merge(layers.transform_keys { "--#{_1}" }, error_box.transform_keys { "--#{_1}" }, "--border-width" => "#{border_width}px")
     end
   end
 
@@ -142,7 +145,7 @@ class Theme
   # is nothing in here that could close the tag.
   def to_css = ":root{#{variables.map { |token, value| "#{token}:#{value}" }.join(";")}}"
 
-  def to_h = { background:, text:, accent:, border_width: }
+  def to_h = { background:, text:, accent:, danger:, border_width: }
 
   # This theme with some settings swapped, from raw input such as preview
   # params. Anything that isn't valid is ignored rather than raised: a
@@ -192,13 +195,20 @@ class Theme
   def self.delta_e(a, b) = Color.lab(a).zip(Color.lab(b)).sum { |x, y| (x - y)**2 }**0.5
 
   private
-    def layers
-      @layers ||= begin
-        base, toward_text, toward_accent = Color.lab(background), Color.lab(text), Color.lab(accent)
-        LAYERS.transform_values do |s, u|
-          Color.hex(base.zip(toward_text, toward_accent).map { |b, t, a| b + s * (t - b) + u * (a - b) })
-        end
+    def layers = @layers ||= LAYERS.transform_values { |s, u| step(s, u, toward: accent) }
+
+    # The error text is stepped like the others, then moved just far enough to
+    # read on the error box, so a dark danger pick can't leave it illegible.
+    def error_box
+      @error_box ||= DANGER_SHADES.transform_values { |s, d| step(s, d, toward: danger) }.then do |box|
+        box.merge("danger-ink" => Theme.suggest(box["danger-ink"], against: box["danger-bg"], ratio: TEXT_CONTRAST) || box["danger-ink"])
       end
+    end
+
+    # The background moved s of the way toward the text and u toward `toward`.
+    def step(s, u, toward:)
+      base, to_text, to_color = Color.lab(background), Color.lab(text), Color.lab(toward)
+      Color.hex(base.zip(to_text, to_color).map { |b, t, c| b + s * (t - b) + u * (c - b) })
     end
 
     # The first color on the way from the background to the text that reaches

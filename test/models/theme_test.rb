@@ -62,7 +62,8 @@ class ThemeTest < ActiveSupport::TestCase
     logo.to_a.each { |row| row.each { |pixel| counts[pixel] += 1 } }
     background, lettering, mark = counts.max_by(3) { _2 }.map { |(rgb, _)| format("#%02x%02x%02x", *rgb) }
 
-    assert_equal({ background:, text: lettering, accent: mark }, Theme::DEFAULTS)
+    # Danger isn't in the logo; the other three are.
+    assert_equal({ background:, text: lettering, accent: mark }, Theme::DEFAULTS.slice(:background, :text, :accent))
   end
 
   test "the defaults are distinct and warning-free" do
@@ -113,6 +114,21 @@ class ThemeTest < ActiveSupport::TestCase
 
   test "a color that already passes is returned unchanged" do
     assert_equal "#f2f1e8", Theme.suggest("#f2f1e8", against: "#000000", ratio: 4.5)
+  end
+
+  test "the danger pick reproduces today's delete-link and error colors" do
+    variables = Theme.default.variables
+    { "--danger" => "#e0785a", "--danger-bg" => "#2a1812", "--danger-line" => "#7a3b2a", "--danger-ink" => "#f0c2b0" }.each do |token, was|
+      assert_operator Theme.delta_e(was, variables[token]), :<=, 2.5, "#{token}: #{was} → #{variables[token]}"
+    end
+  end
+
+  test "a dark danger pick still gives readable delete links and error text" do
+    theme = Theme.new(**Theme::DEFAULTS, danger: "#5a0000")
+    variables = theme.variables
+
+    assert_operator Theme.contrast(variables["--danger"], theme.hardest_background), :>=, 4.5
+    assert_operator Theme.contrast(variables["--danger-ink"], variables["--danger-bg"]), :>=, 4.5
   end
 
   test "border width defaults to 1px and reaches the stylesheet as a variable" do

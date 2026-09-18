@@ -149,6 +149,18 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_includes theme_style, "--border-width:2px"
   end
 
+  test "a danger color saved in admin changes the site's error colors" do
+    sign_in_as users(:one)
+    expected = Theme.new(**Theme::DEFAULTS, danger: "#cc3344").variables
+
+    get preview_admin_settings_theme_path, params: { danger: "#cc3344" }
+    assert_includes theme_style, "--danger-line:#{expected["--danger-line"]}"
+
+    patch admin_settings_theme_path, params: { site: { theme_danger: "#cc3344" } }
+    get root_path
+    assert_includes theme_style, "--danger-line:#{expected["--danger-line"]}"
+  end
+
   private
     def theme_style = css_select("head style").map(&:text).join
 end
