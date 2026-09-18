@@ -20,3 +20,7 @@
 ::-webkit-scrollbar-track { background: var(--surface); }
 ::-webkit-scrollbar-thumb { background: var(--accent); }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink); }
+
+/* Selected text: the theme's readable green, with the text set too — left to
+   itself, green text selected on a green highlight would disappear. */
+::selection { background: var(--accent-text); color: var(--bg); }

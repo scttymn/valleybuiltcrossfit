@@ -68,6 +68,7 @@ class Theme
     Pairing["Outlined button border", "--accent", "--bg", 3.0],
     Pairing["Scrollbar", "--accent", "--surface", 3.0],
     Pairing["Text on small green buttons", "--bg", "--accent-text", 4.5],
+    Pairing["Selected text", "--bg", "--accent-text", 4.5],
     Pairing["Delete links", "--danger", "--bg", 4.5],
     Pairing["Delete links on panels", "--danger", "--surface", 4.5],
     Pairing["Error messages", "--danger-ink", "--danger-bg", 4.5],

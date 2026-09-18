@@ -106,6 +106,14 @@ class PaletteTest < ActiveSupport::TestCase
     assert_match(/::-webkit-scrollbar-thumb:hover\s*\{[^}]*background:\s*var\(--ink\)/, @css)
   end
 
+  test "selected text is highlighted in the theme's green, with text that stays readable" do
+    # Selected text keeps its own color unless told otherwise, so green text
+    # selected on a green highlight would vanish; both are set.
+    rule = @css[/::selection\s*\{([^}]*)\}/, 1] or flunk "no ::selection rule"
+    assert_includes rule, "background: var(--accent-text)"
+    assert_includes rule, "color: var(--bg)"
+  end
+
   test "no two theme colors are within ΔE 3 of each other" do
     close = Theme.default.palette.to_a.combination(2).filter_map do |(a, x), (b, y)|
       distance = Theme.delta_e(x, y)
