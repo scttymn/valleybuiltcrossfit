@@ -152,6 +152,10 @@ attach.(Site.instance, :hero_photo, "hero.webp")
   "Chris Neske" => "chris-neske.jpg"
 }.each { |name, file| attach.(StaffMember.find_by(name:), :photo, file) }
 
+# Build the resized copies now, in the background, rather than making the first
+# visitor wait while a dozen of them are generated at once.
+WarmVariantsJob.perform_later
+
 # Sample workouts from the design, for opening week — development only.
 if Rails.env.development? && Workout.none?
   monday = Date.new(2026, 10, 5)

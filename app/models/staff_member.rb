@@ -5,6 +5,7 @@ class StaffMember < ApplicationRecord
 
   KINDS = { "coach" => "Coach", "owner" => "Owner" }.freeze
 
+  include WarmsPhotoVariants
   has_one_attached :photo
   validates :name, presence: true
   validates :kind, inclusion: { in: KINDS.keys }

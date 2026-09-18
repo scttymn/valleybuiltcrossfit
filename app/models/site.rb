@@ -1,5 +1,6 @@
 # Singleton row holding the site-wide copy and settings.
 class Site < ApplicationRecord
+  include WarmsPhotoVariants
   has_one_attached :hero_photo
 
   validates :pushpress_subdomain, presence: true

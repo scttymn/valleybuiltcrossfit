@@ -347,7 +347,9 @@ textarea.input { min-height: 96px; resize: vertical; }
 .staff-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--olive-dim); }
 .coach-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .coach { border: 1px solid var(--line); background: var(--bg-card); display: flex; flex-direction: column; }
-.coach .photo { height: 260px; }
+/* Matches the cap a real photo grows to, so a coach without one doesn't sit
+   short next to the coaches who have one. */
+.coach .photo { height: 360px; }
 .coach__body { padding: 26px 28px; display: flex; flex-direction: column; gap: 10px; }
 .coach h3 { font-family: var(--font-display); font-size: 24px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
 .coach__role { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
