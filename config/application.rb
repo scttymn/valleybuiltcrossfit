@@ -34,6 +34,11 @@ module Valleybuilt
     # in config/environments, which are processed later.
     #
     config.time_zone = "Central Time (US & Canada)"
+
+    # Photos are served through the app at one permanent address per image, marked
+    # cacheable forever. The default redirects to a signed link that expires, so the
+    # browser can't keep the photo and fetches it again on every reload.
+    config.active_storage.resolve_model_to_route = :rails_storage_proxy
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

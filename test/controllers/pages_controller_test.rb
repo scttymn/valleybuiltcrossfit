@@ -92,6 +92,26 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".program-card .photo img[fetchpriority]", 0
   end
 
+  test "photos have one stable address the browser can keep, so a reload doesn't fetch them again" do
+    sites(:main).hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+
+    get root_path
+    img = css_select(".hero__photo img").first
+    urls = [ img["src"], *img["srcset"].split(", ").map { _1.split.first } ]
+    urls.each { |url| assert_match %r{/rails/active_storage/representations/proxy/}, url, "a redirect URL expires and changes" }
+
+    get URI(img["src"]).path
+    assert_response :success
+    assert_equal "image/webp", response.media_type
+    cache = response.headers["Cache-Control"]
+    assert_includes cache, "public"
+    assert_includes cache, "immutable"
+    assert_operator cache[/max-age=(\d+)/, 1].to_i, :>=, 1.year.to_i
+
+    get root_path
+    assert_equal img["src"], css_select(".hero__photo img").first["src"], "the address changed between page loads"
+  end
+
   test "a photo that could fail to load is watched; a missing one needs no watching" do
     sites(:main).hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
 
