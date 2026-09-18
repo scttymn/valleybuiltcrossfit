@@ -4,15 +4,13 @@ namespace :admin do
     require "io/console"
     print "Email: "
     email = $stdin.gets.to_s.strip
-    print "Password (min 12 characters): "
+    print "Password (#{User::MINIMUM_PASSWORD_LENGTH}+ characters, with #{User::PASSWORD_RULES.keys.to_sentence}): "
     password = $stdin.noecho(&:gets).to_s.strip
     puts
 
     user = User.new(email_address: email, password:)
-    if password.length < 12
-      abort "Password is too short."
-    elsif user.save
-      puts "Created admin #{user.email_address}. Sign in at /session/new"
+    if user.save
+      puts "Created admin #{user.email_address}. Sign in at /login"
     else
       abort user.errors.full_messages.to_sentence
     end

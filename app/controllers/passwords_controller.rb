@@ -23,7 +23,9 @@ class PasswordsController < ApplicationController
       @user.sessions.destroy_all
       redirect_to login_path, notice: "Password has been reset."
     else
-      redirect_to edit_password_path(params[:token]), alert: "Passwords did not match."
+      # Say what was actually wrong — a password that fails the rules is not a
+      # mismatch, and being told it is sends people round in circles.
+      redirect_to edit_password_path(params[:token]), alert: @user.errors.full_messages.to_sentence
     end
   end
 

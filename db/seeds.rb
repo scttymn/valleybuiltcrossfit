@@ -171,6 +171,7 @@ if Rails.env.development? && Workout.none?
 end
 
 if Rails.env.development? && User.none?
-  User.create!(email_address: "admin@example.com", password: "password")
-  puts "Created admin@example.com / password"
+  password = "Admin1!" # the shortest thing that satisfies User::PASSWORD_RULES
+  User.create!(email_address: "admin@example.com", password:)
+  puts "Created admin@example.com / #{password}"
 end

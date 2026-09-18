@@ -41,7 +41,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
   test "update" do
     assert_changes -> { @user.reload.password_digest } do
-      put password_path(@user.password_reset_token), params: { password: "new", password_confirmation: "new" }
+      put password_path(@user.password_reset_token), params: { password: "Newpass1!", password_confirmation: "Newpass1!" }
       assert_redirected_to login_path
     end
 
@@ -52,12 +52,23 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
   test "update with non matching passwords" do
     token = @user.password_reset_token
     assert_no_changes -> { @user.reload.password_digest } do
-      put password_path(token), params: { password: "no", password_confirmation: "match" }
+      put password_path(token), params: { password: "Nopass1!", password_confirmation: "Match1!" }
       assert_redirected_to edit_password_path(token)
     end
 
     follow_redirect!
-    assert_notice "Passwords did not match"
+    assert_notice "doesn't match"
+  end
+
+  test "update with a password that breaks the rules says which rule" do
+    token = @user.password_reset_token
+    assert_no_changes -> { @user.reload.password_digest } do
+      put password_path(token), params: { password: "lowercase1", password_confirmation: "lowercase1" }
+      assert_redirected_to edit_password_path(token)
+    end
+
+    follow_redirect!
+    assert_notice "must include a capital letter and a special character"
   end
 
   private
