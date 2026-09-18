@@ -259,6 +259,14 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".dialog__close-text", 0
   end
 
+  test "a dialog takes focus itself when it opens, so no button starts out ringed" do
+    get root_path
+    # Without this the browser focuses the first button, and mobile browsers
+    # draw its focus ring as if someone had tabbed there.
+    assert_select "dialog.dialog", minimum: 1 # the class dialog; a WOD dialog renders per posted workout
+    assert_select "dialog.dialog:not([tabindex='-1'])", 0, "schedule_controller focuses the dialog itself, which needs tabindex=-1"
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

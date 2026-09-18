@@ -31,11 +31,20 @@ export default class extends Controller {
       dialog.querySelector(`[data-field="${key}"]`).textContent = data[key]
     }
     dialog.querySelector('[data-field="url"]').href = data.url
-    dialog.showModal()
+    this.show(dialog)
   }
 
   openWod({ params: { day } }) {
-    this.wodDialogTargets.find((dialog) => Number(dialog.dataset.day) === day)?.showModal()
+    const dialog = this.wodDialogTargets.find((dialog) => Number(dialog.dataset.day) === day)
+    if (dialog) this.show(dialog)
+  }
+
+  // Focus the dialog itself, not its first button: mobile browsers would draw
+  // that button's focus ring as if someone had tabbed to it. Tab still reaches
+  // the buttons, which ring as they should.
+  show(dialog) {
+    dialog.showModal()
+    dialog.focus({ preventScroll: true })
   }
 
   close() {

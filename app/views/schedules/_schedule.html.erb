@@ -81,7 +81,7 @@
     </div>
   </div>
 
-  <dialog class="dialog dialog--class" data-schedule-target="classDialog" aria-labelledby="class-dialog-title">
+  <dialog class="dialog dialog--class" tabindex="-1" data-schedule-target="classDialog" aria-labelledby="class-dialog-title">
     <div class="dialog__inner">
       <div class="stack" style="gap:6px">
         <span class="label">Reserve a spot</span>
@@ -101,7 +101,7 @@
 
   <% days.each_with_index do |day, i| %>
     <% next unless (wod = day.workout) %>
-    <dialog class="dialog dialog--wod" data-schedule-target="wodDialog" data-day="<%= i %>" aria-label="Workout of the day, <%= day.date.strftime("%A, %b %-d") %>">
+    <dialog class="dialog dialog--wod" tabindex="-1" data-schedule-target="wodDialog" data-day="<%= i %>" aria-label="Workout of the day, <%= day.date.strftime("%A, %b %-d") %>">
       <div class="dialog__inner">
         <div class="wod-head">
           <span class="label">Workout of the day • <%= day.date.strftime("%a, %b %-d") %></span>

@@ -257,6 +257,9 @@ html:has(dialog[open]) { overflow: hidden; }
 .dialog::backdrop { background: color-mix(in srgb, var(--bg) 84%, transparent); }
 .dialog--class { max-width: 520px; }
 .dialog--wod { max-width: 860px; }
+/* Dialogs take focus themselves on opening (schedule_controller), so no button
+   inside starts out ringed; the box itself needs no ring. */
+.site .dialog:focus-visible { outline: none; }
 .dialog__inner { padding: clamp(26px, 3vw, 38px); display: flex; flex-direction: column; gap: 22px; }
 .dialog--wod .dialog__inner { padding: 20px 22px 24px; gap: 16px; }
 .dialog h3 { font-family: var(--font-display); font-size: clamp(28px, 3vw, 36px); font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink); line-height: 1.05; }
