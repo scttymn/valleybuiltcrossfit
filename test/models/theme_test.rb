@@ -84,7 +84,7 @@ class ThemeTest < ActiveSupport::TestCase
       { background: "#ffffff", text: "#ffffff", accent: "#ffffff" },
       { background: "#000000", text: "#000000", accent: "#000000" }
     ].each do |colors|
-      Theme.new(**colors).variables.each do |token, value|
+      Theme.new(**colors).palette.each do |token, value|
         assert_match(/\A#\h{6}\z/, value, "#{token} for #{colors}")
       end
     end
@@ -113,6 +113,18 @@ class ThemeTest < ActiveSupport::TestCase
 
   test "a color that already passes is returned unchanged" do
     assert_equal "#f2f1e8", Theme.suggest("#f2f1e8", against: "#000000", ratio: 4.5)
+  end
+
+  test "border width defaults to 1px and reaches the stylesheet as a variable" do
+    assert_equal "1px", Theme.default.variables["--border-width"]
+    assert_equal "3px", Theme.new(**Theme::DEFAULTS, border_width: 3).variables["--border-width"]
+    assert_not_includes Theme.default.palette.keys, "--border-width", "a width is not a color"
+  end
+
+  test "a border width outside 1–4 is refused" do
+    [ 0, 5, -1, "2px", "2; }", nil ].each do |bad|
+      assert_raises(ArgumentError, "accepted #{bad.inspect}") { Theme.new(**Theme::DEFAULTS, border_width: bad) }
+    end
   end
 
   test "contrast matches WCAG for known pairs" do

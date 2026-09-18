@@ -2,12 +2,12 @@ module Admin
   module Settings
     # The site's three colors, and the sample drawn beside the pickers.
     class ThemesController < BaseController
-      self.fields = Site::THEME_COLORS.values
+      self.fields = [ *Site::THEME_COLORS.values, :theme_border_width ]
 
       # Pieces of the real site in the colors being tried, with the real
       # stylesheet and the real Theme. Never saves.
       def preview
-        @theme = @site.theme.with(**params.permit(*Theme::DEFAULTS.keys).to_h.symbolize_keys)
+        @theme = @site.theme.with(**params.permit(*Theme::DEFAULTS.keys, :border_width).to_h.symbolize_keys)
         render layout: "application"
       end
 

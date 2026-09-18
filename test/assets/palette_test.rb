@@ -70,7 +70,7 @@ class PaletteTest < ActiveSupport::TestCase
     assert_includes filled_hover, "color: var(--bg)"
 
     outlined, outlined_hover = rule[".site a.btn--ghost, .btn--ghost"], rule[".site a.btn--ghost:hover"]
-    assert_includes outlined, "border: 1px solid var(--accent)"
+    assert_includes outlined, "border: var(--border-width) solid var(--accent)"
     assert_includes outlined, "color: var(--ink)"
     assert_includes outlined_hover, "border-color: var(--ink)"
   end
@@ -81,6 +81,15 @@ class PaletteTest < ActiveSupport::TestCase
     rule = @css[/^\.announce \{[^}]*\}/] or flunk ".announce rule not found"
     assert_includes rule, "background: var(--ink)"
     assert_includes rule, "color: var(--bg)"
+  end
+
+  test "no border width is typed into a rule" do
+    # Border widths come from the theme's --border-width. Focus outlines are
+    # the keyboard-focus ring, not decoration, and keep their own width.
+    fixed = @css.lines.each_with_index.filter_map do |line, i|
+      "line #{i + 1}: #{line.strip[0, 100]}" if line.match?(/border(?:-(?:top|bottom|left|right))?(?:-width)?:\s*[\d.]+px/)
+    end
+    assert_empty fixed
   end
 
   test "no two theme colors are within ΔE 3 of each other" do

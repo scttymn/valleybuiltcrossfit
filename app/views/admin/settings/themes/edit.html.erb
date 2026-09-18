@@ -29,6 +29,13 @@
           </div>
         <% end %>
         <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>.</p>
+
+        <div class="field">
+          <%= form.label :theme_border_width, "Border width" %>
+          <%= form.select :theme_border_width, Theme::BORDER_WIDTHS.map { [ "#{_1}px", _1 ] }, { selected: @site.theme.border_width },
+                data: { theme_preview_target: "setting", part: "border_width", action: "change->theme-preview#refresh" } %>
+          <p class="field__hint">Every border on the site: buttons, the schedule, cards, class slots. Default <%= Theme::DEFAULT_BORDER_WIDTH %>px.</p>
+        </div>
       </div>
 
       <iframe class="theme-editor__sample" title="Color sample" src="<%= preview_admin_settings_theme_path %>"

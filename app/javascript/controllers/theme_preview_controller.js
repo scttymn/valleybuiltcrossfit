@@ -4,7 +4,7 @@ import { Controller } from "@hotwired/stimulus"
 // beside them as colors change. The sample is rendered by the server with the
 // real Theme, so nothing here works out colors — it only passes them along.
 export default class extends Controller {
-  static targets = ["swatch", "hex", "frame"]
+  static targets = ["swatch", "hex", "setting", "frame"]
   static values = { url: String }
 
   picked(event) {
@@ -34,7 +34,8 @@ export default class extends Controller {
   refresh() {
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
-      const params = new URLSearchParams(this.hexTargets.map((field) => [field.dataset.part, field.value]))
+      const fields = [...this.hexTargets, ...this.settingTargets]
+      const params = new URLSearchParams(fields.map((field) => [field.dataset.part, field.value]))
       this.frameTarget.src = `${this.urlValue}?${params}`
     }, 150)
   }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_18_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_18_160000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -140,6 +140,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_18_120000) do
     t.string "steps_title"
     t.string "theme_accent"
     t.string "theme_background"
+    t.integer "theme_border_width"
     t.string "theme_text"
     t.string "uncapped_class_types"
     t.datetime "updated_at", null: false

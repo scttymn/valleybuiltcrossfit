@@ -137,6 +137,18 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_select ".theme-warning button[data-part='text']"
   end
 
+  test "a border width saved in admin reaches the site, and the preview shows one before saving" do
+    sign_in_as users(:one)
+
+    get preview_admin_settings_theme_path, params: { border_width: "3" }
+    assert_includes theme_style, "--border-width:3px"
+    assert_nil @site.reload.theme_border_width, "previewing must not save"
+
+    patch admin_settings_theme_path, params: { site: { theme_border_width: "2" } }
+    get root_path
+    assert_includes theme_style, "--border-width:2px"
+  end
+
   private
     def theme_style = css_select("head style").map(&:text).join
 end

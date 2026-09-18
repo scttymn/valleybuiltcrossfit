@@ -18,6 +18,10 @@ class Theme
   HEX = /\A#\h{6}\z/
   DEFAULTS = { background: "#000000", text: "#d3c7b8", accent: "#607248" }.freeze
 
+  # Every border on the site, in pixels.
+  BORDER_WIDTHS = 1..4
+  DEFAULT_BORDER_WIDTH = 1
+
   LAYERS = {
     "surface" => [ -0.049, 0.173 ],
     "line" => [ -0.011, 0.309 ],
@@ -78,7 +82,7 @@ class Theme
 
   Warning = Data.define(:part, :ratio, :minimum, :suggestion)
 
-  attr_reader :background, :text, :accent
+  attr_reader :background, :text, :accent, :border_width
 
   def self.default = new(**DEFAULTS)
 
@@ -92,11 +96,13 @@ class Theme
     candidate.match?(HEX) ? candidate.downcase : value
   end
 
-  def initialize(background:, text:, accent:)
+  def initialize(background:, text:, accent:, border_width: DEFAULT_BORDER_WIDTH)
     @background, @text, @accent = [ background, text, accent ].map do |color|
       raise ArgumentError, "not a #rrggbb color: #{color.inspect}" unless color.is_a?(String) && color.match?(HEX)
       color.downcase
     end
+    raise ArgumentError, "not a border width: #{border_width.inspect}" unless border_width.is_a?(Integer) && BORDER_WIDTHS.cover?(border_width)
+    @border_width = border_width
   end
 
   def variables
@@ -112,12 +118,12 @@ class Theme
         "--accent-text" => Theme.suggest(accent, against: hardest, ratio: TEXT_CONTRAST) || accent,
         "--on-accent" => [ background, text ].max_by { Theme.contrast(_1, accent) },
         "--danger" => Theme.suggest(DANGER, against: hardest, ratio: TEXT_CONTRAST) || DANGER
-      }.merge(layers.transform_keys { "--#{_1}" }, FIXED.transform_keys { "--#{_1}" })
+      }.merge(layers.transform_keys { "--#{_1}" }, FIXED.transform_keys { "--#{_1}" }, "--border-width" => "#{border_width}px")
     end
   end
 
   # The colors themselves, without the names that point at one of them.
-  def palette = variables.except(*ALIASES)
+  def palette = variables.except(*ALIASES, "--border-width")
 
   def pairings
     PAIRINGS.map do |pairing|
@@ -135,14 +141,16 @@ class Theme
   # is nothing in here that could close the tag.
   def to_css = ":root{#{variables.map { |token, value| "#{token}:#{value}" }.join(";")}}"
 
-  def to_h = { background:, text:, accent: }
+  def to_h = { background:, text:, accent:, border_width: }
 
-  # This theme with some colors swapped, from raw input such as preview params.
-  # Anything that isn't a color is ignored rather than raised: a half-typed hex
-  # in the picker shouldn't break the preview.
-  def with(**colors)
-    valid = colors.transform_values { Theme.normalize(_1) }.select { |_, value| value&.match?(HEX) }
-    Theme.new(**to_h.merge(valid.slice(*DEFAULTS.keys)))
+  # This theme with some settings swapped, from raw input such as preview
+  # params. Anything that isn't valid is ignored rather than raised: a
+  # half-typed hex in the picker shouldn't break the preview.
+  def with(border_width: nil, **colors)
+    valid = colors.slice(*DEFAULTS.keys).transform_values { Theme.normalize(_1) }.select { |_, value| value&.match?(HEX) }
+    width = Integer(border_width.to_s, exception: false)
+    valid[:border_width] = width if width && BORDER_WIDTHS.cover?(width)
+    Theme.new(**to_h.merge(valid))
   end
 
   # Parts that are hard to read against the background.

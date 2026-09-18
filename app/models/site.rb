@@ -25,12 +25,17 @@ class Site < ApplicationRecord
   end
   validates(*THEME_COLORS.values, format: { with: Theme::HEX, message: "must be a color like #607248" }, allow_nil: true)
 
-  def theme_customized? = THEME_COLORS.values.any? { self[_1].present? }
+  normalizes :theme_border_width, with: ->(value) { value == Theme::DEFAULT_BORDER_WIDTH ? nil : value }
+  validates :theme_border_width, inclusion: { in: Theme::BORDER_WIDTHS, message: "must be 1 to 4 pixels" }, allow_nil: true
+
+  def theme_customized? = [ *THEME_COLORS.values, :theme_border_width ].any? { self[_1].present? }
 
   # A stored value that isn't a color — set from the console, say — falls back
   # to the default rather than reaching the page's <style> tag.
   def theme
-    Theme.new(**THEME_COLORS.to_h { |part, column| [ part, self[column].to_s.match?(Theme::HEX) ? self[column] : Theme::DEFAULTS[part] ] })
+    colors = THEME_COLORS.to_h { |part, column| [ part, self[column].to_s.match?(Theme::HEX) ? self[column] : Theme::DEFAULTS[part] ] }
+    width = theme_border_width if Theme::BORDER_WIDTHS.cover?(theme_border_width.to_i)
+    Theme.new(**colors, border_width: width || Theme::DEFAULT_BORDER_WIDTH)
   end
 
   def announcement_showing? = announcement_visible? && announcement.present?

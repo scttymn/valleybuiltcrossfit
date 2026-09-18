@@ -44,4 +44,22 @@ class SiteTest < ActiveSupport::TestCase
     site.update!(theme_accent: Theme::DEFAULTS[:accent])
     assert_not site.theme_customized?
   end
+
+  test "border width is 1 to 4 pixels, and blank or the default means default" do
+    site = sites(:main)
+
+    site.update!(theme_border_width: 3)
+    assert_equal 3, site.theme.border_width
+    assert site.theme_customized?
+
+    site.update!(theme_border_width: Theme::DEFAULT_BORDER_WIDTH)
+    assert_nil site.theme_border_width
+    site.update!(theme_border_width: "")
+    assert_nil site.theme_border_width
+
+    [ 0, 5 ].each do |bad|
+      site.theme_border_width = bad
+      assert_not site.valid?, "accepted #{bad}"
+    end
+  end
 end
