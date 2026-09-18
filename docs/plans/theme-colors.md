@@ -323,6 +323,130 @@ that must not change.
   custom (`Site#theme_customized?`); otherwise the section says the defaults
   are in use.
 
+## Batch 4.0 — Collapsible admin menu groups: Settings and Site content (before 4a/4b)
+
+### Why
+Settings holds the theme editor, its sample, soon a contrast guide — and image
+quality. Site content is seven unrelated sections on one page with jump links.
+Scotty: collapsible menu groups, one focused view per section.
+
+### Design
+- **One nav-group partial** used by both groups: a native `<details>`/`<summary>`
+  (no JavaScript; keyboard and screen-reader support built in). The group title
+  is a toggle, not a link. It renders `open` when the current page is one of its
+  items and closed elsewhere; the current item is marked active.
+- **Site content ▾** — one page per section, from the existing
+  `Admin::SitesController::SECTIONS` (Contact, Hero, Programs/steps & schedule,
+  Drop-in, Membership, Find us). Routes `/admin/site/:section/edit` and
+  `PATCH /admin/site/:section`; the slug is the section name parameterized.
+  Each page permits **only its own section's fields**; the hero photo
+  upload/remove handling moves with it. Unknown section → 404. The old
+  `/admin/site/edit` → first section. Jump links go away.
+- **Settings ▾** — Theme, Photos, **PushPress** (moved from Site content: it is
+  configuration, not copy). `namespace :settings` with
+  `resource :theme` (`edit update`, `get :preview`), `resource :photos`,
+  `resource :pushpress`; each permits only its own fields. `/admin/settings` and
+  the old `/admin/settings/edit` → Theme. `SettingsController` and its view go.
+- The list pages (Programs, Pillars, …) stay top-level for now.
+
+### AC ↔ test map
+
+**4.0a — menu groups + Settings**
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| Groups collapse; open on their own pages | `test/controllers/admin/navigation_test.rb` | `a menu group is open on its own pages and closed elsewhere, with the current page marked` | Contract |
+| Group title is a toggle, not a link | `test/controllers/admin/navigation_test.rb` | `a menu group's title is a toggle, not a link` | Contract |
+| Each settings page saves only its fields | `test/controllers/admin/settings_test.rb` | `each settings page ignores fields that belong to another` | Authz / Contract |
+| Old address still works | `test/controllers/admin/settings_test.rb` | `the old settings address lands on the theme page` | Contract |
+| Anonymous blocked | `test/controllers/admin/settings_test.rb` | `anonymous visitors cannot open or save any settings page` | Authz |
+| Theme unchanged | `test/controllers/admin/theme_test.rb` | existing tests at the new paths | Contract |
+| All pages render | `test/controllers/admin/admin_test.rb` | `every admin page renders` (paths updated) | Contract |
+
+**4.0b — Site content sections**
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| One section per page | `test/controllers/admin/site_content_test.rb` | `each section page shows only that section's fields` | Contract |
+| Saves only its section | `test/controllers/admin/site_content_test.rb` | `saving a section ignores fields from other sections` | Authz / Contract |
+| Hero photo still uploads/removes | `test/controllers/admin/site_content_test.rb` | `the hero section uploads and removes the photo` | Contract |
+| Unknown section | `test/controllers/admin/site_content_test.rb` | `an unknown section is not found` | Contract |
+| Old address | `test/controllers/admin/site_content_test.rb` | `the old site content address lands on the first section` | Contract |
+| Anonymous blocked | `test/controllers/admin/site_content_test.rb` | `anonymous visitors cannot open or save a section` | Authz |
+
+## Batch 4 — Readable by construction: 16 → 10 colors, design fixes, contrast guide
+
+### Why
+Measured on the logo defaults, five text pairings fall below WCAG AA even though
+the editor warns about nothing: "11 open" on a slot 3.2:1, footer links and
+placeholders 3.7:1, small green labels and links 4.0:1, coach name on a slot
+4.2:1, button and announcement text 4.0:1. The derived shades sit at fixed
+positions between the three picks, so their contrast is whatever that position
+yields. Setting text shades *by contrast* guarantees them for any theme, and —
+because readable text on this background only has room between 4.5:1 and 10.1:1
+— collapses the near-duplicate text shades on its own.
+
+### Design
+- **One list of pairings** in `Theme` — every place text sits on a color: role,
+  foreground, background, minimum (4.5 normal text, 3 large text). It drives the
+  admin guide, the warnings and the tests; nothing restates it.
+- **Ten colors** (+4 fixed error colors):
+
+  | Role | Set by |
+  |---|---|
+  | `--bg`, `--ink`, `--accent` | the admin's picks |
+  | `--ink-soft` | ~7:1 on the hardest background* |
+  | `--muted` | 4.5:1 on the hardest background* |
+  | `--accent-text` | `Theme.suggest(accent, …, 4.5)` on the hardest background* — logo hue, lightness moved just enough |
+  | `--surface` | fixed step from the background (cards, panels) |
+  | `--line` | fixed step (all borders) |
+  | `--accent-wash` | fixed step toward the accent (slots, selected) |
+  | `--accent-line` | fixed step toward the accent (green borders, hover) |
+
+  \*Hardest background = whichever of `--bg`, `--surface`, `--accent-wash` gives
+  the text the least contrast, per theme. If the picks themselves can't reach a
+  target (text too close to the background), text shades stop at the text
+  color and the guide shows the failure on the pick.
+- **Merges:** `surface-2` → `surface`; `line-strong` → `line`; `muted-soft` →
+  `muted`; `accent-wash-2` → slot hover changes border, not fill;
+  `accent-edge` + `accent-border` → `accent-line`; `accent-dim` + `accent-pale`
+  → `accent-text` (hover goes to `--ink`).
+- **Text on the accent** (`--on-accent`): whichever of background or text
+  contrasts more with the accent — a choice, not a new color. The logo green
+  reaches 4.0:1 at best, so:
+- **Design fixes where a color can't be fixed** (the green is the client's):
+  primary button text 17px → 19px bold (large text, 3:1 — option B);
+  announcement bar becomes the card shade with a green top edge and cream text
+  (option C). Approved.
+- **Danger text** (delete links) = `Theme.suggest("#e0785a", against: bg, 4.5)`,
+  so it stays readable on a light theme too.
+- **Admin contrast guide** under the sample: each pairing, its ratio, what it
+  needs, pass/fail — for the colors in the pickers, before saving. Warnings with
+  a suggestion remain, now only for the three picks.
+
+### AC ↔ test map
+
+**4a — the palette** (model + CSS)
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| Every pairing passes, several themes | `test/models/theme_test.rb` | `every pairing meets its minimum for the logo, light, and high-color themes` | Contract |
+| Text shades hit their targets | `test/models/theme_test.rb` | `muted and accent text land at 4.5:1 on the hardest background, not above it` | Contract |
+| Unreachable target doesn't overshoot | `test/models/theme_test.rb` | `when the picks can't reach a target, text shades stop at the text color` | Contract |
+| On-accent picks the better side | `test/models/theme_test.rb` | `text on the accent is whichever of background or text reads better` | Contract |
+| Ten, distinct | `test/assets/palette_test.rb` | existing: used / defined / no literals / ΔE ≥ 3 (now over 10) | Honest surface |
+| Pairing list matches the CSS | `test/assets/palette_test.rb` | `every text color the stylesheets use on a background is in the pairing list` | Honest surface |
+
+**4b — design fixes + guide** (CSS + admin)
+
+| AC | Test file | Test name | Lens |
+|----|-----------|-----------|------|
+| Button text is large | `test/assets/palette_test.rb` | `primary button text is at least 19px bold` | Contract |
+| Bar off the green | `test/controllers/pages_controller_test.rb` | `the announcement bar sits on the card shade` (CSS rule check) | Contract |
+| Guide shows every pairing | `test/controllers/admin/theme_test.rb` | `the preview lists every pairing with its ratio and minimum` | Contract |
+| Guide flags a failing pick | `test/controllers/admin/theme_test.rb` | `a pick that fails shows as failing in the guide, with a suggestion` | Contract |
+| Visible change is the planned one | — evidence | before/after screenshots; list what changed | Parity |
+
 ## Agent loop checkpoints
 
 - Before touching CSS: screenshot the current site (the "before" set) so the
@@ -337,3 +461,9 @@ that must not change.
 2. ~~Contrast rule~~ — never block; warn in the sample (text under 4.5:1,
    accent under 3:1) with a same-hue suggestion and a Use this button.
    The client's green is 4.0:1 on black (3.3:1 on a schedule slot).
+3. ~~Batch 4 design fixes~~ — approved: button B (19px bold), announcement
+   bar C (card shade, green top edge). PushPress moves under Settings.
+4. Order: 4.0a (menu groups + Settings) → 4.0b (Site content sections) →
+   4a (palette) → 4b (design fixes + guide).
+5. Later, maybe: fold list pages into their sections (Programs text + Programs
+   list, Membership text + Membership options). Not in scope.
