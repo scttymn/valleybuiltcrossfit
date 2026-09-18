@@ -72,7 +72,6 @@
 .check { display: flex; gap: 6px; align-items: center; color: var(--a-muted); }
 .form__actions { display: flex; align-items: center; gap: 16px; }
 .form__actions--sticky { position: sticky; bottom: 0; background: var(--a-bg); padding: 14px 0; border-top: 1px solid var(--a-line); }
-.jump { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .card { background: var(--a-panel); border: 1px solid var(--a-line); padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }

@@ -25,7 +25,8 @@
           <% link = ->(label, path) { link_to label, path, class: ("is-active" if admin_nav_current?(path)) } %>
           <%= link.("Dashboard", admin_root_path) %>
           <%= link.("Announcement bar", edit_admin_announcement_path) %>
-          <%= link.("Site content", edit_admin_site_path) %>
+          <%= render "admin/nav_group", title: "Site content",
+                items: Admin::SitesController::SECTIONS.keys.map { [ _1, edit_admin_site_section_path(_1.parameterize) ] } %>
           <% [ [ "Programs", admin_programs_path ], [ "Pillars", admin_pillars_path ], [ "Steps", admin_steps_path ],
                [ "Membership options", admin_membership_options_path ], [ "Staff", admin_staff_members_path ], [ "FAQs", admin_faqs_path ],
                [ "Workouts", admin_workouts_path ], [ "Inquiries", admin_leads_path ], [ "Admins", admin_users_path ] ].each do |label, path| %>

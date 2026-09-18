@@ -11,7 +11,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#show"
-    resource :site, only: %i[edit update]
+    get "site/edit", to: redirect("/admin/site/contact/edit")
+    resources :site_sections, path: "site", param: :section, only: %i[edit update], controller: "sites"
     resource :announcement, only: %i[edit update]
     namespace :settings do
       resource :theme, only: %i[edit update] do

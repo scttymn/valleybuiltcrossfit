@@ -21,5 +21,7 @@ class Admin::NavigationTest < ActionDispatch::IntegrationTest
     assert_select "details.nav-group > summary a", 0
     assert_select "details.nav-group a", text: "Theme"
     assert_select "details.nav-group a", text: "PushPress"
+    assert_select "details.nav-group > summary", "Site content"
+    assert_select "details.nav-group a", text: "Hero"
   end
 end

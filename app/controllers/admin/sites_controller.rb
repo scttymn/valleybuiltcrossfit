@@ -25,22 +25,29 @@ module Admin
     }.freeze
 
     before_action { @site = Site.instance }
+    before_action :find_section
 
     def edit; end
 
+    # Saves only the fields of the section being edited.
     def update
-      fields = SECTIONS.values.flatten
-      attrs = params.expect(site: fields.map(&:name))
-      fields.select { _1.type == :file }.each do |field|
+      attrs = params.expect(site: @fields.map(&:name))
+      @fields.select { _1.type == :file }.each do |field|
         attrs.delete(field.name) if attrs[field.name].blank?
         @site.public_send(field.name).purge_later if params.dig(:site, "remove_#{field.name}") == "1"
       end
 
       if @site.update(attrs)
-        redirect_to edit_admin_site_path, notice: "Site content saved."
+        redirect_to edit_admin_site_section_path(params[:section]), notice: "#{@section} saved."
       else
         render :edit, status: :unprocessable_entity
       end
     end
+
+    private
+      def find_section
+        @section, @fields = SECTIONS.find { |name, _| name.parameterize == params[:section] }
+        head :not_found unless @section
+      end
   end
 end

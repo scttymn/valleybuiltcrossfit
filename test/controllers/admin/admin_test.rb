@@ -14,7 +14,7 @@ class AdminTest < ActionDispatch::IntegrationTest
   test "every admin page renders" do
     sign_in_as users(:one)
 
-    [ admin_root_path, edit_admin_site_path, edit_admin_settings_theme_path, edit_admin_settings_photos_path, edit_admin_settings_pushpress_path, edit_admin_announcement_path, admin_leads_path, admin_lead_path(leads(:sam)), admin_users_path, new_admin_user_path ].each do |path|
+    [ admin_root_path, *Admin::SitesController::SECTIONS.keys.map { edit_admin_site_section_path(_1.parameterize) }, edit_admin_settings_theme_path, edit_admin_settings_photos_path, edit_admin_settings_pushpress_path, edit_admin_announcement_path, admin_leads_path, admin_lead_path(leads(:sam)), admin_users_path, new_admin_user_path ].each do |path|
       get path
       assert_response :success, path
     end
@@ -57,13 +57,6 @@ class AdminTest < ActionDispatch::IntegrationTest
     photo = fixture_file_upload("coach.png", "image/png")
     patch admin_staff_member_path(staff_members(:chad)), params: { staff_member: { photo: } }
     assert staff_members(:chad).reload.photo.attached?
-  end
-
-  test "updates site content" do
-    sign_in_as users(:one)
-    patch admin_site_path, params: { site: { hero_title: "Show up." } }
-    assert_redirected_to edit_admin_site_path
-    assert_equal "Show up.", Site.instance.hero_title
   end
 
   test "new workout defaults to the day after the latest one" do

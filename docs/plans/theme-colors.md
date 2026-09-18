@@ -380,6 +380,13 @@ column, so the group's links are wrapped in `.nav-group__items`.
 | Old address | `test/controllers/admin/site_content_test.rb` | `the old site content address lands on the first section` | Contract |
 | Anonymous blocked | `test/controllers/admin/site_content_test.rb` | `anonymous visitors cannot open or save a section` | Authz |
 
+**4.0b result — done.** All rows green; full suite 116/116. Browser: the old
+`/admin/site/edit` lands on Contact, the Site content group is open with the
+current section marked and Settings collapsed. Route names via
+`resources :site_sections, path: "site", param: :section` (a bare `get … as:`
+inside the namespace named them `admin_edit_site_section`). Unused `.jump`
+style removed.
+
 ## Batch 4 — Readable by construction: 16 → 10 colors, design fixes, contrast guide
 
 ### Why
