@@ -28,6 +28,15 @@ const INSIDE = `
   .lc_text-widget_heading_close--btn svg path, #lc_text-widget--btn svg path, .btn.btn-primary svg path { stroke: var(--on-accent) !important; }
   .lc_text-widget--agency-branding { background: var(--surface) !important; color: var(--muted) !important; border-top: var(--border-width) solid var(--line); }
   .lc_text-widget--agency-branding a { color: var(--accent-text) !important; }
+  /* The greeting bubble over the closed chat: a card like the form, with a
+     notch whose green edges continue the border. */
+  .lc_text-widget_prompt--msg-bubble { background: var(--surface) !important; border: var(--border-width) solid var(--accent) !important; border-radius: 0 !important; box-shadow: 0 10px 30px rgb(0 0 0 / 0.5) !important; }
+  .lc_text-widget_prompt--prompt-text { color: var(--ink) !important; }
+  .lc_text-widget_prompt--avatar { box-shadow: 0 0 0 var(--border-width) var(--accent) !important; }
+  .lc_text-widget_prompt--prompt-text::after { width: 12px !important; height: 12px !important; bottom: calc(-6px - var(--border-width)) !important; background: var(--surface) !important; border-right: var(--border-width) solid var(--accent) !important; border-bottom: var(--border-width) solid var(--accent) !important; box-shadow: none !important; }
+  .lc_text-widget_prompt--prompt-close { opacity: 1 !important; }
+  .lc_text-widget_prompt--prompt-close svg, .lc_text-widget_prompt--prompt-close path { fill: var(--ink-soft) !important; }
+  .lc_text-widget_prompt--prompt-close:hover svg, .lc_text-widget_prompt--prompt-close:hover path { fill: var(--ink) !important; }
   * { scrollbar-color: var(--accent) var(--surface); }
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: var(--surface); }
