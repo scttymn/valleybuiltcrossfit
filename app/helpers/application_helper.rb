@@ -21,13 +21,14 @@ module ApplicationHelper
   # drawing, so a change to either is a new URL.
   def themed_favicon_path = favicon_path(v: IconsController.version(Site.instance.theme.accent))
 
-  # public/ files are cached for a year, so the app icon's URL carries a
+  # public/ files are cached for a year, so an app icon's URL carries a
   # fingerprint of the file: a new image is a new URL.
-  APP_ICON = Rails.public_path.join("app-icon.png")
+  APP_ICONS = { 512 => "app-icon.png", 192 => "app-icon-192.png" }.freeze
 
-  def app_icon_path
-    version = Rails.configuration.cache_classes ? (@@app_icon_version ||= app_icon_digest) : app_icon_digest
-    "/app-icon.png?v=#{version}"
+  def app_icon_path(size = 512)
+    file = APP_ICONS.fetch(size)
+    version = Rails.configuration.cache_classes ? ((@@app_icon_versions ||= {})[file] ||= app_icon_digest(file)) : app_icon_digest(file)
+    "/#{file}?v=#{version}"
   end
 
   # Each map app's own icon, in its real colors.
@@ -87,7 +88,7 @@ module ApplicationHelper
   def clock(time) = time.strftime("%-l:%M %P")
 
   private
-    def app_icon_digest = Digest::SHA256.file(APP_ICON).hexdigest.first(8)
+    def app_icon_digest(file) = Digest::SHA256.file(Rails.public_path.join(file)).hexdigest.first(8)
 
     def logo_document(layout)
       file = LOGOS.fetch(layout)

@@ -1,22 +1,17 @@
-{
-  "name": "Valleybuilt",
-  "icons": [
-    {
-      "src": "/app-icon.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "/app-icon.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
-    }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "scope": "/",
-  "description": "Valleybuilt.",
-  "theme_color": "red",
-  "background_color": "red"
-}
+<%# Android builds its home-screen icon from this. "maskable" lets it crop the
+    icon edge to edge into its shape; without a manifest it shrinks the iPhone
+    icon onto a white disc. Rails' own controller renders this, without the
+    app's helpers, so they're called through ApplicationController. %>
+<% helpers = ApplicationController.helpers %>
+<% background = Site.instance.theme.variables["--bg"] %>
+<%= raw JSON.pretty_generate(
+  name: "Valley Built CrossFit",
+  short_name: "Valley Built",
+  description: "Coached CrossFit classes for every body in Grain Valley, Missouri.",
+  start_url: "/",
+  scope: "/",
+  display: "browser",
+  background_color: background,
+  theme_color: background,
+  icons: [ 192, 512 ].map { |size| { src: helpers.app_icon_path(size), type: "image/png", sizes: "#{size}x#{size}", purpose: "any maskable" } }
+) %>

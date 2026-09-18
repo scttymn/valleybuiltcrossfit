@@ -144,13 +144,18 @@ vb.root.delete("aria-label")
 File.write(FAVICON, vb.root.to_xml + "\n")
 vb.at_css("g.logo-mark")["fill"] = green
 
-size, inset = 512, 0.6 # the letters' width, as a share of the icon
 # Rails blocks libvips' SVG loader for uploads; this file is our own.
 Vips.block("VipsForeignLoadSvg", false)
-drawn = Vips::Image.svgload_buffer(vb.root.to_xml, scale: size * inset / side)
-canvas = Vips::Image.black(size, size, bands: 3).bandjoin(255).copy(interpretation: :srgb)
-icon = canvas.composite2(drawn, :over, x: (size - drawn.width) / 2, y: (size - drawn.height) / 2)
-icon.extract_band(0, n: 3).write_to_file(APP_ICON.to_s)
+# The letters' width as a share of the icon: inside the 80% circle Android's
+# maskable crops keep, so the same file serves as its home-screen icon.
+inset = 0.6
+{ 512 => APP_ICON, 192 => Rails.public_path.join("app-icon-192.png") }.each do |size, file|
+  drawn = Vips::Image.svgload_buffer(vb.root.to_xml, scale: size * inset / side)
+  canvas = Vips::Image.black(size, size, bands: 3).bandjoin(255).copy(interpretation: :srgb)
+  icon = canvas.composite2(drawn, :over, x: (size - drawn.width) / 2, y: (size - drawn.height) / 2)
+  icon.extract_band(0, n: 3).write_to_file(file.to_s)
+end
+size = 512
 
 # The chat avatar, uploaded to the PushPress Grow widget by hand (Grow asks for
 # 300×300): the cream VB on black, small enough that its circular crop keeps it.
@@ -162,4 +167,4 @@ backdrop = Vips::Image.black(avatar_size, avatar_size, bands: 3).bandjoin(255).c
 avatar = backdrop.composite2(drawn, :over, x: (avatar_size - drawn.width) / 2, y: (avatar_size - drawn.height) / 2)
 avatar.extract_band(0, n: 3).write_to_file(CHAT_AVATAR.to_s)
 
-[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), LETTERS_SVG, FAVICON, APP_ICON, CHAT_AVATAR ].each { puts "#{_1.basename}: #{_1.size} bytes" }
+[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), LETTERS_SVG, FAVICON, APP_ICON, Rails.public_path.join("app-icon-192.png"), CHAT_AVATAR ].each { puts "#{_1.basename}: #{_1.size} bytes" }

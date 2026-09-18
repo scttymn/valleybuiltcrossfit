@@ -31,4 +31,6 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
   get "favicon.svg" => "icons#favicon", as: :favicon, format: false
+  # Android's home-screen icon and name.
+  get "manifest.json" => "rails/pwa#manifest", as: :pwa_manifest, format: false, defaults: { format: :json }
 end
