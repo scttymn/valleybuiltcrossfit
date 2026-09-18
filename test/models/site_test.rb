@@ -30,4 +30,18 @@ class SiteTest < ActiveSupport::TestCase
       assert site.errors[:theme_accent].any?, "no error on the field for #{bad.inspect}"
     end
   end
+
+  test "a color equal to the default is stored as no custom color" do
+    # The editor's fields always hold a color, so saving Settings for any reason
+    # submits the defaults. Stored as nil, the site keeps following the defaults.
+    site = sites(:main)
+    site.update!(theme_background: Theme::DEFAULTS[:background].upcase, theme_accent: "#aa3322")
+
+    assert_nil site.theme_background
+    assert_equal "#aa3322", site.theme_accent
+    assert site.theme_customized?
+
+    site.update!(theme_accent: Theme::DEFAULTS[:accent])
+    assert_not site.theme_customized?
+  end
 end

@@ -53,6 +53,28 @@ class Admin::ThemeTest < ActionDispatch::IntegrationTest
     assert_equal 70, @site.image_quality
   end
 
+  test "reset is offered only when the colors differ from the defaults" do
+    sign_in_as users(:one)
+
+    get edit_admin_settings_path
+    assert_select "button[name='reset_colors']", 0
+    assert_select ".theme-editor__status", /default/i
+
+    @site.update!(theme_accent: "#aa3322")
+    get edit_admin_settings_path
+    assert_select "button[name='reset_colors']", 1
+  end
+
+  test "saving other settings leaves the colors on the defaults" do
+    sign_in_as users(:one)
+
+    patch admin_settings_path, params: { site: { image_quality: 70, **Theme::DEFAULTS.transform_keys { Site::THEME_COLORS[_1] } } }
+
+    @site.reload
+    assert_equal 70, @site.image_quality
+    assert_not @site.theme_customized?, "submitting the prefilled defaults pinned them as custom colors"
+  end
+
   test "anonymous visitors cannot change theme colors" do
     patch admin_settings_path, params: { site: LIGHT }
 

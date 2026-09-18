@@ -28,16 +28,20 @@
             </div>
           </div>
         <% end %>
-        <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>. Reset puts them back.</p>
+        <p class="field__hint">The defaults are the logo&rsquo;s colors: black, cream <code><%= Theme::DEFAULTS[:text] %></code> and green <code><%= Theme::DEFAULTS[:accent] %></code>.</p>
       </div>
 
       <iframe class="theme-editor__sample" title="Color sample" src="<%= theme_preview_admin_settings_path %>"
               data-theme-preview-target="frame"></iframe>
     </div>
 
-    <div>
-      <%= form.button "Reset colors to defaults", name: "reset_colors", value: "1", class: "button button--ghost",
-            data: { turbo_confirm: "Put the site back to the default colors?" } %>
+    <div class="theme-editor__status">
+      <% if @site.theme_customized? %>
+        <%= form.button "Reset colors to defaults", name: "reset_colors", value: "1", class: "button button--ghost",
+              data: { turbo_confirm: "Put the site back to the default colors?" } %>
+      <% else %>
+        <p class="field__hint">Using the default colors.</p>
+      <% end %>
     </div>
   </fieldset>
 

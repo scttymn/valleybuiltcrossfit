@@ -16,8 +16,16 @@ class Site < ApplicationRecord
   # Each part of the theme and the column holding it. nil = Theme::DEFAULTS.
   THEME_COLORS = { background: :theme_background, text: :theme_text, accent: :theme_accent }.freeze
 
-  normalizes(*THEME_COLORS.values, with: ->(value) { Theme.normalize(value) })
+  # A color equal to its default is stored as nil. The editor's fields always
+  # hold a color, so every Settings save submits all three; without this, saving
+  # anything would pin the defaults as custom colors and the site would stop
+  # following them.
+  THEME_COLORS.each do |part, column|
+    normalizes column, with: ->(value) { Theme.normalize(value).then { _1 == Theme::DEFAULTS[part] ? nil : _1 } }
+  end
   validates(*THEME_COLORS.values, format: { with: Theme::HEX, message: "must be a color like #607248" }, allow_nil: true)
+
+  def theme_customized? = THEME_COLORS.values.any? { self[_1].present? }
 
   # A stored value that isn't a color — set from the console, say — falls back
   # to the default rather than reaching the page's <style> tag.

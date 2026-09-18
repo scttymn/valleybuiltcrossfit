@@ -291,9 +291,10 @@ that must not change.
 - Rendered the sample page offline (no login) for a low-contrast dark theme —
   warning, ratio, suggestion and Use this button present — and for a light
   theme, which derives correctly (pale green slots, light cards).
-- **Not yet verified in a browser:** the live interaction — picker → sample
-  redraw, typing a hex, Use this → picker. It needs a signed-in admin, and
-  Claude doesn't enter passwords.
+- Live interaction verified in the browser once Scotty signed in (no save):
+  typing `#333333` for text redrew the sample and raised the warning (1.7:1,
+  suggesting `#757575` at 4.6:1); Use this set both the hex field and the
+  swatch to `#757575` and redrew the sample without the warning.
 
 ## Brand defaults and a themed admin (after Batch 3)
 
@@ -316,6 +317,11 @@ that must not change.
   fixed error colors as `--danger`.
 - Known risk, accepted: an unreadable saved theme makes the admin unreadable
   too. The sample warns before saving and Reset restores the defaults.
+- A color equal to its default is stored as `nil`. The editor always submits
+  all three fields, so saving Settings for anything else used to pin the
+  defaults as custom colors. Reset only appears when a color is actually
+  custom (`Site#theme_customized?`); otherwise the section says the defaults
+  are in use.
 
 ## Agent loop checkpoints
 
