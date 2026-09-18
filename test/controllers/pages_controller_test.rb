@@ -92,6 +92,14 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".program-card .photo img[fetchpriority]", 0
   end
 
+  test "a photo that could fail to load is watched; a missing one needs no watching" do
+    sites(:main).hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+
+    get root_path
+    assert_select ".hero__photo.photo[data-controller=photo] img"
+    assert_select ".program-card .photo:not([data-controller])", minimum: 1
+  end
+
   test "fonts come from the site itself, and the ones above the fold load first" do
     get root_path
 

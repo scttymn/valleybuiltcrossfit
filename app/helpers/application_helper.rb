@@ -17,7 +17,9 @@ module ApplicationHelper
   # priority: for the one photo on screen when the page opens (the hero).
   # Everything else loads lazily, as the visitor scrolls toward it.
   def photo_or_placeholder(attachment, css: "photo", alt: "", size: :program, priority: false)
-    tag.div(class: css) do
+    # A photo that exists can still fail to load; photo_controller.js marks
+    # it so it shows the missing-photo stripes instead of a broken image.
+    tag.div(class: css, data: ({ controller: "photo" } if attachment.attached?)) do
       next unless attachment.attached?
 
       loading = priority ? { loading: "eager", fetchpriority: "high" } : { loading: "lazy" }

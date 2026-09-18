@@ -118,8 +118,15 @@ class PaletteTest < ActiveSupport::TestCase
     # One treatment for every photo: the wrapper every photo goes through
     # carries the tint and darken layers, and the image carries the filter.
     assert_match(/^\.photo img \{[^}]*filter: var\(--photo-filter\)/, @css)
-    assert_match(/^\.photo:has\(img\)::before \{[^}]*opacity: var\(--photo-darken\)/, @css)
-    assert_match(/^\.photo:has\(img\)::after \{[^}]*background: var\(--accent\)[^}]*mix-blend-mode: var\(--photo-blend\)[^}]*opacity: var\(--photo-tint\)/, @css)
+    assert_match(/^\.photo:has\(img\):not\(\.photo--broken\)::before \{[^}]*opacity: var\(--photo-darken\)/, @css)
+    assert_match(/^\.photo:has\(img\):not\(\.photo--broken\)::after \{[^}]*background: var\(--accent\)[^}]*mix-blend-mode: var\(--photo-blend\)[^}]*opacity: var\(--photo-tint\)/, @css)
+  end
+
+  test "stripes mark a missing photo, not one that is still loading" do
+    base = @css[/^\.photo \{([^}]*)\}/, 1] or flunk ".photo rule not found"
+    assert_no_match(/--stripes/, base, "every photo would show stripes while it loads")
+    assert_match(/^\.photo:not\(:has\(img\)\), \.photo--broken \{[^}]*background-image: var\(--stripes\)/, @css)
+    assert_match(/^\.photo--broken img \{[^}]*visibility: hidden/, @css, "a failed photo would show the browser's broken-image icon")
   end
 
   test "no two theme colors are within ΔE 3 of each other" do

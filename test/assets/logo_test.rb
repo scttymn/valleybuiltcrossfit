@@ -30,7 +30,7 @@ class LogoTest < ActiveSupport::TestCase
     Rails.root.glob("app/assets/stylesheets/*.css").each do |sheet|
       sheet.read.gsub(%r{/\*.*?\*/}m, "").scan(/([^{}]+)\{([^}]*)\}/).each do |selector, body|
         next unless body.include?("mix-blend-mode")
-        assert_match(/\A\s*\.photo:has\(img\)::after\s*\z/, selector, "#{sheet.basename}: #{selector.strip} blends — only photo layers may")
+        assert_match(/\A\s*\.photo:has\(img\):not\(\.photo--broken\)::after\s*\z/, selector, "#{sheet.basename}: #{selector.strip} blends — only photo layers may")
       end
     end
   end
