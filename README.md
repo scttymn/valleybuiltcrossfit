@@ -45,6 +45,33 @@ looks up coach names, and caches the result for 10 minutes.
   as uncapped (default `General`, e.g. Open Build) show “Open session”.
 - Workouts of the day are entered in Admin → Workouts (PushPress's API has no WOD endpoint).
 
+## Deploying with Coolify
+
+The repo builds from its own `Dockerfile` (Rails 8 default: Thruster + Puma on
+port 80), so Coolify needs no build configuration beyond choosing the Dockerfile
+build pack.
+
+1. **Application** → source: this Git repo, branch `main`, build pack `Dockerfile`.
+2. **Persistent storage**: mount a volume at `/rails/storage`. The SQLite
+   databases and every uploaded photo live there &mdash; without it, each deploy
+   starts empty.
+3. **Environment variables**:
+   | Variable | Why |
+   | --- | --- |
+   | `RAILS_MASTER_KEY` | contents of `config/master.key` (not in git) |
+   | `PUSHPRESS_API_KEY` | class schedule |
+   | `PUSHPRESS_WEBHOOK_URL` | inquiry form → Grow workflow |
+   | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | form captcha (omit and it's off) |
+   | `SOLID_QUEUE_IN_PUMA=true` | runs the schedule refresh + mail jobs in the web process |
+   | `APP_HOST` | domain, for links in emails |
+   | `SMTP_ADDRESS`, `SMTP_USERNAME`, `SMTP_PASSWORD` | only used if the webhook fails |
+4. **Health check**: `/up`.
+5. After the first deploy, create your admin login from Coolify's terminal:
+   `bin/rails admin:create`.
+
+The database is created and migrated automatically on boot, and seeds run on a
+fresh volume, so the first deploy comes up with the design's content in place.
+
 ## Deploying to your own server (Kamal)
 
 1. Install Docker on the server and point DNS for the domain at it.
