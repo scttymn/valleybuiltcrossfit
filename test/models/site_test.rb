@@ -86,11 +86,11 @@ class SiteTest < ActiveSupport::TestCase
     assert_not site.valid?
   end
 
-  test "directions open in any of the common map apps, all to the same address" do
+  test "directions open in Apple Maps or Google Maps, both to the same address" do
     site = sites(:main)
     links = site.directions_links
 
-    assert_equal [ "Apple Maps", "Google Maps", "Waze" ], links.keys
+    assert_equal [ "Apple Maps", "Google Maps" ], links.keys
     encoded = CGI.escape(site.full_address)
     links.each_value { |url| assert_includes url, encoded }
     assert links.values.all? { _1.start_with?("https://") }

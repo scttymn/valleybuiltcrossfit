@@ -151,15 +151,15 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_select ".visit__map", 0
-    assert_select ".directions a", 3
+    assert_select ".directions a", 2
   end
 
-  test "get directions offers each map app instead of assuming Google" do
+  test "get directions lets the visitor pick Apple Maps or Google Maps instead of assuming one" do
     get root_path
 
     assert_select ".directions summary", text: "Get directions"
-    assert_select ".directions a[target=_blank][rel~=noopener]", 3
-    [ "Apple Maps", "Google Maps", "Waze" ].each { |app| assert_select ".directions a", text: app }
+    assert_select ".directions a[target=_blank][rel~=noopener]", 2
+    [ "Apple Maps", "Google Maps" ].each { |app| assert_select ".directions a", text: app }
   end
 
   test "theme-color matches the palette background" do

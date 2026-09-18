@@ -53,13 +53,13 @@ class Site < ApplicationRecord
   def full_address = [ address_line1, address_line2, city_state_zip ].compact_blank.join(", ")
   def map_location? = map_latitude.present? && map_longitude.present?
 
+  # No link opens whichever map app someone uses on every phone, so they pick.
   # Each app finds the address itself, so a moved pin never sends anyone astray.
   def directions_links
     address = CGI.escape(full_address)
     {
       "Apple Maps" => "https://maps.apple.com/?daddr=#{address}",
-      "Google Maps" => "https://www.google.com/maps/dir/?api=1&destination=#{address}",
-      "Waze" => "https://waze.com/ul?q=#{address}&navigate=yes"
+      "Google Maps" => "https://www.google.com/maps/dir/?api=1&destination=#{address}"
     }
   end
 
