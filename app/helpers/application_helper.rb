@@ -14,16 +14,19 @@ module ApplicationHelper
     program: { widths: [ 200, 440, 880 ], sizes: "(max-width: 1024px) 200px, 420px" }
   }.freeze
 
-  def photo_or_placeholder(attachment, css: "photo", alt: "", size: :program)
+  # priority: for the one photo on screen when the page opens (the hero).
+  # Everything else loads lazily, as the visitor scrolls toward it.
+  def photo_or_placeholder(attachment, css: "photo", alt: "", size: :program, priority: false)
     tag.div(class: css) do
       next unless attachment.attached?
 
+      loading = priority ? { loading: "eager", fetchpriority: "high" } : { loading: "lazy" }
       widths, sizes = PHOTO_SIZES.fetch(size).values_at(:widths, :sizes)
       if attachment.variable?
-        image_tag web_variant(attachment, widths.last), alt:, loading: "lazy", sizes:,
+        image_tag web_variant(attachment, widths.last), alt:, sizes:, **loading,
                   srcset: widths.map { |w| "#{url_for(web_variant(attachment, w))} #{w}w" }.join(", ")
       else
-        image_tag attachment, alt:, loading: "lazy"
+        image_tag attachment, alt:, **loading
       end
     end
   end

@@ -82,6 +82,28 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".nav__cta", 0
   end
 
+  test "the hero photo loads first; every other photo waits until it's near" do
+    sites(:main).hero_photo.attach(io: Rails.root.join("db/seed_images/hero.webp").open, filename: "hero.webp")
+    programs(:crossfit).photo.attach(io: Rails.root.join("db/seed_images/crossfit.webp").open, filename: "crossfit.webp")
+
+    get root_path
+    assert_select ".hero__photo img[loading=eager][fetchpriority=high]"
+    assert_select ".program-card .photo img[loading=lazy]"
+    assert_select ".program-card .photo img[fetchpriority]", 0
+  end
+
+  test "fonts come from the site itself, and the ones above the fold load first" do
+    get root_path
+
+    assert_no_match %r{fonts\.(googleapis|gstatic)\.com}, response.body, "fonts still load from Google"
+    preloads = css_select("link[rel=preload][as=font]")
+    assert_operator preloads.size, :>=, 1
+    preloads.each do |link|
+      assert_equal "font/woff2", link["type"]
+      assert link.key?("crossorigin"), "a font preload without crossorigin is fetched twice"
+    end
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]
