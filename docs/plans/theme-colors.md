@@ -154,6 +154,19 @@ that must not change.
 - `--stripes` (placeholder photo pattern) had two more literals not in the
   original count; they now use `--surface-2` / `--surface`.
 
+## Accent → logo green (client requirement)
+
+- `--accent` is the logo's green, `#607248`, exactly — the client specified it.
+  Batch 2's default accent is therefore `#607248`, not the design file's `#a8bb5c`.
+- The supporting shades keep their previous lightness, re-hued to the logo's hue
+  with saturation scaled to its lower chroma (26 vs 50). The dark slot tints
+  needed a small bump over proportional (wash C7→11, edge C13→15) to stay
+  ≥ ΔE 4 from the neutral lines.
+- Known consequence: the accent as **small text** on the background is 3.5:1
+  (2.8:1 on a schedule slot), below the 4.5:1 guideline — eyebrows, "N open",
+  links. `--accent-dim` (6.1:1) is the readable same-hue option if the client
+  agrees to it for small text only.
+
 ## Later batches (titles only)
 
 - **Batch 2 — Derive from three.** A Ruby `Theme` computes all 16 tokens from

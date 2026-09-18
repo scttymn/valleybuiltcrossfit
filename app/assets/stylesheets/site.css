@@ -11,13 +11,13 @@
   --muted: #939587;
   --ink-soft: #c8c9bc;
   --ink: #f2f1e8;
-  --accent-wash: #242c18;
-  --accent-wash-2: #2c3718;
-  --accent-edge: #37451f;
-  --accent-border: #4a5a28;
-  --accent-dim: #8a9a3b;
-  --accent: #a8bb5c;
-  --accent-pale: #cfdc94;
+  --accent-wash: #252b1c;
+  --accent-wash-2: #2f3624;
+  --accent-edge: #3a442d;
+  --accent-border: #4e583f;
+  --accent-dim: #86996c;
+  --accent: #607248;
+  --accent-pale: #ccdab7;
   /* Errors stay red whatever the accent is: they mean something went wrong. */
   --danger-bg: #2a1812;
   --danger-line: #7a3b2a;
