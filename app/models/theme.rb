@@ -33,9 +33,26 @@ class Theme
   # Errors stay red whatever the accent is: they mean something went wrong.
   FIXED = { "danger-bg" => "#2a1812", "danger-line" => "#7a3b2a", "danger-ink" => "#f0c2b0" }.freeze
 
+  # Below these the sample warns; it never blocks a save. Body text follows the
+  # WCAG guideline for normal text; the accent, which is mostly headlines,
+  # buttons and borders, the one for large text and UI parts.
+  MINIMUM_CONTRAST = { text: 4.5, accent: 3.0 }.freeze
+
+  Warning = Data.define(:part, :ratio, :minimum, :suggestion)
+
   attr_reader :background, :text, :accent
 
   def self.default = new(**DEFAULTS)
+
+  # Takes what people type — "A8BB5C", " #a8bb5c " — as #rrggbb. Blank is nil
+  # (use the default); anything else comes back stripped, for validation to reject.
+  def self.normalize(value)
+    value = value.to_s.strip
+    return if value.empty?
+
+    candidate = value.start_with?("#") ? value : "##{value}"
+    candidate.match?(HEX) ? candidate.downcase : value
+  end
 
   def initialize(background:, text:, accent:)
     @background, @text, @accent = [ background, text, accent ].map do |color|
@@ -58,6 +75,44 @@ class Theme
   # For a <style> tag. Every value is a validated or computed #rrggbb, so there
   # is nothing in here that could close the tag.
   def to_css = ":root{#{variables.map { |token, value| "#{token}:#{value}" }.join(";")}}"
+
+  def to_h = { background:, text:, accent: }
+
+  # This theme with some colors swapped, from raw input such as preview params.
+  # Anything that isn't a color is ignored rather than raised: a half-typed hex
+  # in the picker shouldn't break the preview.
+  def with(**colors)
+    valid = colors.transform_values { Theme.normalize(_1) }.select { |_, value| value&.match?(HEX) }
+    Theme.new(**to_h.merge(valid.slice(*DEFAULTS.keys)))
+  end
+
+  # Parts that are hard to read against the background.
+  def warnings
+    MINIMUM_CONTRAST.filter_map do |part, minimum|
+      ratio = Theme.contrast(public_send(part), background)
+      next if ratio >= minimum
+
+      color = public_send(part)
+      Warning.new(part:, ratio:, minimum:, suggestion: Theme.suggest(color, against: background, ratio: minimum))
+    end
+  end
+
+  # The nearest color to `color` that reaches `ratio` against `against`: the same
+  # hue and saturation, with only the lightness moved away from the background —
+  # lighter on a dark page, darker on a light one — and no further than needed.
+  # nil when no lightness gets there (a mid-gray background can't reach 4.5:1
+  # with anything).
+  def self.suggest(color, against:, ratio:)
+    return color if contrast(color, against) >= ratio
+
+    lightness, a, b = Color.lab(color)
+    step = Color.lab(against)[0] < 50 ? 0.5 : -0.5
+    lightness.step(step.positive? ? 100 : 0, step) do |l|
+      candidate = Color.hex([ l, a, b ])
+      return candidate if contrast(candidate, against) >= ratio
+    end
+    nil
+  end
 
   # WCAG 2 contrast ratio, 1–21.
   def self.contrast(a, b)

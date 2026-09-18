@@ -1,0 +1,45 @@
+<% content_for :title, "Color preview" %>
+<%# Pieces of the real site, in the colors being tried. Rendered in the public
+    layout so it uses the real stylesheet and the real theme. %>
+<div class="theme-sample">
+  <% @theme.warnings.each do |warning| %>
+    <div class="theme-warning">
+      <p>
+        <%= warning.part == :text ? "Body text" : "The accent" %> is hard to read on this background:
+        <strong><%= number_with_precision(warning.ratio, precision: 1) %>:1</strong>, aim for <%= warning.minimum %>:1 or more.
+      </p>
+      <% if warning.suggestion %>
+        <p class="theme-warning__fix">
+          <span class="theme-warning__swatch" style="background: <%= warning.suggestion %>"></span>
+          Closest readable: <code><%= warning.suggestion %></code>
+          (<%= number_with_precision(Theme.contrast(warning.suggestion, @theme.background), precision: 1) %>:1)
+          <button type="button" data-controller="theme-suggestion" data-action="theme-suggestion#use"
+                  data-part="<%= warning.part %>" data-color="<%= warning.suggestion %>">Use this</button>
+        </p>
+      <% else %>
+        <p>No shade of this color reads well on this background &mdash; try a lighter or darker background.</p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <span class="eyebrow">Book a class</span>
+  <div class="hero"><h1 class="theme-sample__headline">Come as you are.<br><span>Build from here.</span></h1></div>
+  <p>Coached CrossFit classes for every body in the valley. <a href="#">Read more</a></p>
+  <p class="lede">Muted text, for the quieter parts of a page.</p>
+
+  <div class="theme-sample__row">
+    <a class="btn btn--primary" href="#">Book an intro</a>
+    <a class="btn btn--ghost" href="#">See the schedule</a>
+  </div>
+
+  <div class="theme-sample__row">
+    <button type="button" class="slot"><span class="slot__time">5:00 am</span><span class="slot__name">CrossFit</span><span class="slot__coach">Coach name</span><span class="slot__spots">11 open</span></button>
+    <div class="slot slot--over"><span class="slot__time">6:00 am</span><span class="slot__name">CrossFit</span><span class="slot__spots">Class over</span></div>
+    <div class="program-card" aria-expanded="true"><div class="photo"></div><span class="program-card__body"><span class="program-card__name">A card</span></span></div>
+  </div>
+
+  <div class="theme-sample__row">
+    <label class="chip"><input type="radio" name="sample" checked><span>Selected</span></label>
+    <label class="chip"><input type="radio" name="sample"><span>Not selected</span></label>
+  </div>
+</div>

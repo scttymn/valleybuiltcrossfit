@@ -82,3 +82,26 @@
   .admin-main { padding: 24px 16px 60px; }
   .details { grid-template-columns: 1fr; }
 }
+
+/* Color preview — the sample page shown beside the pickers on Settings. It is
+   rendered in the public layout, so it paints with the site's theme variables. */
+.theme-sample { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.theme-sample .hero { background: none; overflow: visible; }
+.theme-sample__headline { font-family: var(--font-display); font-size: 34px; line-height: 1.05; text-transform: uppercase; color: var(--ink); }
+.theme-sample__row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+.theme-sample .slot { width: 150px; }
+.theme-sample .program-card { width: 180px; order: 0; flex-direction: column; }
+.theme-sample .program-card .photo { height: 70px; width: 100%; }
+.theme-sample .program-card__body { padding: 12px 14px; }
+.theme-warning { border: 1px solid var(--danger-line); background: var(--danger-bg); color: var(--danger-ink); padding: 10px 12px; font-size: 14px; line-height: 1.5; }
+.theme-editor { display: grid; grid-template-columns: minmax(220px, 280px) 1fr; gap: 22px; align-items: start; }
+.theme-editor__fields { display: flex; flex-direction: column; gap: 16px; }
+.theme-editor__pick { display: flex; gap: 10px; align-items: center; }
+.theme-editor__pick input[type=color] { width: 44px; height: 40px; padding: 2px; border: 1px solid var(--a-line-2); background: var(--a-input); cursor: pointer; }
+.theme-editor__pick input[type=text] { width: 110px; font-family: "IBM Plex Mono", monospace; text-transform: lowercase; }
+.theme-editor__sample { width: 100%; height: 560px; border: 1px solid var(--a-line-2); background: var(--a-bg); }
+@media (max-width: 900px) { .theme-editor { grid-template-columns: 1fr; } }
+.theme-warning p { margin: 0; }
+.theme-warning__fix { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px !important; }
+.theme-warning__swatch { width: 18px; height: 18px; border: 1px solid var(--danger-line); }
+.theme-warning button { font: inherit; font-weight: 600; background: var(--danger-ink); color: var(--danger-bg); border: 0; padding: 4px 10px; cursor: pointer; }

@@ -59,9 +59,34 @@ class ThemeTest < ActiveSupport::TestCase
     end
   end
 
+  test "a suggestion meets the ratio, keeps the hue, and moves as little as it can" do
+    suggestion = Theme.suggest("#607248", against: "#000000", ratio: 4.5)
+
+    assert_operator Theme.contrast(suggestion, "#000000"), :>=, 4.5
+    assert_operator Theme.contrast(suggestion, "#000000"), :<, 4.8, "overshot — a closer color would have passed"
+    assert_in_delta hue("#607248"), hue(suggestion), 3, "the suggestion changed the color, not just its lightness"
+  end
+
+  test "on a light background the suggestion goes darker, not lighter" do
+    suggestion = Theme.suggest("#a9bc8c", against: "#ffffff", ratio: 4.5)
+
+    assert_operator Theme.contrast(suggestion, "#ffffff"), :>=, 4.5
+    assert_operator Theme::Color.lab(suggestion)[0], :<, Theme::Color.lab("#a9bc8c")[0]
+  end
+
+  test "a color that already passes is returned unchanged" do
+    assert_equal "#f2f1e8", Theme.suggest("#f2f1e8", against: "#000000", ratio: 4.5)
+  end
+
   test "contrast matches WCAG for known pairs" do
     assert_in_delta 21.0, Theme.contrast("#000000", "#ffffff"), 0.01
     assert_in_delta 1.0, Theme.contrast("#607248", "#607248"), 0.01
     assert_in_delta 4.0, Theme.contrast("#607248", "#000000"), 0.05
   end
+
+  private
+    def hue(color)
+      _, a, b = Theme::Color.lab(color)
+      Math.atan2(b, a) * 180 / Math::PI
+    end
 end

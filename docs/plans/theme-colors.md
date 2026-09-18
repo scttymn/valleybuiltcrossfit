@@ -280,6 +280,21 @@ that must not change.
 | Bad DB value never renders | `test/controllers/pages_controller_test.rb` | `a malformed stored color never reaches the style tag` | Contract |
 | Migration | — | `bin/rails db:migrate` up and down; `schema.rb` regenerated | Migrate & deploy |
 
+### Batch 3 result — done (split 3a editor / 3b suggestions: 15 rows was past the slicing signal)
+
+- All map rows green; full suite 100/100. Admin tests live in
+  `test/controllers/admin/theme_test.rb` (the plan said `admin_test.rb`; that
+  file is `admin/admin_test.rb`, and a theme file of its own reads better).
+- Migration up → down → up clean; `schema.rb` has the three columns.
+- Suggestion for the logo green as body text: `#697b50` (4.55:1). As an accent
+  it isn't flagged (4.0:1 clears 3:1).
+- Rendered the sample page offline (no login) for a low-contrast dark theme —
+  warning, ratio, suggestion and Use this button present — and for a light
+  theme, which derives correctly (pale green slots, light cards).
+- **Not yet verified in a browser:** the live interaction — picker → sample
+  redraw, typing a hex, Use this → picker. It needs a signed-in admin, and
+  Claude doesn't enter passwords.
+
 ## Agent loop checkpoints
 
 - Before touching CSS: screenshot the current site (the "before" set) so the

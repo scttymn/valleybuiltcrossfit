@@ -88,6 +88,16 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "a malformed stored color never reaches the style tag" do
+    # update_column skips validation, like a value set from the console would.
+    sites(:main).update_column(:theme_accent, "#000;}</style><script>alert(1)</script>")
+
+    get root_path
+    assert_response :success
+    assert_includes css_select("head style").map(&:text).join, "--accent:#{Theme::DEFAULTS[:accent]}"
+    assert_not_includes response.body, "alert(1)"
+  end
+
   test "schedule frame is available per week" do
     get schedule_path(week: 2)
     assert_response :success

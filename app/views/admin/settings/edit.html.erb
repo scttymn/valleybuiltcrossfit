@@ -6,6 +6,41 @@
 <%= form_with model: @site, url: admin_settings_path, method: :patch, class: "form" do |form| %>
   <%= render "admin/resources/errors", record: @site %>
 
+  <fieldset class="form__section" data-controller="theme-preview" data-theme-preview-url-value="<%= theme_preview_admin_settings_path %>" data-action="message@window->theme-preview#suggested">
+    <legend>Colors</legend>
+    <p class="field__hint">
+      Pick three colors and every other shade on the site is worked out from them. The sample updates as you go;
+      nothing changes on the site until you save.
+    </p>
+
+    <div class="theme-editor">
+      <div class="theme-editor__fields">
+        <% { background: "Background", text: "Text", accent: "Accent" }.each do |part, label| %>
+          <% column = Site::THEME_COLORS[part] %>
+          <div class="field">
+            <%= form.label column, label %>
+            <div class="theme-editor__pick">
+              <input type="color" value="<%= @site.theme.public_send(part) %>" aria-label="<%= label %> color"
+                     data-theme-preview-target="swatch" data-part="<%= part %>" data-action="input->theme-preview#picked">
+              <%= form.text_field column, value: @site.public_send(column).presence || @site.theme.public_send(part),
+                    maxlength: 7, spellcheck: false, autocomplete: "off",
+                    data: { theme_preview_target: "hex", part:, action: "input->theme-preview#typed" } %>
+            </div>
+          </div>
+        <% end %>
+        <p class="field__hint">The accent is the logo green, <code><%= Theme::DEFAULTS[:accent] %></code>, until you change it.</p>
+      </div>
+
+      <iframe class="theme-editor__sample" title="Color sample" src="<%= theme_preview_admin_settings_path %>"
+              data-theme-preview-target="frame"></iframe>
+    </div>
+
+    <div>
+      <%= form.button "Reset colors to defaults", name: "reset_colors", value: "1", class: "button button--ghost",
+            data: { turbo_confirm: "Put the site back to the default colors?" } %>
+    </div>
+  </fieldset>
+
   <fieldset class="form__section">
     <legend>Photos</legend>
 

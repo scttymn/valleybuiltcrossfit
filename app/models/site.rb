@@ -13,7 +13,17 @@ class Site < ApplicationRecord
     first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 18)
   end
 
-  def theme = Theme.default
+  # Each part of the theme and the column holding it. nil = Theme::DEFAULTS.
+  THEME_COLORS = { background: :theme_background, text: :theme_text, accent: :theme_accent }.freeze
+
+  normalizes(*THEME_COLORS.values, with: ->(value) { Theme.normalize(value) })
+  validates(*THEME_COLORS.values, format: { with: Theme::HEX, message: "must be a color like #607248" }, allow_nil: true)
+
+  # A stored value that isn't a color — set from the console, say — falls back
+  # to the default rather than reaching the page's <style> tag.
+  def theme
+    Theme.new(**THEME_COLORS.to_h { |part, column| [ part, self[column].to_s.match?(Theme::HEX) ? self[column] : Theme::DEFAULTS[part] ] })
+  end
 
   def announcement_showing? = announcement_visible? && announcement.present?
 
