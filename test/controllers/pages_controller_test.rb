@@ -177,7 +177,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "get directions opens a menu of Apple Maps and Google Maps, each with its own icon" do
     get root_path
 
-    assert_select "details.directions[data-controller=dropdown] summary", text: "Get directions"
+    assert_select "details.directions[data-controller=dropdown] summary", text: "Directions"
     assert_select ".directions__menu a[target=_blank][rel~=noopener]", 2
     { "Apple Maps" => [ "maps.apple.com", "apple-maps" ], "Google Maps" => [ "google.com/maps", "google-maps" ] }.each do |app, (host, icon)|
       assert_select ".directions__menu a[href*='#{host}']", text: app do

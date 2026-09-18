@@ -16,7 +16,7 @@
       <div class="visit__actions">
         <a href="#get-options" class="btn btn--primary" data-turbo="false" data-action="click->prefill#apply" data-prefill-interest-param="<%= Lead::QUESTION %>">Contact us</a>
         <details class="directions" data-controller="dropdown" data-action="click@window->dropdown#closeOutside keydown.esc@window->dropdown#close">
-          <summary class="btn btn--ghost">Get directions</summary>
+          <summary class="btn btn--ghost">Directions</summary>
           <div class="directions__menu">
             <% site.directions_links.each do |app, url| %>
               <a href="<%= url %>" target="_blank" rel="noopener"><%= image_tag map_app_icon(app), alt: "", class: "directions__icon" %><%= app %></a>

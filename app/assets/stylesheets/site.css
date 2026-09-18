@@ -409,6 +409,9 @@ textarea.input { min-height: 96px; resize: vertical; }
   .pillars { grid-template-columns: 1fr; }
   .pillar { padding: 28px 16px; border-right: 0; border-bottom: var(--border-width) solid var(--line); }
   .visit__copy { padding: 64px 16px; }
+  /* Contact us and Directions share the row, half each. */
+  .visit__actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .visit__actions .btn { width: 100%; padding-left: 12px; padding-right: 12px; }
   .footer__inner { padding: 40px 16px; }
   .option { flex-direction: column; gap: 4px; }
   /* Phones: one field per line — side by side leaves them too narrow to read. */
