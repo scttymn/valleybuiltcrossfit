@@ -20,7 +20,7 @@ class Theme
 
   # Every border on the site, in pixels.
   BORDER_WIDTHS = 1..4
-  DEFAULT_BORDER_WIDTH = 1
+  DEFAULT_BORDER_WIDTH = 2
 
   LAYERS = {
     "surface" => [ -0.049, 0.173 ],

@@ -131,8 +131,8 @@ class ThemeTest < ActiveSupport::TestCase
     assert_operator Theme.contrast(variables["--danger-ink"], variables["--danger-bg"]), :>=, 4.5
   end
 
-  test "border width defaults to 1px and reaches the stylesheet as a variable" do
-    assert_equal "1px", Theme.default.variables["--border-width"]
+  test "border width defaults to 2px and reaches the stylesheet as a variable" do
+    assert_equal "2px", Theme.default.variables["--border-width"]
     assert_equal "3px", Theme.new(**Theme::DEFAULTS, border_width: 3).variables["--border-width"]
     assert_not_includes Theme.default.palette.keys, "--border-width", "a width is not a color"
   end
