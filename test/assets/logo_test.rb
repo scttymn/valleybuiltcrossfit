@@ -26,6 +26,21 @@ class LogoTest < ActiveSupport::TestCase
     assert_operator width[:stacked], :<, 2
   end
 
+  test "the favicon and app icon are the logo mark in the brand green" do
+    favicon = Nokogiri::XML(Rails.public_path.join("favicon.svg").read)
+    mark = Nokogiri::XML(Rails.root.join("docs/brand/logo-mark.svg").read)
+    assert_equal mark.css("path").map { _1["d"] }, favicon.css("path").map { _1["d"] }, "the favicon isn't the mark"
+    assert_equal Theme::DEFAULTS[:accent], favicon.at_css("g.logo-mark")["fill"]
+    width, height = favicon.root["viewBox"].split.last(2).map(&:to_f)
+    assert_equal width, height, "a favicon is square"
+
+    icon = Vips::Image.new_from_file(Rails.public_path.join("app-icon.png").to_s)
+    assert_equal [ 512, 512 ], [ icon.width, icon.height ]
+    assert_equal [ 0, 0, 0 ], icon.getpoint(4, 4).first(3).map(&:round), "the app icon sits on the brand black"
+    assert_equal [ 96, 114, 72 ], icon.getpoint(256, 300).first(3).map(&:round), "no mark at the center"
+    assert_not Rails.public_path.join("icon.png").exist?, "Rails' placeholder icon is still there"
+  end
+
   test "the stylesheet fills each part from the theme" do
     css = Rails.root.join("app/assets/stylesheets/application.css").read
     { "logo-mark" => "--accent", "logo-tagline" => "--accent", "logo-name" => "--ink" }.each do |part, variable|

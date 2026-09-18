@@ -1,5 +1,6 @@
 # Traces the client's logo into themeable SVGs: horizontal and stacked (the
-# ones the site uses, written to app/assets/images) and the mark alone. Every part
+# ones the site uses, written to app/assets/images), the mark alone, and the
+# favicon and app icon made from the mark (written to public/). Every part
 # is its own <g class="logo-…"> (mark, name, tagline), with no colors of its
 # own, so CSS can fill each from the theme.
 #
@@ -104,4 +105,31 @@ Dir.mktmpdir do |dir|
   File.write(HORIZONTAL_SVG, svg(padded(*extent, 4), GROUPS.transform_values { |names| names.map { placed[_1] } }))
 end
 
-[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg") ].each { puts "#{_1.basename}: #{_1.size} bytes" }
+# Icons: the mark in the brand green. A browser tab can't use the site's CSS, so
+# the color is written in. The favicon's frame is square; the app icon puts the
+# mark on the brand black, small enough that a rounded or circular crop keeps it.
+FAVICON = Rails.public_path.join("favicon.svg")
+APP_ICON = Rails.public_path.join("app-icon.png")
+green = Theme::DEFAULTS[:accent]
+mark = Nokogiri::XML(BRAND.join("logo-mark.svg").read)
+x, y, w, h = mark.root["viewBox"].split.map(&:to_f)
+side = [ w, h ].max
+# The mark is wide, so in a square it's letterboxed. The favicon trims 8% off
+# each side (the tips of the mountain's base) to draw it about a fifth bigger.
+tab_side = side * (1 - 2 * 0.08)
+mark.root["viewBox"] = [ x + w / 2 - tab_side / 2, y + h / 2 - tab_side / 2, tab_side, tab_side ].map { _1.round(1) }.join(" ")
+mark.root.delete("role")
+mark.root.delete("aria-label")
+mark.at_css("g.logo-mark")["fill"] = green
+File.write(FAVICON, mark.root.to_xml + "\n")
+
+size, inset = 512, 0.62 # the mark's width, as a share of the icon
+# Rails blocks libvips' SVG loader for uploads; this file is our own.
+Vips.block("VipsForeignLoadSvg", false)
+whole = mark.root.dup.tap { _1["viewBox"] = [ x - (side - w) / 2, y - (side - h) / 2, side, side ].map { |n| n.round(1) }.join(" ") }
+drawn = Vips::Image.svgload_buffer(whole.to_xml, scale: size * inset / side)
+canvas = Vips::Image.black(size, size, bands: 3).bandjoin(255).copy(interpretation: :srgb)
+icon = canvas.composite2(drawn, :over, x: (size - drawn.width) / 2, y: (size - drawn.height) / 2)
+icon.extract_band(0, n: 3).write_to_file(APP_ICON.to_s)
+
+[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), FAVICON, APP_ICON ].each { puts "#{_1.basename}: #{_1.size} bytes" }

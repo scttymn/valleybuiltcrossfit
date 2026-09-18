@@ -174,6 +174,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "img[src*='logo-valley-built']", 0
   end
 
+  test "the site and admin use the logo mark for their icons" do
+    [ root_path, login_path ].each do |path|
+      get path
+      assert_select "link[rel=icon][type='image/svg+xml'][href='/favicon.svg']", 1, path
+      assert_select "link[rel=icon][type='image/png'][href='/app-icon.png']", 1, path
+      assert_select "link[href*='/icon.png'], link[href*='/icon.svg']", 0, path
+    end
+    get root_path
+    assert_select "link[rel=apple-touch-icon][href='/app-icon.png']", 1
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]
