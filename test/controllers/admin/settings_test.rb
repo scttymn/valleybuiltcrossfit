@@ -51,4 +51,19 @@ class Admin::SettingsTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
     assert_equal 80, @site.reload.image_quality
   end
+
+  test "the chat widget is set on the PushPress page, and stays off the admin" do
+    sign_in_as users(:one)
+
+    get edit_admin_settings_pushpress_path
+    assert_select "input[name='site[chat_widget_id]']"
+    patch admin_settings_pushpress_path, params: { site: { chat_widget_id: "" } }
+    assert_nil @site.reload.chat_widget_id.presence
+
+    @site.update!(chat_widget_id: "6aadb116599f010aecda2679")
+    [ edit_admin_settings_pushpress_path, preview_admin_settings_theme_path ].each do |path|
+      get path
+      assert_select "[data-controller=chat]", 0, path
+    end
+  end
 end

@@ -107,4 +107,19 @@ class SiteTest < ActiveSupport::TestCase
       assert_not site.valid?, "accepted #{lat.inspect}, #{lng.inspect}"
     end
   end
+
+  test "the chat widget ID is a PushPress Grow ID, or blank for no chat" do
+    site = sites(:main)
+    [ "6aadb116599f010aecda2679", "", nil ].each do |id|
+      site.chat_widget_id = id
+      assert site.valid?, "refused #{id.inspect}"
+    end
+    [ "6a9092f9", "6a9092f9bde3d5bf505a408g", %("><script>) ].each do |id|
+      site.chat_widget_id = id
+      assert_not site.valid?, "accepted #{id.inspect}"
+    end
+    site.chat_widget_id = " 6AADB116599F010AECDA2679 "
+    assert site.valid?
+    assert_equal "6aadb116599f010aecda2679", site.chat_widget_id, "pasted IDs are tidied"
+  end
 end

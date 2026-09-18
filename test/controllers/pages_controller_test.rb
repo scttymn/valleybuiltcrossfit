@@ -186,6 +186,32 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "link[rel=apple-touch-icon][href^=?]", "/app-icon.png?v=", { count: 1 }
   end
 
+  test "the home page loads the PushPress chat widget, and only when one is set" do
+    get root_path
+    assert_select "[data-controller=chat][data-chat-widget-id-value='6aadb116599f010aecda2679']", 1
+
+    sites(:main).update!(chat_widget_id: nil)
+    get root_path
+    assert_select "[data-controller=chat]", 0
+  end
+
+  test "the chat takes the theme's colors" do
+    css = Rails.root.join("app/assets/stylesheets/site.css").read.gsub(%r{/\*.*?\*/}m, "")
+    rule = css.scan(/([^{}]+)\{([^}]*)\}/).find { |selector, _| selector.strip == "chat-widget" }
+    assert rule, "nothing colors the chat widget"
+    %w[primary button bubble header header-darken active sender-message].each do |part|
+      assert_match(/--chat-widget-#{part}-color:\s*var\(--accent\)/, rule.last, "--chat-widget-#{part}-color")
+    end
+    # A step lighter than the page, so a dark avatar shows; its messages on
+    # --surface, where every text shade is checked for contrast.
+    assert_match(/--chat-widget-background-color:\s*var\(--line\)/, rule.last)
+    assert_match(/--chat-widget-received-message-color:\s*var\(--surface\)/, rule.last)
+    { "received-message-text" => "--ink", "welcome-message-text" => "--muted", "system-message-text" => "--muted" }.each do |part, shade|
+      assert_match(/--chat-widget-#{part}-color:\s*var\(#{shade}\)/, rule.last, "--chat-widget-#{part}-color")
+      assert Theme::PAIRINGS.any? { _1.foreground == shade && _1.background == "--surface" }, "#{shade} on --surface isn't a checked pairing"
+    end
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

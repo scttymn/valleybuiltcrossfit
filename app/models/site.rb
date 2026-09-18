@@ -11,6 +11,9 @@ class Site < ApplicationRecord
   validates :map_latitude, numericality: { in: -90..90 }, allow_nil: true
   validates :map_longitude, numericality: { in: -180..180 }, allow_nil: true
   validate :map_location_is_whole
+  # PushPress Grow (LeadConnector) widget IDs are 24 hex characters.
+  normalizes :chat_widget_id, with: ->(id) { id.strip.downcase.presence }
+  validates :chat_widget_id, format: { with: /\A\h{24}\z/, message: "should be the 24-character ID from the widget's embed code" }, allow_nil: true
 
   def self.instance
     first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 18)

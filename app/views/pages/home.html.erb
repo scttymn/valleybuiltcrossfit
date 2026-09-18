@@ -16,3 +16,6 @@
   <%= render "pages/visit", site: @site %>
   <%= render "pages/footer", site: @site %>
 </div>
+<% if @site.chat_widget_id %>
+  <div data-controller="chat" data-chat-widget-id-value="<%= @site.chat_widget_id %>"></div>
+<% end %>

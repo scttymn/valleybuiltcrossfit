@@ -413,3 +413,32 @@ textarea.input { min-height: 96px; resize: vertical; }
   .picker__days { gap: 4px; }
   .picker__day { padding: 10px 2px; }
 }
+
+/* The PushPress Grow chat, dressed in the theme. The widget draws itself from
+   these variables, and the page's values win over its own settings in Grow. */
+chat-widget {
+  --chat-widget-font-family: var(--font-body);
+  --ion-font-family: var(--font-body);
+  --chat-widget-primary-color: var(--accent);
+  --chat-widget-button-color: var(--accent);
+  --chat-widget-bubble-color: var(--accent);
+  --chat-widget-header-color: var(--accent);
+  --chat-widget-header-darken-color: var(--accent);
+  --chat-widget-active-color: var(--accent);
+  --ion-color-primary: var(--accent);
+  --ion-color-primary-contrast: var(--on-accent);
+  --color: var(--accent);
+  /* The panel sits a step lighter than the page so a dark avatar still shows;
+     messages sit a step darker, on --surface, where the theme guarantees
+     every text shade is readable. */
+  --chat-widget-background-color: var(--line);
+  --chat-widget-header-message-text-color: var(--on-accent);
+  --chat-widget-sender-message-color: var(--accent);
+  --chat-widget-sender-message-text-color: var(--on-accent);
+  --chat-widget-received-message-color: var(--surface);
+  --chat-widget-received-message-text-color: var(--ink);
+  --chat-widget-welcome-message-text-color: var(--muted);
+  --chat-widget-system-message-text-color: var(--muted);
+  --chat-widget-avatar-background-color: var(--bg);
+  --chat-widget-avatar-border-color: var(--accent);
+}

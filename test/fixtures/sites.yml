@@ -15,6 +15,7 @@ main:
   dropin_price: $25.00
   pushpress_subdomain: valleybuiltcrossfit
   class_capacity: 18
+  chat_widget_id: 6aadb116599f010aecda2679
   uncapped_class_types: General
   announcement: Opening October 5, 2026
   announcement_visible: true

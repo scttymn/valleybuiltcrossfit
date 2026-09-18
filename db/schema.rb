@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_18_191745) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_18_211654) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -108,6 +108,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_18_191745) do
     t.string "announcement"
     t.string "announcement_url"
     t.boolean "announcement_visible"
+    t.string "chat_widget_id"
     t.string "city_state_zip"
     t.integer "class_capacity"
     t.datetime "created_at", null: false

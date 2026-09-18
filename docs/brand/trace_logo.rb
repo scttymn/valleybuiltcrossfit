@@ -152,4 +152,14 @@ canvas = Vips::Image.black(size, size, bands: 3).bandjoin(255).copy(interpretati
 icon = canvas.composite2(drawn, :over, x: (size - drawn.width) / 2, y: (size - drawn.height) / 2)
 icon.extract_band(0, n: 3).write_to_file(APP_ICON.to_s)
 
-[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), LETTERS_SVG, FAVICON, APP_ICON ].each { puts "#{_1.basename}: #{_1.size} bytes" }
+# The chat avatar, uploaded to the PushPress Grow widget by hand (Grow asks for
+# 300×300): the cream VB on black, small enough that its circular crop keeps it.
+CHAT_AVATAR = BRAND.join("chat-avatar.png")
+avatar_size = 300
+cream = vb.root.dup.tap { _1.at_css("g.logo-mark")["fill"] = Theme::DEFAULTS[:text] }
+drawn = Vips::Image.svgload_buffer(cream.to_xml, scale: avatar_size * 0.56 / side)
+backdrop = Vips::Image.black(avatar_size, avatar_size, bands: 3).bandjoin(255).copy(interpretation: :srgb)
+avatar = backdrop.composite2(drawn, :over, x: (avatar_size - drawn.width) / 2, y: (avatar_size - drawn.height) / 2)
+avatar.extract_band(0, n: 3).write_to_file(CHAT_AVATAR.to_s)
+
+[ STACKED_SVG, HORIZONTAL_SVG, BRAND.join("logo-mark.svg"), LETTERS_SVG, FAVICON, APP_ICON, CHAT_AVATAR ].each { puts "#{_1.basename}: #{_1.size} bytes" }
