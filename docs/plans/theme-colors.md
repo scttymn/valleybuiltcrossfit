@@ -167,6 +167,18 @@ that must not change.
   links. `--accent-dim` (6.1:1) is the readable same-hue option if the client
   agrees to it for small text only.
 
+## Background → logo black
+
+- `--bg` is `#000000`, the logo PNG's baked-in background. The logo is placed
+  with `mix-blend-mode: screen` to hide that black, which also lightened the
+  logo's own colors against the old `#14150f`; on black, screen is a no-op and
+  the nav logo renders pixel-exact (`#607248`, `#d3c7b7`, checked in a 4×
+  headless capture).
+- The dark "ground" tokens (surfaces, lines, slot tints, borders) dropped by the
+  same L* as the background (6.5), keeping their tint — same layering, based on
+  black. Text colors unchanged.
+- Batch 2's default background is therefore `#000000`.
+
 ## Later batches (titles only)
 
 - **Batch 2 — Derive from three.** A Ruby `Theme` computes all 16 tokens from

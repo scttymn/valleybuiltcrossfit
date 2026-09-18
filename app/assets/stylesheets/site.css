@@ -2,19 +2,19 @@
 :root {
   /* The palette. Every color on the public site is one of these; nothing is
      typed straight into a rule (test/assets/palette_test.rb holds that line). */
-  --bg: #14150f;
-  --surface: #1a1c16;
-  --surface-2: #20241a;
-  --line: #2e3125;
-  --line-strong: #434735;
+  --bg: #000000;
+  --surface: #0a0d03;
+  --surface-2: #13170a;
+  --line: #202318;
+  --line-strong: #343827;
   --muted-soft: #6f7563;
   --muted: #939587;
   --ink-soft: #c8c9bc;
   --ink: #f2f1e8;
-  --accent-wash: #252b1c;
-  --accent-wash-2: #2f3624;
-  --accent-edge: #3a442d;
-  --accent-border: #4e583f;
+  --accent-wash: #181d0e;
+  --accent-wash-2: #212817;
+  --accent-edge: #2c351f;
+  --accent-border: #3f4930;
   --accent-dim: #86996c;
   --accent: #607248;
   --accent-pale: #ccdab7;
