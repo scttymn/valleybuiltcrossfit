@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_18_225631) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_19_000259) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -129,8 +129,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_18_225631) do
     t.integer "image_quality", default: 80
     t.string "instagram_url"
     t.string "lead_notification_email"
-    t.decimal "map_latitude", precision: 10, scale: 7
-    t.decimal "map_longitude", precision: 10, scale: 7
     t.text "membership_body"
     t.string "membership_rate_note"
     t.string "membership_title"

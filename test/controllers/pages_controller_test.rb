@@ -152,26 +152,26 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "the map is drawn by the site at the gym's location, not embedded from Google" do
+  test "the map is a static SVG drawn into the page, colored by the theme, with no text" do
     get root_path
 
-    assert_select ".visit__map[data-controller=map][data-map-latitude-value='39.0251858'][data-map-longitude-value='-94.2158759']"
-    assert_select "iframe", 0
-    assert_no_match %r{maps\.google\.com/maps\?.*output=embed}, response.body
-    script = Rails.root.join("app/javascript/controllers/map_controller.js").read
-    library = script[%r{LIBRARY = "(/vendor/maplibre-gl-[\d.]+/)"}, 1]
-    assert library, "the map controller doesn't load MapLibre from the site"
-    %w[maplibre-gl.mjs maplibre-gl-shared.mjs maplibre-gl-worker.mjs maplibre-gl.css].each do |file|
-      assert Rails.public_path.join(library.delete_prefix("/"), file).file?, "#{library}#{file} is missing"
-    end
+    assert_select ".visit__map svg[role=img][aria-label]", 1
+    assert_select ".visit__map svg .map-marker", 1
+    %w[map-building map-road map-highway].each { |layer| assert_select ".visit__map svg .#{layer}", minimum: 1 }
+    assert_select ".visit__map svg text", 0, "just the streets and the pin"
+    assert_select ".visit__map svg [fill]:not(path[id])", 0, "colors come from site.css, so the map follows the theme"
+    assert_select ".visit__map", text: "", count: 1
+    assert_select "[data-controller=map], iframe", 0
+    assert_not Rails.public_path.join("vendor").exist?, "the interactive map's library is gone"
   end
 
-  test "without a location there is no map, and directions still work" do
-    sites(:main).update!(map_latitude: nil, map_longitude: nil)
-
-    get root_path
-    assert_select ".visit__map", 0
-    assert_select ".directions__menu a", 2
+  test "the stylesheet colors every layer of the map from the theme" do
+    css = Rails.root.join("app/assets/stylesheets/site.css").read.gsub(%r{/\*.*?\*/}m, "")
+    svg = Rails.root.join("app/assets/images/map.svg").read
+    svg.scan(/class="(map-[a-z-]+)"/).flatten.uniq.each do |layer|
+      rules = css.scan(/([^{}]+)\{([^}]*)\}/).select { |selector, _| selector.include?(".#{layer}") }
+      assert rules.any? { |_, body| body.match?(/(fill|stroke):\s*var\(--/) }, ".#{layer} isn't colored from the theme"
+    end
   end
 
   test "get directions opens a menu of Apple Maps and Google Maps, each with its own icon" do

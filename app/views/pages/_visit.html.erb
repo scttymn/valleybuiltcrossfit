@@ -25,9 +25,6 @@
         </details>
       </div>
     </div>
-    <% if site.map_location? %>
-      <div class="visit__map" role="region" aria-label="Map to <%= site.full_address %>"
-           data-controller="map" data-map-latitude-value="<%= site.map_latitude %>" data-map-longitude-value="<%= site.map_longitude %>"></div>
-    <% end %>
+    <div class="visit__map"><%= site_map %></div>
   </div>
 </section>

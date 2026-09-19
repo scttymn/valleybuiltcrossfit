@@ -36,6 +36,7 @@ Tests: `bin/rails test` (PushPress is faked; no network).
 | Editable content | `Site` (singleton copy/settings), `Program`, `Pillar`, `Step`, `MembershipOption`, `Coach`, `Faq`, `Workout` |
 | Admin CRUD | `app/controllers/admin/*` (generic `ResourcesController`) |
 | “Get your options” form | `Lead` → saved + emailed via `LeadMailer`, listed under Admin → Inquiries |
+| “Find us” map | `app/assets/images/map.svg`, colored by `site.css` from the theme; rebuild from OpenStreetMap with `bin/rails runner script/build_map.rb` if the gym moves |
 
 ### PushPress
 

@@ -375,13 +375,19 @@ textarea.input { min-height: 96px; resize: vertical; }
 .visit__facts { display: flex; flex-wrap: wrap; gap: 16px 48px; font-size: 16px; line-height: 1.7; color: var(--muted); }
 .visit__facts h4 { color: var(--ink); font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
 .visit__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
-.visit__map { position: relative; min-height: 380px; background: var(--surface); }
-.visit__map--failed { background-image: var(--stripes); }
-.map-pin { width: 26px; height: 34px; background: var(--accent); clip-path: path("M13 0C5.8 0 0 5.8 0 13c0 9.8 13 21 13 21s13-11.2 13-21C26 5.8 20.2 0 13 0z"); }
-.map-pin::after { content: ""; position: absolute; left: 8px; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg); }
-/* MapLibre's stylesheet loads after this one, so these match its selectors plus one. */
-.visit__map .maplibregl-ctrl.maplibregl-ctrl-attrib { background: var(--surface); color: var(--muted); }
-.visit__map .maplibregl-ctrl-attrib a { color: var(--ink-soft); }
+.visit__map { position: relative; min-height: 380px; background: var(--bg); overflow: hidden; }
+.visit__map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* The map's layers (script/build_map.rb), colored from the theme. */
+.map-green { fill: var(--accent-wash); }
+.map-water { fill: var(--surface); }
+.map-building { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+.map-road-minor, .map-road, .map-road-major, .map-highway { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.map-road-minor { stroke: var(--line); stroke-width: 2.5; }
+.map-road { stroke: var(--line); stroke-width: 4.5; }
+.map-road-major { stroke: var(--line-strong); stroke-width: 7; }
+.map-highway { stroke: var(--accent); stroke-width: 10; }
+.map-marker path { fill: var(--accent); }
+.map-marker circle { fill: var(--bg); }
 
 .directions { position: relative; }
 .directions summary { list-style: none; cursor: pointer; }

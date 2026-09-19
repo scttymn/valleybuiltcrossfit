@@ -31,6 +31,15 @@ module ApplicationHelper
     "/#{file}?v=#{version}"
   end
 
+  # The "Find us" map (built by script/build_map.rb), drawn into the page so
+  # site.css colors it from the theme.
+  MAP = Rails.root.join("app/assets/images/map.svg")
+
+  def site_map
+    svg = Rails.configuration.cache_classes ? (@@site_map ||= MAP.read) : MAP.read
+    svg.html_safe
+  end
+
   # Each map app's own icon, in its real colors.
   MAP_APP_ICONS = { "Apple Maps" => "map-apps/apple-maps.png", "Google Maps" => "map-apps/google-maps.svg" }.freeze
 

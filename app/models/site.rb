@@ -8,9 +8,6 @@ class Site < ApplicationRecord
 
   validates :image_quality, inclusion: { in: IMAGE_QUALITY_RANGE }
   validates :class_capacity, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
-  validates :map_latitude, numericality: { in: -90..90 }, allow_nil: true
-  validates :map_longitude, numericality: { in: -180..180 }, allow_nil: true
-  validate :map_location_is_whole
   # PushPress Grow (LeadConnector) widget IDs are 24 hex characters.
   normalizes :chat_widget_id, with: ->(id) { id.strip.downcase.presence }
   validates :chat_widget_id, format: { with: /\A\h{24}\z/, message: "should be the 24-character ID from the widget's embed code" }, allow_nil: true
@@ -54,8 +51,6 @@ class Site < ApplicationRecord
   def hero_tag_list = hero_tags.to_s.split("/").map(&:strip).compact_blank
   def address_short = [ address_line1, address_line2, city_state_zip.to_s.sub(/,?\s*\d{5}(-\d{4})?\z/, "").delete(",") ].compact_blank.join(", ")
   def full_address = [ address_line1, address_line2, city_state_zip ].compact_blank.join(", ")
-  def map_location? = map_latitude.present? && map_longitude.present?
-
   # No link opens whichever map app someone uses on every phone, so they pick.
   # Each app finds the address itself, so a moved pin never sends anyone astray.
   def directions_links
@@ -65,9 +60,4 @@ class Site < ApplicationRecord
       "Google Maps" => "https://www.google.com/maps/dir/?api=1&destination=#{address}"
     }
   end
-
-  private
-    def map_location_is_whole
-      errors.add(:base, "Give both a map latitude and longitude, or neither.") if map_latitude.present? != map_longitude.present?
-    end
 end

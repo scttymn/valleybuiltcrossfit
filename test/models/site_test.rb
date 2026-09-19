@@ -96,18 +96,6 @@ class SiteTest < ActiveSupport::TestCase
     assert links.values.all? { _1.start_with?("https://") }
   end
 
-  test "the map location is a real latitude and longitude, or none" do
-    site = sites(:main)
-    [ [ 39.0252, -94.2159 ], [ nil, nil ] ].each do |lat, lng|
-      site.assign_attributes(map_latitude: lat, map_longitude: lng)
-      assert site.valid?, "refused #{lat.inspect}, #{lng.inspect}"
-    end
-    [ [ 91, 0 ], [ 0, -181 ], [ 39.0, nil ], [ nil, -94.2 ] ].each do |lat, lng|
-      site.assign_attributes(map_latitude: lat, map_longitude: lng)
-      assert_not site.valid?, "accepted #{lat.inspect}, #{lng.inspect}"
-    end
-  end
-
   test "the chat widget ID is a PushPress Grow ID, or blank for no chat" do
     site = sites(:main)
     [ "6aadb116599f010aecda2679", "", nil ].each do |id|
