@@ -9,7 +9,7 @@
     <%# Cards and their details share one grid. Desktop: cards in a row, the open
         program's details underneath. Mobile: each program's details sit directly
         under its card, like an accordion. The CSS order variables do the reordering. %>
-    <div class="program-grid" style="--program-count: <%= programs.size %>; --program-columns: <%= programs.size.clamp(1, 4) %>">
+    <div class="program-grid" style="--program-count: <%= programs.size %>; --program-columns: <%= programs.size.clamp(1, 4) %>; --photo-shape: <%= photo_shape(programs.map(&:photo)) %>">
       <% programs.each_with_index do |program, i| %>
         <button type="button" class="program-card" id="program-card-<%= program.key %>" style="--i: <%= i %>"
                 aria-expanded="<%= i.zero? %>" aria-controls="program-<%= program.key %>"

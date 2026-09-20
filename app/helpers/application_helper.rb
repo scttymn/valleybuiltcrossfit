@@ -50,6 +50,24 @@ module ApplicationHelper
     sanitize(text.to_s, tags: %w[a br strong em], attributes: %w[href target rel])
   end
 
+  # One shape for a section's photos, from the photos themselves: upright ones
+  # in a letterbox lose most of the picture, and mixed shapes look untidy when
+  # each is cropped differently. The middle shape decides, so one odd photo
+  # doesn't; sections with no sizes recorded stay wide, as they were.
+  PHOTO_SHAPES = { portrait: "4 / 5", square: "1 / 1", landscape: "3 / 2" }.freeze
+
+  def photo_shape(attachments)
+    ratios = attachments.filter_map do |attachment|
+      next unless attachment.attached?
+      width, height = attachment.blob.metadata.values_at("width", "height")
+      width.to_f / height if width.to_i.positive? && height.to_i.positive?
+    end
+    return PHOTO_SHAPES[:landscape] if ratios.empty?
+
+    middle = ratios.sort[ratios.size / 2]
+    PHOTO_SHAPES[middle < 0.9 ? :portrait : middle > 1.2 ? :landscape : :square]
+  end
+
   # How wide each photo actually renders, so we don't ship a 2000px file into a
   # 300px card. The browser picks from the widths using the sizes hint; each
   # width is roughly a layout size and its retina double.

@@ -28,7 +28,8 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "days without classes show as rest days, including Sunday" do
     get root_path
     assert_select ".week .day", 7
-    assert_select ".week .day:first-child .day__dow", "Sun"
+    # The week starts on Sunday; on a Sunday that column is labelled "Today".
+    assert_select ".week .day:first-child .day__dow", Date.current.sunday? ? "Today" : "Sun"
     assert_select ".week .slot--closed", text: "Rest day", count: 7
     assert_select ".picker__day", 7
   end

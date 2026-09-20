@@ -129,7 +129,9 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
 .program-card { order: var(--i); border: var(--border-width) solid var(--line); background: var(--surface); display: flex; flex-direction: column; cursor: pointer; text-align: left; padding: 0; font: inherit; color: inherit; }
 .program-card:hover { border-color: var(--line-strong); background: var(--surface); }
 .program-card[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-wash); }
-.program-card .photo { height: 170px; }
+/* Every card's photo in the same shape, chosen from the photos (photo_shape). */
+.program-card .photo { aspect-ratio: var(--photo-shape, 3 / 2); position: relative; }
+.program-card .photo img { position: absolute; inset: 0; }
 .program-card__body { padding: 24px 26px; display: flex; flex-direction: column; gap: 9px; }
 .program-card__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .program-card__name { font-family: var(--font-display); font-size: 23px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
@@ -146,10 +148,16 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
   /* Each card, then its own details. */
   .program-card { order: calc(var(--i) * 2); flex-direction: row; align-items: stretch; scroll-margin-top: 84px; }
   .program-detail { order: calc(var(--i) * 2 + 1); margin-top: -11px; border-color: var(--accent); border-top: 0; padding: clamp(22px, 3.4vw, 36px) clamp(18px, 3.4vw, 36px) clamp(26px, 3.6vw, 40px); gap: 26px 40px; }
-  .program-card .photo { flex: 0 0 clamp(92px, 18vw, 180px); height: auto; min-height: 96px; }
+  /* A narrow strip beside the text: it fills the card's height rather than
+     keeping the section's shape, which would leave a gap under the taller cards. */
+  .program-card .photo { flex: 0 0 clamp(92px, 18vw, 180px); height: auto; min-height: 96px; aspect-ratio: auto; }
   .program-card__body { flex: 1; padding: clamp(16px, 2.4vw, 22px) clamp(16px, 2.6vw, 26px); gap: 6px; justify-content: center; }
-  .program-card__name { font-size: clamp(20px, 2.6vw, 23px); }
-  .program-card__blurb { font-size: clamp(14.5px, 1.8vw, 15.5px); line-height: 1.5; }
+  /* Room for two lines of name in every card, so a name that wraps (Personal
+     Training) doesn't leave its card taller than the rest. */
+  .program-card__name { font-size: clamp(20px, 2.6vw, 23px); min-height: 2.2em; min-height: 2lh; }
+  /* Four lines' worth in every card, whether the blurb fills them or not, so
+     the cards are the same height and each photo fills its own. */
+  .program-card__blurb { font-size: clamp(14.5px, 1.8vw, 15.5px); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; min-height: 6em; min-height: 4lh; }
   .program-card__toggle { display: flex; flex: 0 0 28px; height: 28px; align-items: center; justify-content: center; border: var(--border-width) solid var(--line-strong); color: var(--accent-text); font-family: var(--font-mono); font-size: 16px; line-height: 1; }
   .program-card__toggle::before { content: "+"; }
   .program-card[aria-expanded="true"] .program-card__toggle { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
