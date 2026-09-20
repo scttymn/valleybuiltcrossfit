@@ -136,7 +136,9 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
 .program-card__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .program-card__name { font-family: var(--font-display); font-size: 23px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
 .program-card__blurb { font-size: 15.5px; line-height: 1.6; color: var(--muted); }
-.program-card__toggle { display: none; }
+/* Shown on phones and tablets, where a card opens and closes; the controller
+   reads it to tell that mode from the desktop one. */
+.program-card__more { display: none; }
 .program-detail { order: calc(var(--program-count) + var(--i)); grid-column: 1 / -1; border: var(--border-width) solid var(--line); background: var(--surface); padding: clamp(28px, 3.4vw, 44px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 48px; align-items: start; }
 
 /* Tablet and phone: accordion, each program's details directly under its card. */
@@ -152,16 +154,14 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
      keeping the section's shape, which would leave a gap under the taller cards. */
   .program-card .photo { flex: 0 0 clamp(92px, 18vw, 180px); height: auto; min-height: 96px; aspect-ratio: auto; }
   .program-card__body { flex: 1; padding: clamp(16px, 2.4vw, 22px) clamp(16px, 2.6vw, 26px); gap: 6px; justify-content: center; }
-  /* Room for two lines of name in every card, so a name that wraps (Personal
-     Training) doesn't leave its card taller than the rest. */
-  .program-card__name { font-size: clamp(20px, 2.6vw, 23px); min-height: 2.2em; min-height: 2lh; }
-  /* Four lines' worth in every card, whether the blurb fills them or not, so
-     the cards are the same height and each photo fills its own. */
-  .program-card__blurb { font-size: clamp(14.5px, 1.8vw, 15.5px); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; min-height: 6em; min-height: 4lh; }
-  .program-card__toggle { display: flex; flex: 0 0 28px; height: 28px; align-items: center; justify-content: center; border: var(--border-width) solid var(--line-strong); color: var(--accent-text); font-family: var(--font-mono); font-size: 16px; line-height: 1; }
-  .program-card__toggle::before { content: "+"; }
-  .program-card[aria-expanded="true"] .program-card__toggle { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .program-card[aria-expanded="true"] .program-card__toggle::before { content: "−"; }
+  .program-card__name { font-size: clamp(20px, 2.6vw, 23px); }
+  /* Three lines' worth in every card, whether the blurb fills them or not, so
+     the cards are the same height and each photo fills its own. A longer blurb
+     is cut short here; "Read more" opens the program's own text. */
+  .program-card__blurb { font-size: clamp(14.5px, 1.8vw, 15.5px); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; min-height: 4.5em; min-height: 3lh; }
+  .program-card__more { display: block; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-text); }
+  .program-card__more .is-open, .program-card[aria-expanded="true"] .program-card__more .is-closed { display: none; }
+  .program-card[aria-expanded="true"] .program-card__more .is-open { display: inline; }
   .program-detail .label { display: none; }
   .program-detail p.big { font-size: 16.5px; }
   .program-detail p.small { font-size: 15.5px; }

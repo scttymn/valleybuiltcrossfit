@@ -278,6 +278,15 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_operator chat_fields[/font-size:\s*(\d+)px/, 1].to_i, :>=, 16, "the chat's fields"
   end
 
+  test "on a phone each program card ends in Read more, which says Close when it's open" do
+    get root_path
+
+    cards = Program.count
+    assert_select ".program-card .program-card__more", cards
+    assert_select ".program-card .program-card__more", text: "Read moreClose", count: cards # CSS shows one at a time
+    assert_select ".program-card__toggle", 0, "the +/- square is gone"
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

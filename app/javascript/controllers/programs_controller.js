@@ -2,8 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 
 // Desktop: cards act like tabs, one program's details always showing.
 // Tablet/phone: cards act like an accordion; tapping the open one closes it.
-// Which mode applies is decided by the CSS (the +/− toggle is only shown in
-// accordion mode), so the breakpoint lives in one place.
+// Which mode applies is decided by the CSS (the "Read more" label is only
+// shown in accordion mode), so the breakpoint lives in one place.
 
 export default class extends Controller {
   static targets = ["card", "panel"]
@@ -29,7 +29,7 @@ export default class extends Controller {
   }
 
   accordion(card) {
-    return getComputedStyle(card.querySelector(".program-card__toggle")).display !== "none"
+    return getComputedStyle(card.querySelector(".program-card__more")).display !== "none"
   }
 
   show(index) {

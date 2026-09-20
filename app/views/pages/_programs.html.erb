@@ -18,9 +18,11 @@
           <span class="program-card__body">
             <span class="program-card__head">
               <span class="program-card__name"><%= program.name %></span>
-              <span class="program-card__toggle" aria-hidden="true"></span>
             </span>
             <span class="program-card__blurb"><%= program.blurb %></span>
+            <%# Phones and tablets, where the cards open one at a time; the CSS
+                shows whichever label fits the card's state. %>
+            <span class="program-card__more" aria-hidden="true"><span class="is-closed">Read more</span><span class="is-open">Close</span></span>
           </span>
         </button>
 
