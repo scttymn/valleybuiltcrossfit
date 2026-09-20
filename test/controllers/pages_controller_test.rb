@@ -287,6 +287,13 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select ".program-card__toggle", 0, "the +/- square is gone"
   end
 
+  test "the hero photo fades into the page instead of ending on a line" do
+    css = Rails.root.join("app/assets/stylesheets/site.css").read.gsub(%r{/\*.*?\*/}m, "")
+    rules = css.scan(/([^{}]+)\{([^}]*)\}/).select { |selector, _| selector.strip == ".hero__photo" }
+    assert_equal 2, rules.size, "one rule for the wide layout, one for phones"
+    rules.each { |selector, body| assert_match(/mask-image:\s*linear-gradient/, body, selector) }
+  end
+
   test "theme-color matches the palette background" do
     get root_path
     assert_select "meta[name='theme-color'][content=?]", Theme.default.variables["--bg"]

@@ -91,7 +91,11 @@ button.btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
 
 /* ---------- hero ---------- */
 .hero { position: relative; overflow: hidden; background: linear-gradient(105deg, var(--surface) 0%, var(--surface) 45%, var(--bg) 100%); }
-.hero__photo { position: absolute; right: 0; top: 0; bottom: 0; width: 50%; }
+/* The photo fades into the page along its left edge rather than ending on a
+   line: the shade over it only darkens, so a photo that's bright at that edge
+   would otherwise show a seam down the hero. A mask only reads opacity, so
+   the color in it is nothing but "fully there". */
+.hero__photo { position: absolute; right: 0; top: 0; bottom: 0; width: 55%; -webkit-mask-image: linear-gradient(90deg, transparent 0%, currentColor 38%); mask-image: linear-gradient(90deg, transparent 0%, currentColor 38%); }
 /* Solid behind the headline, then clear by three-quarters across so the photo —
    and whatever photo style the theme applies to it — shows through untouched. */
 .hero__shade { position: absolute; inset: 0; background: linear-gradient(90deg, var(--bg) 32%, color-mix(in srgb, var(--bg) 70%, transparent) 50%, transparent 75%); }
@@ -419,7 +423,8 @@ textarea.input { min-height: 96px; resize: vertical; }
   .wrap { padding: 64px 16px; }
   .nav__bar, .nav__menu { padding-left: 16px; padding-right: 16px; }
   .hero__body { padding: 64px 16px; }
-  .hero__photo { width: 100%; opacity: 0.35; }
+  /* Behind the text at this width, so it fades from the bottom instead. */
+  .hero__photo { width: 100%; opacity: 0.35; -webkit-mask-image: linear-gradient(0deg, transparent 0%, currentColor 45%); mask-image: linear-gradient(0deg, transparent 0%, currentColor 45%); }
   .pillars { grid-template-columns: 1fr; }
   .pillar { padding: 28px 16px; border-right: 0; border-bottom: var(--border-width) solid var(--line); }
   .visit__copy { padding: 64px 16px; }
