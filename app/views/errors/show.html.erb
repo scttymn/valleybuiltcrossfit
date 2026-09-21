@@ -1,0 +1,23 @@
+<% content_for :title, "#{@heading} — Valley Built CrossFit" %>
+<% content_for :head do %>
+  <meta name="robots" content="noindex">
+<% end %>
+
+<%# No nav: its links are anchors into the home page, which isn't this one. The
+    logo and the buttons go back there instead. %>
+<main class="error">
+  <div class="error__inner">
+    <a href="<%= root_path %>" class="error__logo" aria-label="Valley Built CrossFit — home">
+      <%= brand_logo(label: nil) %>
+    </a>
+    <p class="error__code">Error <%= @status %></p>
+    <h1><%= @heading %></h1>
+    <p class="error__text"><%= @message %></p>
+    <div class="error__actions">
+      <a class="btn btn--primary" href="<%= root_path %>">Back to home</a>
+      <a class="btn btn--ghost" href="<%= root_path %>#schedule">See the schedule</a>
+    </div>
+  </div>
+</main>
+
+<%= render "pages/footer", site: @site %>

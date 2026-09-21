@@ -379,7 +379,7 @@ textarea.input { min-height: 96px; resize: vertical; }
 .faq h3 { font-family: var(--font-display); font-size: 19px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink); }
 .faq p { font-size: 16px; line-height: 1.6; color: var(--muted); }
 
-/* ---------- visit + footer ---------- */
+/* ---------- visit ---------- */
 .visit { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
 .visit__copy { padding: 80px 32px; display: flex; flex-direction: column; gap: 22px; }
 .visit h2 { font-family: var(--font-display); font-size: clamp(30px, 3.4vw, 40px); font-weight: 600; text-transform: uppercase; color: var(--ink); line-height: 1.05; }
@@ -412,6 +412,18 @@ textarea.input { min-height: 96px; resize: vertical; }
 .directions__icon { width: 22px; height: 22px; object-fit: contain; flex: none; }
 .directions__icon[src*="apple-maps"] { border-radius: 22%; }
 
+/* ---------- error pages ---------- */
+/* Same gradient as the hero, so a wrong address still lands somewhere that
+   looks like the gym. Fills the screen above the footer. */
+.error { background: linear-gradient(105deg, var(--surface) 0%, var(--surface) 45%, var(--bg) 100%); }
+.error__inner { max-width: 1280px; margin: 0 auto; padding: 72px 32px; min-height: 68vh; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 20px; }
+.error__logo .logo { height: 54px; width: auto; display: block; margin-bottom: 8px; }
+.error__code { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--accent-text); }
+.error h1 { font-family: var(--font-display); font-size: clamp(40px, 5.4vw, 72px); font-weight: 600; line-height: 0.96; letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); text-wrap: balance; }
+.error__text { font-size: 18px; line-height: 1.6; color: var(--ink-soft); max-width: 520px; text-wrap: pretty; }
+.error__actions { display: flex; flex-wrap: wrap; gap: 14px; padding-top: 6px; }
+
+/* ---------- footer ---------- */
 .footer { background: var(--bg); border-top: var(--border-width) solid var(--line); }
 .footer__inner { max-width: 1280px; margin: 0 auto; padding: 48px 32px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between; }
 .footer .logo { height: 42px; width: auto; display: block; }
@@ -428,6 +440,7 @@ textarea.input { min-height: 96px; resize: vertical; }
   .pillars { grid-template-columns: 1fr; }
   .pillar { padding: 28px 16px; border-right: 0; border-bottom: var(--border-width) solid var(--line); }
   .visit__copy { padding: 64px 16px; }
+  .error__inner { padding: 56px 16px; }
   /* Contact us and Directions share the row, half each. */
   .visit__actions { display: grid; grid-template-columns: 1fr 1fr; }
   .visit__actions .btn { width: 100%; padding-left: 12px; padding-right: 12px; }

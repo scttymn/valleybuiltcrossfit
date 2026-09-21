@@ -39,6 +39,10 @@ module Valleybuilt
     # cacheable forever. The default redirects to a signed link that expires, so the
     # browser can't keep the photo and fetches it again on every reload.
     config.active_storage.resolve_model_to_route = :rails_storage_proxy
+
+    # Send errors back through the router (ErrorsController) so a 404 looks like
+    # the site — theme, fonts and logo — instead of the plain page in public/.
+    config.exceptions_app = routes
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

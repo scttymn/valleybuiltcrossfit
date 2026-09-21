@@ -29,6 +29,10 @@ Rails.application.routes.draw do
     post "schedule/refresh" => "dashboard#refresh_schedule", as: :refresh_schedule
   end
 
+  # Error pages, rendered in the theme (app/controllers/errors_controller.rb).
+  # ActionDispatch retries the failed request against these paths.
+  %w[404 422 500].each { |code| match "/#{code}" => "errors#show", via: :all, status: code }
+
   get "up" => "rails/health#show", as: :rails_health_check
   get "favicon.svg" => "icons#favicon", as: :favicon, format: false
   # The web app manifest (app/views/pwa): lets the site be installed, with its
