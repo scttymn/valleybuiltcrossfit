@@ -35,7 +35,7 @@ if site.hero_title.blank?
     visit_title: "Built in the valley.",
     visit_script: "Strong for life.",
     pushpress_subdomain: "valleybuiltcrossfit",
-    class_capacity: 18,
+    class_capacity: 19,
     chat_widget_id: "6aadb116599f010aecda2679",
     image_quality: 80,
     uncapped_class_types: "General"

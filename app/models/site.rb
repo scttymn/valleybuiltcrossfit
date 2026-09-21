@@ -13,7 +13,7 @@ class Site < ApplicationRecord
   validates :chat_widget_id, format: { with: /\A\h{24}\z/, message: "should be the 24-character ID from the widget's embed code" }, allow_nil: true
 
   def self.instance
-    first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 18)
+    first_or_create!(pushpress_subdomain: "valleybuiltcrossfit", class_capacity: 19)
   end
 
   # Each part of the theme and the column holding it. nil = Theme::DEFAULTS.
