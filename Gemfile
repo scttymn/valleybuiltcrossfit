@@ -37,8 +37,10 @@ gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.1"
-# image_processing 2 no longer brings libvips' Ruby binding with it.
-gem "ruby-vips", "~> 2.3"
+# image_processing 2 no longer brings libvips' Ruby binding with it. Not
+# required at boot: image_processing loads it to resize, and CI jobs without
+# libvips (scan_js) still start the app.
+gem "ruby-vips", "~> 2.3", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
