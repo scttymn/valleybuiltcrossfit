@@ -103,7 +103,9 @@ module ApplicationHelper
 
   # A resized WebP copy at the quality set in the admin.
   def web_variant(attachment, width)
-    attachment.variant(resize_to_limit: [ width, width * 2 ], format: :webp, saver: { quality: Site.instance.image_quality })
+    # image_processing 2 stopped sharpening after a resize by default; sharpen:
+    # true keeps the photos as they were (and gives each size a new variant key).
+    attachment.variant(resize_to_limit: [ width, width * 2, { sharpen: true } ], format: :webp, saver: { quality: Site.instance.image_quality })
   end
 
   def spots_label(slot, long: false)
