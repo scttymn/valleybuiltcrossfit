@@ -69,4 +69,4 @@ end
 
 # json 3.x changed JSON.parse to keyword-only options, which breaks
 # ActiveSupport::JSON.decode (and cookie decoding) in Rails 8.1.3.
-gem "json", "~> 2.21"
+gem "json", "~> 3.0"
