@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+gem "rails", "~> 8.1.4"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
@@ -36,7 +36,9 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.1"
+# image_processing 2 no longer brings libvips' Ruby binding with it.
+gem "ruby-vips", "~> 2.3"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -67,6 +69,6 @@ group :development do
   gem "dotenv", require: "dotenv/load"
 end
 
-# json 3.x changed JSON.parse to keyword-only options, which breaks
-# ActiveSupport::JSON.decode (and cookie decoding) in Rails 8.1.3.
-gem "json", "~> 2.21"
+# json 3 needs Rails 8.1.4 or later: earlier Active Support passed JSON.parse a
+# positional options hash, which json 3 dropped.
+gem "json", "~> 3.0"
