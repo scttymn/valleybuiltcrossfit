@@ -1,0 +1,37 @@
+name: valleybuiltcrossfit
+
+services:
+  app:
+    build: { context: ., target: dev }
+    ports: ["127.0.0.1:3000:3000"]
+    environment:
+      # Optional (${NAME:-}): houston test gives required variables random
+      # values, which Rails can't decrypt with. Set RAILS_MASTER_KEY on the
+      # server before the first deploy. The others fall back to credentials
+      # or turn their feature off when blank.
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-}
+      PUSHPRESS_API_KEY: ${PUSHPRESS_API_KEY:-}
+      PUSHPRESS_WEBHOOK_URL: ${PUSHPRESS_WEBHOOK_URL:-}
+      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      SMTP_ADDRESS: ${SMTP_ADDRESS:-}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # Links in emails; production only reads it.
+      APP_HOST: valleybuiltcrossfit.svnmns.com
+      MAILER_FROM: "Valley Built CrossFit <no-reply@valleybuiltcrossfit.com>"
+    volumes:
+      - .:/rails
+      - storage:/rails/storage
+
+volumes:
+  storage:
+
+x-houston:
+  health: /up
+  app_port: 80                    # Thruster in the production image; dev's rails server is on 3000
+  commands:
+    console: bin/rails console
+    test: bin/rails test
+  hooks:
+    release: bin/rails db:migrate
