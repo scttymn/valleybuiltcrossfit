@@ -58,7 +58,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
 # Final stage for app image
-FROM base
+FROM base AS production
 
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
@@ -72,6 +72,29 @@ COPY --chown=rails:rails --from=build /rails /rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Run Solid Queue (the PushPress refresh job and emails) inside Puma: in the
+# production image only, since development has no queue database.
+ENV SOLID_QUEUE_IN_PUMA="true"
+
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
 CMD ["./bin/thrust", "./bin/rails", "server"]
+
+# Development and test stages for Houston (houston dev, houston test).
+# Plain `docker build` now builds the last stage; pass --target production
+# for the production image.
+FROM base AS dev
+ENV RAILS_ENV="development" \
+    BUNDLE_DEPLOYMENT="0" \
+    BUNDLE_WITHOUT=""
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential git libvips libyaml-dev pkg-config && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+COPY vendor/* ./vendor/
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+CMD ["sh", "-c", "bin/rails db:prepare && exec bin/rails server -b 0.0.0.0 -p 3000 -P /tmp/server.pid"]
+
+FROM dev AS test
+ENV RAILS_ENV="test"
+COPY . .
