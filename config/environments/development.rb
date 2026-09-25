@@ -1,6 +1,10 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  # houston dev serves another branch at <branch>.valleybuiltcrossfit.localhost; Rails
+  # allows only one name before .localhost by default.
+  config.hosts << ".valleybuiltcrossfit.localhost"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Make code changes take effect immediately without server restart.
