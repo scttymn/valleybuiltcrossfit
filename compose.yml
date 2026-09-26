@@ -3,7 +3,7 @@ name: valleybuiltcrossfit
 services:
   app:
     build: { context: ., target: dev }
-    ports: ["127.0.0.1:3000:3000"]
+    expose: ["3000"]               # rails server's port; houston dev serves it at http://valleybuiltcrossfit.localhost
     environment:
       # Optional (${NAME:-}): houston test gives required variables random
       # values, which Rails can't decrypt with. Set RAILS_MASTER_KEY on the

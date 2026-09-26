@@ -13,7 +13,7 @@ bin/rails db:prepare        # creates the DB and seeds the design's copy
 bin/rails server
 ```
 
-- Site: http://localhost:3000
+- Site: http://localhost:3000 (with Houston: `houston dev`, at http://valleybuiltcrossfit.localhost; another branch at http://<branch>.valleybuiltcrossfit.localhost)
 - Admin: http://localhost:3000/admin — sign in at `/login`, sign out at `/logout`
   (dev seed user `admin@example.com` / `password`)
 - Put `PUSHPRESS_API_KEY=...` in `.env` (git-ignored) for the live schedule.
